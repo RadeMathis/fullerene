@@ -13,7 +13,7 @@
 
 #define TAILLE_LIGNE_MAX 51 //assez arbitraire
 
-Graph_01::Graph_01() : m_nbSommets(0) {
+Graph_01::Graph_01() : m_nbSommets(0), m_nbPenta(0), m_nbQuadra(0) {
     for(int i(0); i < 8; ++i)
         m_marquesReseves[i] = 0;
     for(int i(0); i < TAILLE_TABLEAU; ++i)
@@ -21,7 +21,7 @@ Graph_01::Graph_01() : m_nbSommets(0) {
 }
 
 Graph_01::Graph_01(std::string dataFile){
-    ifstream dataStream(dataFile.c_str());
+    ifstream dataStream(dataFile.c_str(), ios::in);
     if(! dataStream) 
     	throw OpenFileFailureException(dataFile);
     std::string lineBuffer;
@@ -30,6 +30,9 @@ Graph_01::Graph_01(std::string dataFile){
     std::getline(dataStream, lineBuffer);
     sentenceBuffer = decouperString(lineBuffer);
     m_nbSommets = atoi(sentenceBuffer[0].c_str());
+    m_nbPenta = atoi(sentenceBuffer[1].c_str());
+    m_nbQuadra = atoi(sentenceBuffer[2].c_str());
+    m_signature = stringToVectorInt(sentenceBuffer[3]);
     for(int i(0); i < 8; ++i)
         m_marquesReseves[i] = 0;
 
@@ -49,7 +52,8 @@ Graph_01::Graph_01(std::string dataFile){
     }
 }
 
-Graph_01::Graph_01(Graph const& g) : m_nbSommets(g.m_nbSommets) {
+Graph_01::Graph_01(Graph const& g) : m_nbSommets(g.m_nbSommets), 
+        m_nbPenta(g.m_nbPenta), m_nbQuadra(g.m_nbQuadra) {
     for(int i(0); i < 8; ++i)
         m_marquesReseves[i] = 0;
     for(int i(0); i < TAILLE_TABLEAU; ++i)
@@ -85,9 +89,13 @@ int Graph_01::ajouterSommet(){
 void Graph_01::supprimerSommet(int n){
     if(m_nbSommets[n] == NULL)
         throw NonExistentVerticeException(n);
+    --m_nbSommets;
+    if(m_sommets[n]->getNbVoisins() == 5)
+        --m_nbPenta;
+    if(m_sommets[n]->getNbVoisins() == 4)
+        --m_nbQuadra;
     delete m_sommets[n];
     m_sommets[n] = NULL;
-    --m_nbSommets;
 }
 
 Vertice* Graph_01::getSommet(int n) const {
@@ -145,7 +153,7 @@ int Graph_01::distance(int v1, int v2) const { //stratum marked oigon algorithm
             }
         }
     }
-    libererMarque[passed]; /////!!!!!\\\\\ A mettre avant chaque return !!!
+    libererMarque[passed];
     return -1; //There is no path between v1 and v2
 }
 
@@ -208,6 +216,10 @@ void Graph_01::bienFormer(){
 
 void Graph_01::intitialiserPenta(){
     m_nbSommets = 1;
+    m_nbPenta = 1;
+    for(int i(0); i < TAILLE_TABLEAU; ++i){
+
+    }
     m_sommets[0] = new Vertice_01();
     for(int i(0); i < 5; ++i)
         m_sommets[0]->addVoisin(i, -1);
@@ -217,13 +229,27 @@ void Graph_01::initialiserQuadri(){
     m_nbSommets = 1;
     m_sommets[0] = new Vertice_01();
     for(int i(0); i < 4; ++i)
-        m_sommets[0]->addVoisin(i, -1);    
+        m_sommets[0]->addVoisin(i, -1);
 }
 
 void Graph_01::writeInFile(std::string dataFile) const {
-    
+    ofstream dataStream(dataFile.c_str(), ios::out | ios::trunc);
+    if (! dataStream)
+        throw OpenFileFailureException();
+    dataStream << m_nbSommets << m_nbPenta << m_nbQuadra 
+               << vectorToString(m_ceinture) << std::endl;
+    for(int i(0); i < TAILLE_TABLEAU; ++i){
+        if (m_sommets[i] == NULL)
+            continue;
+        dataStream << i;
+        for(int j(0); j < m_sommets[i]->getNbVoisins(); ++j)
+            dataStream << m_sommets[i]->getVoisin(j);
+        dataStream << std::endl;
+    }
 }
-// TODO : follow .hpp, fix completerADistance2.
+
+
+// TODO : follow .hpp, fix completerADistance2. (et le reste)
 
 /*** EXCEPTIONS ***/
 

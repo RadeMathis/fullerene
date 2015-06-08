@@ -96,8 +96,10 @@ class Graph {
          # d'exagones. */
     virtual void writeInFile(std::string dataFile) const = 0;
         /* Write the graph in a .graph.data file as described in the manifest.
+         * Can throw an OpenFaileFailurException.
          # Ecrit le graphe dans un fichier .graph.data comme decrit dans le
-         # manifest. */
+         # manifest. 
+         # peut lancer une OpenFileFailureException. */
     virtual void replierPenta(int v, int d) = 0;
         /* Bend over "in stays" to form a pentagon as described in the manifest
          * v is the vertice to transform in pentagon

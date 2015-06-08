@@ -11,6 +11,7 @@
 #define INCLUDED_GRAPH_01_HPP
 
 #include <string>
+#include <vector>
 #include <exception>
  
 #include <Graph.hpp>
@@ -47,11 +48,19 @@ class Graph_01 : public Graph {
     void replierQuadri(int v, int d);
     void writeInFile(std::string dataFile) const;
 
+
+
   private:
 
     int m_nbSommets;
+    int m_nbPenta;
+    int m_nbQuadra;
+    std::vector<int> m_ceinture;//liste des voisins -1 des sommets du tour
+
     Vertice* m_sommets[TAILLE_TABLEAU];
+
     bool m_marquesReserves[8];
+
 
 };
 

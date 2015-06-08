@@ -20,5 +20,13 @@ std::vector<std::string> decouperString(std::string const& str);
      # Retourne les mots de str dans un vector de string.
      # Chaque element contient un mot de str (sont consideres
      # comme mot les sous-string separees par le caractere ' '). */
+std::vector<int> stringToVectorInt(std::string const& str);
+	/* All str character need to be an integer 0 <= x <= 9
+	 * Will return an int vector containing one int (0..9) by element.
+	 # Chaque caractere le str doit etre un chiffre.
+	 # Le vector retourné ccntiendra un chiffre par element. */
+std::string vectorToString(std::vector<int> const& vect);
+	/* Like the previous function. The opposite way
+	 # Simple inverse de la fonction precedente. */
 
 #endif /* INCLUDED_FUNCTIONS_H */
