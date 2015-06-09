@@ -236,14 +236,14 @@ void Graph_01::writeInFile(std::string dataFile) const {
     ofstream dataStream(dataFile.c_str(), ios::out | ios::trunc);
     if (! dataStream)
         throw OpenFileFailureException();
-    dataStream << m_nbSommets << m_nbPenta << m_nbQuadra 
+    dataStream << m_nbSommets << ' ' << m_nbPenta << ' ' << m_nbQuadra << ' '
                << vectorToString(m_ceinture) << std::endl;
     for(int i(0); i < TAILLE_TABLEAU; ++i){
         if (m_sommets[i] == NULL)
             continue;
-        dataStream << i;
+        dataStream << i ;
         for(int j(0); j < m_sommets[i]->getNbVoisins(); ++j)
-            dataStream << m_sommets[i]->getVoisin(j);
+            dataStream << ' ' << m_sommets[i]->getVoisin(j);
         dataStream << std::endl;
     }
 }
