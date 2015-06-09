@@ -94,12 +94,6 @@ class Graph {
         /* Create the graph composed of one square and 2 hexagon of layer.
          # Cree le grpahe compose d'un quadrilaltere entoure de deux couches
          # d'exagones. */
-    virtual void writeInFile(std::string dataFile) const = 0;
-        /* Write the graph in a .graph.data file as described in the manifest.
-         * Can throw an OpenFaileFailurException.
-         # Ecrit le graphe dans un fichier .graph.data comme decrit dans le
-         # manifest. 
-         # peut lancer une OpenFileFailureException. */
     virtual void replierPenta(int v, int d) = 0;
         /* Bend over "in stays" to form a pentagon as described in the manifest
          * v is the vertice to transform in pentagon
@@ -114,6 +108,12 @@ class Graph {
          # Replie en corset pour former un carre comme ecrit dans le manifest
          # v est le sommet a transformer en quadrilaterre
          # ses voisins fusionnes seront le d-ieme et le (d+2)mod(6)-ieme */
+    virtual void writeInFile(std::string dataFile) const = 0;
+        /* Write the graph in a .graph.data file as described in the manifest.
+         * Can throw an OpenFaileFailurException.
+         # Ecrit le graphe dans un fichier .graph.data comme decrit dans le
+         # manifest. 
+         # peut lancer une OpenFileFailureException. */
 };
 
 #endif /* INCLUDED_GRAPH_HPP */

@@ -232,6 +232,10 @@ void Graph_01::initialiserQuadri(){
         m_sommets[0]->addVoisin(i, -1);
 }
 
+void Graph_01::replierPenta(int v, int d){ //v: vertice, d: direction
+
+}
+
 void Graph_01::writeInFile(std::string dataFile) const {
     ofstream dataStream(dataFile.c_str(), ios::out | ios::trunc);
     if (! dataStream)
