@@ -69,7 +69,6 @@ class Graph {
     virtual void libererMarque(int n) = 0;
         /* Free a reserved marker by above function.
          # Libere un markeur reserve par le methode ci-dessus. */
-
     virtual int distance(int v1, int v2) const = 0;
         /* Return distance between vertices in v1 and v2.
          * Return 0 if v1==v2, return 1 if they are neighbours ... etc ...

@@ -233,7 +233,64 @@ void Graph_01::initialiserQuadri(){
 }
 
 void Graph_01::replierPenta(int v, int d){ //v: vertice, d: direction
-    //TODO: endit
+    bool existRight = true;
+    bool existLeft  = true;
+    Vertice* origin = m_sommets[v];
+    Vertice*  right = NULL;
+    Vertice*   left = NULL;
+    int           r = origin->getVoisin(d);         //right place
+    int           l = origin->getVoisin((d+1) % 6); //left place
+    int  previous_r = v;
+    int  previous_l = v;
+    try {
+        right = getSommet(r);
+    } catch(NonExistentVerticeException &e) {
+        existRight = false;
+    }
+    try {
+        left = getSommet(l);
+    } catch(NonExistentVerticeException &e) {
+        existLeft = false;
+    }
+    while(existLeft && existRight){ //Bend over "in stays"
+        int in_r = right->isXthVoisin(previous_r);//The way we came in r
+        int in_l =  left->isXthVoisin(previous_l);//The way we came in l
+      //(1) Break links from inside to right.
+        Vertice* interne_1 = getSommet(right->getVoisin((in_r - 1) % 6));
+        interne_1->setVoisin(interne_1->isXthVoisin(r), -1);
+        Vertice* interne_2 = getSommet(right->getVoisin((in_r - 2) % 6));
+        interne_2->setVoisin(interne_2->isXthVoisin(r), -1);
+      //(2) Link right to left-outside.
+        right->setVoisin((in_r -1) % 6, left->getVoisin((in_l - 1) % 6));
+        right->setVoisin((in_r -2) % 6, left->getVoisin((in_l - 2) % 6));
+      //(3) Link left-outside to right.
+        Vertice* externe_1 = getSommet(left->getVoisin((in_l - 1) % 6));
+        externe_1->setVoisin(externe_1->isXthVoisin(l), r);
+        Vertice* externe_2 = getSommet(left->getVoisin((in_l - 2) % 6));
+        externe_2->setVoisin(externe_2->isXthVoisin(l), r);
+      //(4) Break links from left to left-outside.
+        left->setVoisin((in_l - 1) % 6, -1);
+        left->setVoisin((in_l - 2) % 6, -1);
+      //(5) "Move" left and right to itterate.
+        previous_r = r;
+        previous_l = l;
+        r = right->getVoisin((in_r + 3) % 6);
+        l =  left->getVoisin((in_l + 3) % 6);
+        try {
+            right = getSommet(r);
+        } catch(NonExistentVerticeException &e) {
+            existRight = false;
+        }
+        try {
+            left  = getSommet(l);
+        } catch(NonExistentVerticeException &e) {
+            existLeft = false;
+        }
+    }
+    // TODO: - les deux while qui poursuivent just a droite ou juste a gauche
+    //       - La reduction du somment v
+    //       - La suppression de ce qu'il y a en trop
+
 }
 
 void Graph_01::writeInFile(std::string dataFile) const {
