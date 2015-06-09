@@ -233,7 +233,7 @@ void Graph_01::initialiserQuadri(){
 }
 
 void Graph_01::replierPenta(int v, int d){ //v: vertice, d: direction
-
+    //TODO: endit
 }
 
 void Graph_01::writeInFile(std::string dataFile) const {

@@ -43,7 +43,6 @@ class Vertice_01 : public Vertice {
   	void mark(int n); //idem
   	void unmark(int n); //idem
 
-
   private:
 
     void afficher(std::ostream &stream) const;

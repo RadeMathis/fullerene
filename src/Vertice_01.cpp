@@ -75,6 +75,7 @@ void Vertice_01::unmark(int n){
     m_marques[n] = false;
 }
 
+
 void Vertice_01::afficher(std::ostream &stream) const {
     stream << "This vertex get " << getNbVoisins() ;
     if(getNbVoisins() < 0 || getNbVoisins() > 6)
