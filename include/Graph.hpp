@@ -87,13 +87,11 @@ class Graph {
          * part of the manifest.
          # Met le graphe en forme tel que decrit dans le manifest.*/
     virtual void intitialiserPenta() = 0; 
-        /* Create the graph composed of one pentagon and 2 hexagon of layer.
-         # Cree le grpahe compose d'un pentagone entoure de deux couches
-         # d'exagones. */
+        /* Create the graph composed of one pentagon.
+         # Cree le grpahe compose d'un pentagone. */
     virtual void intitialiserQuadra() = 0; 
-        /* Create the graph composed of one square and 2 hexagon of layer.
-         # Cree le grpahe compose d'un quadrilaltere entoure de deux couches
-         # d'exagones. */
+        /* Create the graph composed of one square.
+         # Cree le graphe compose d'un quadrilaltere. */
     virtual void replierPenta(int v, int d) = 0;
         /* Bend over "in stays" to form a pentagon as described in the manifest
          * v is the vertice to transform in pentagon
