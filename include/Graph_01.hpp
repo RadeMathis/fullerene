@@ -55,7 +55,6 @@ class Graph_01 : public Graph {
     int m_nbSommets;
     int m_nbPenta;
     int m_nbQuadra;
-    std::vector<int> m_ceinture;//liste des voisins -1 des sommets du tour
 
     Vertice* m_sommets[TAILLE_TABLEAU];
 
