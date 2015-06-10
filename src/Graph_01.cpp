@@ -252,7 +252,7 @@ void Graph_01::replierPenta(int v, int d){ //v: vertice, d: direction
     } catch(NonExistentVerticeException &e) {
         existLeft = false;
     }
-    while(existLeft && existRight){ //Bend over "in stays"
+    while(existRight && existLeft){ //Bend over "in stays"
         int in_r = right->isXthVoisin(previous_r);//The way we came in r
         int in_l =  left->isXthVoisin(previous_l);//The way we came in l
       //(1) Break links from inside to right.
@@ -287,10 +287,14 @@ void Graph_01::replierPenta(int v, int d){ //v: vertice, d: direction
             existLeft = false;
         }
     }
+    while(existRight){
+        int in_r = right->isXthVoisin(previous_r);
+        //TODO: TRAVAILLER DUCON
+    }
     // TODO: - les deux while qui poursuivent just a droite ou juste a gauche
     //       - La reduction du somment v
     //       - La suppression de ce qu'il y a en trop
-
+    //       - Dans le doute : relier()
 }
 
 void Graph_01::writeInFile(std::string dataFile) const {
