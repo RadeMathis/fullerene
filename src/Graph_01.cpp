@@ -208,10 +208,8 @@ void Graph_01::completerADistance2(){
 void Graph_01::bienFormer(){
     relier();
     completerADistance1();
-    relier();
     completerADistance2();
-    relier();
-    boucherLesTrous();
+    boucherLesTrous(); //useless?
 }
 
 void Graph_01::intitialiserPenta(){
@@ -289,9 +287,25 @@ void Graph_01::replierPenta(int v, int d){ //v: vertice, d: direction
     }
     while(existRight){
         int in_r = right->isXthVoisin(previous_r);
-        //TODO: TRAVAILLER DUCON
+      //(1) Break links from inside to right.
+        Vertice* interne_1 = getSommet(right->getVoisin((in_r - 1) % 6));
+        interne_1->setVoisin(interne_1->isXthVoisin(r), -1);
+        Vertice* interne_2 = getSommet(right->getVoisin((in_r - 2) % 6));
+        interne_2->setVoisin(interne_2->isXthVoisin(r), -1);
+      //(2) Break links from right to inside.
+        right->setVoisin((in_r - 1) % 6, -1);
+        right->setVoisin((in_r - 2) % 6, -1);
+      //(3) "Move" right to itterate.
+        previous_r = r;
+        r = right->getVoisin((in_r + 3) % 6);
+        try{
+            right = getSommet(r);
+        } catch(NonExistentVerticeException &e) {
+            existRight = false;
+        }
+
     }
-    // TODO: - les deux while qui poursuivent just a droite ou juste a gauche
+    // TODO: - le while qui poursuit juste a gauche
     //       - La reduction du somment v
     //       - La suppression de ce qu'il y a en trop
     //       - Dans le doute : relier()
