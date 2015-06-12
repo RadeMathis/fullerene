@@ -231,6 +231,7 @@ void Graph_01::initialiserQuadri(){
 }
 
 void Graph_01::replierPenta(int v, int d){ //v: vertice, d: direction
+  //First : Bend over "in stays".
     bool existRight = true;
     bool existLeft  = true;
     Vertice* origin = m_sommets[v];
@@ -284,6 +285,13 @@ void Graph_01::replierPenta(int v, int d){ //v: vertice, d: direction
         } catch(NonExistentVerticeException &e) {
             existLeft = false;
         }
+        if(existLeft && !existRight){
+            Vertice* oldLeft = getSommet(previous_l);
+            oldLeft->setVoisin(oldLeft->isXthVoisin(l), -1);
+            getSommet(previous_r)->setVoisin((in_r + 3) % 6, l);
+            left->setVoisin(in_l, previous_r);
+            previous_l = previous_r; //need it for first while(existLeft) itter
+        }
     }
     while(existRight){
         int in_r = right->isXthVoisin(previous_r);
@@ -303,10 +311,29 @@ void Graph_01::replierPenta(int v, int d){ //v: vertice, d: direction
         } catch(NonExistentVerticeException &e) {
             existRight = false;
         }
-
     }
-    // TODO: - le while qui poursuit juste a gauche
-    //       - La reduction du somment v
+    while(existLeft){
+        int in_l = left->isXthVoisin(previous_l);
+      //(1) Break links from inside to left.
+        Vertice* interne_1 = getSommet(left->getVoisin((in_l + 1) % 6));
+        interne_1->setVoisin(interne_1->isXthVoisin(l), -1);
+        Vertice* interne_2 = getSommet(left->getVoisin((in_l + 2) % 6));
+        interne_2->setVoisin(interne_2->isXthVoisin(l), -1);
+      //(2) Break links from left to inside.
+        left->setVoisin((in_l + 1) % 6, -1);
+        left->setVoisin((in_l + 2) % 6, -1);
+      //(3) "Move" left to itterate.
+        previous_l = l;
+        l = left->getVoisin((in_l + 3) % 6);
+        try{
+            left = getSommet(l);
+        } catch(NonExistentVerticeException &e) {
+            existLeft = false;
+        }
+    }
+
+
+    // TODO: - La reduction du somment v
     //       - La suppression de ce qu'il y a en trop
     //       - Dans le doute : relier()
 }
