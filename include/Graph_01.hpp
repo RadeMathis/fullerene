@@ -48,11 +48,11 @@ class Graph_01 : public Graph {
     void replierQuadri(int v, int d);
     void writeInFile(std::string dataFile) const;
 
-
-
   private:
 
     void replier(int v, int d, int type);
+    void relier();
+    void completerADistance1();
 
     int m_nbSommets;
     int m_nbPenta;

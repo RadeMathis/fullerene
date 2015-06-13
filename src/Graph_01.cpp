@@ -339,7 +339,8 @@ void Graph_01::replier(int v, int d, int type){ //v: vertice, d: direction
         xi->setVoisin(xi->isXthVoisin(v), -1);
         origin->delVoisin((d + 1) % 6);
     }
-    getSommet(toDel.front())->setVoisin(queue.front()->isXthVoisin(v), -1);
+    m_nbPenta  += (type == 5);
+    m_nbQuadra += (type == 6);
     int isInQueue = reserverMarque();
     while(!queue.empty()){
         for(int i(0); i < 6; ++i){
@@ -351,6 +352,7 @@ void Graph_01::replier(int v, int d, int type){ //v: vertice, d: direction
             toDel.push(getSommet(toDel.front())->getVoisin(i));
         }
         delete toDel.front();
+        --m_nbSommets;
         toDel.pop();
     }
     relier();
@@ -381,7 +383,7 @@ void Graph_01::writeInFile(std::string dataFile) const {
 }
 
 
-// TODO : follow .hpp, fix completerADistance2. (et le reste)
+// TODO : replier() distance(1) distance(2)
 
 /*** EXCEPTIONS ***/
 
