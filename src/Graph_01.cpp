@@ -230,15 +230,15 @@ void Graph_01::initialiserQuadri(){
         m_sommets[0]->addVoisin(i, -1);
 }
 
-void Graph_01::replierPenta(int v, int d){ //v: vertice, d: direction
+void Graph_01::replier(int v, int d, int type){ //v: vertice, d: direction
   //First : Bend over "in stays".
     bool existRight = true;
     bool existLeft  = true;
-    Vertice* origin = m_sommets[v];
+    Vertice* origin = getSommet(v);
     Vertice*  right = NULL;
     Vertice*   left = NULL;
-    int           r = origin->getVoisin(d);         //right place
-    int           l = origin->getVoisin((d+1) % 6); //left place
+    int           r = origin->getVoisin(d);                    //right place
+    int           l = origin->getVoisin((d + (6 - type)) % 6); // left place
     int  previous_r = v;
     int  previous_l = v;
     try {
@@ -331,11 +331,37 @@ void Graph_01::replierPenta(int v, int d){ //v: vertice, d: direction
             existLeft = false;
         }
     }
+  // Secondly : reduce v and delete what is useless.
+    queue<int> toDel;
+    toDel.push(origin->getVoisin((d + 1) % 6));
+    for(int i(0); i < 6-type; ++i){
+        Vertice* xi = getSommet(origin->getVoisin((d + 1) % 6));
+        xi->setVoisin(xi->isXthVoisin(v), -1);
+        origin->delVoisin((d + 1) % 6);
+    }
+    getSommet(toDel.front())->setVoisin(queue.front()->isXthVoisin(v), -1);
+    int isInQueue = reserverMarque();
+    while(!queue.empty()){
+        for(int i(0); i < 6; ++i){
+            int neigh_place = getSommet(toDel.front())->getVoisin(i);
+            Vertice* neigh = getSommet(neigh_place);
+            if(neigh_place == -1 || neigh->isMarked(isInQueue))
+                continue;
+            neigh->setVoisin(neigh->isXthVoisin(toDel.front()), -1);
+            toDel.push(getSommet(toDel.front())->getVoisin(i));
+        }
+        delete toDel.front();
+        toDel.pop();
+    }
+    relier();
+}
 
+void Graph_01::replierPenta(int v, int d){
+    replier(v, d, 5);
+}
 
-    // TODO: - La reduction du somment v
-    //       - La suppression de ce qu'il y a en trop
-    //       - Dans le doute : relier()
+void Graph_01::replierQuadra(int v, int d){
+    replier(v, d, 4);
 }
 
 void Graph_01::writeInFile(std::string dataFile) const {

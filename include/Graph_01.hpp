@@ -52,6 +52,8 @@ class Graph_01 : public Graph {
 
   private:
 
+    void replier(int v, int d, int type);
+
     int m_nbSommets;
     int m_nbPenta;
     int m_nbQuadra;
