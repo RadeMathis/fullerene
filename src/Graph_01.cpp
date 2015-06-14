@@ -157,57 +157,8 @@ int Graph_01::distance(int v1, int v2) const { //stratum marked oigon algorithm
     return -1; //There is no path between v1 and v2
 }
 
-void Graph_01::completerADistance2(){
-    for(int i(0); i < TAILLE_TABLEAU; ++i){//for in vertices
-        Vertice* va; //actual vertice
-        bool needCompletion = false;
-        try{
-            Vertice* va = getSommet(i);
-        } catch(NonExistentVerticeException &e) {
-            continue; // if there is any vertice in i, we go to i+1
-        }
-        if(va->getNbVoisins() < 6){
-            needCompletion = true;
-        } else {
-            for(int j(0); j < va->getNbVoisins(); ++j){// for in neighbours
-                if(va->getVoisin(j) == -1)
-                    continue;
-                if(getSommet(va->getVoisin(j))->getNbVoisins() < 6)
-                    needCompletion = true;
-            }
-        }
-        if(needCompletion){
-            for(int j(0); j < va->getNbVoisins(); ++j){// for in neighbours
-                if(va->getVoisin(j) == -1){
-                    int vnPlace = ajouterSommet(); //vn is a new vertice
-                    Vertice* vn = getSommet(vnPlace);
-                    vn->addVoisin(va->getVoisin((j-1)%va->getVoisins()));
-                    if (va->getVoisin(j-1) != -1){
-                        Vertice* vb = getSommet(va->getVoisin(j-1));
-                        int vaPlaceInVb;
-                        for(int k(0); k < vb->getNbVoisins(); +k){
-                            if(vb->getSommet(k) == i){
-                                vaPlaceInVb = k;
-                                break;
-                            }
-                        }
-                        vb->setVoisin((vaPlaceInVb-1)%vb->getNbVoisins(), vnPlace);
-                    } else {
-                        vn->addVoisin(-1);
-                    }
-                    //TODO : les 4 autres voisins de vn // et c'est hardcore
-                }
-            }
-        }
-    }
-}
-
-
-
-
 void Graph_01::bienFormer(){
     relier();
-    completerADistance1();
     completerADistance2();
     boucherLesTrous(); //useless?
 }
@@ -228,6 +179,31 @@ void Graph_01::initialiserQuadri(){
     m_sommets[0] = new Vertice_01();
     for(int i(0); i < 4; ++i)
         m_sommets[0]->addVoisin(i, -1);
+}
+
+
+void Graph_01::replierPenta(int v, int d){
+    replier(v, d, 5);
+}
+
+void Graph_01::replierQuadra(int v, int d){
+    replier(v, d, 4);
+}
+
+void Graph_01::writeInFile(std::string dataFile) const {
+    ofstream dataStream(dataFile.c_str(), ios::out | ios::trunc);
+    if (! dataStream)
+        throw OpenFileFailureException();
+    dataStream << m_nbSommets << ' ' << m_nbPenta << ' ' << m_nbQuadra << ' '
+               << vectorToString(m_ceinture) << std::endl;
+    for(int i(0); i < TAILLE_TABLEAU; ++i){
+        if (m_sommets[i] == NULL)
+            continue;
+        dataStream << i ;
+        for(int j(0); j < m_sommets[i]->getNbVoisins(); ++j)
+            dataStream << ' ' << m_sommets[i]->getVoisin(j);
+        dataStream << std::endl;
+    }
 }
 
 void Graph_01::replier(int v, int d, int type){ //v: vertice, d: direction
@@ -358,30 +334,28 @@ void Graph_01::replier(int v, int d, int type){ //v: vertice, d: direction
     relier();
 }
 
-void Graph_01::replierPenta(int v, int d){
-    replier(v, d, 5);
-}
-
-void Graph_01::replierQuadra(int v, int d){
-    replier(v, d, 4);
-}
-
-void Graph_01::writeInFile(std::string dataFile) const {
-    ofstream dataStream(dataFile.c_str(), ios::out | ios::trunc);
-    if (! dataStream)
-        throw OpenFileFailureException();
-    dataStream << m_nbSommets << ' ' << m_nbPenta << ' ' << m_nbQuadra << ' '
-               << vectorToString(m_ceinture) << std::endl;
+void Graph_01::relier(){
     for(int i(0); i < TAILLE_TABLEAU; ++i){
-        if (m_sommets[i] == NULL)
+        if(m_sommets[i] == -1)
             continue;
-        dataStream << i ;
-        for(int j(0); j < m_sommets[i]->getNbVoisins(); ++j)
-            dataStream << ' ' << m_sommets[i]->getVoisin(j);
-        dataStream << std::endl;
+        Vertice* v = getSommet(i);
+
+        for(int j(0); j < 36 ; ++j){//We look every vertices, several times.
+            if(v->getVoisin(j % 6) != -1)
+                continue;
+            if(v->getVoisin((j + 1) % 6) != -1) {
+                Vertice* neigh = getSommet(v->getVoisin((j + 1) % 6));
+                in_neigh = neigh->isXthVoisin(i);
+                v->setVoisin(j % 6, neigh->getVoisin((in_neigh + 1) % 6));
+            }
+            if(v->getVoisin((j - 1) % 6) != -1) {
+                Vertice* neigh = getSommet(v->getVoisin((j - 1) % 6));
+                in_neigh = neigh->isXthVoisin(i);
+                v->setVoisin(j % 6, neigh->getVoisin((in_neigh - 1) % 6));
+            }
+        }
     }
 }
-
 
 // TODO : replier() distance(1) distance(2)
 

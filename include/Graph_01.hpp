@@ -40,7 +40,6 @@ class Graph_01 : public Graph {
     void libererMarque(int n);
 
     int distance(int v1, int v2) const ;
-    void completerADistance2();
     void bienFormer();
     void intitialiserPenta();
     void intitialiserQuadri();
@@ -53,6 +52,7 @@ class Graph_01 : public Graph {
     void replier(int v, int d, int type);
     void relier();
     void completerADistance1();
+    void completerADistance2();
 
     int m_nbSommets;
     int m_nbPenta;
