@@ -336,28 +336,63 @@ void Graph_01::replier(int v, int d, int type){ //v: vertice, d: direction
 
 void Graph_01::relier(){
     for(int i(0); i < TAILLE_TABLEAU; ++i){
-        if(m_sommets[i] == -1)
+        Vertice* v;
+        try{
+            v = getSommet(i);
+        } catch(NonExistentVerticeException &e) {
             continue;
-        Vertice* v = getSommet(i);
+        }
+        relier(i);
+    }
+}
 
-        for(int j(0); j < 36 ; ++j){//We look every vertices, several times.
-            if(v->getVoisin(j % 6) != -1)
-                continue;
-            if(v->getVoisin((j + 1) % 6) != -1) {
-                Vertice* neigh = getSommet(v->getVoisin((j + 1) % 6));
-                in_neigh = neigh->isXthVoisin(i);
-                v->setVoisin(j % 6, neigh->getVoisin((in_neigh + 1) % 6));
-            }
-            if(v->getVoisin((j - 1) % 6) != -1) {
-                Vertice* neigh = getSommet(v->getVoisin((j - 1) % 6));
-                in_neigh = neigh->isXthVoisin(i);
-                v->setVoisin(j % 6, neigh->getVoisin((in_neigh - 1) % 6));
-            }
+void Graph_01::relier(int i){
+    Vertice* v = getSommet(i);
+    for(int j(0); j < 36 ; ++j){//We look every vertices, several times.
+        if(v->getVoisin(j % 6) != -1)
+            continue;
+        if(v->getVoisin((j + 1) % 6) != -1) {
+            Vertice* neigh = getSommet(v->getVoisin((j + 1) % 6));
+            in_neigh = neigh->isXthVoisin(i);
+            v->setVoisin(j % 6, neigh->getVoisin((in_neigh + 1) % 6));
+            Vertice* linked = getSommet(neigh->getVoisin((in_neigh + 1) % 6));
+            int in_linked = linked->isXthVoisin(v->getVoisin((j + 1) % 6));
+            linked->setVoisin((in_linked + 1) % 6, i);
+        }
+        if(v->getVoisin((j - 1) % 6) != -1) {
+            Vertice* neigh = getSommet(v->getVoisin((j - 1) % 6));
+            in_neigh = neigh->isXthVoisin(i);
+            v->setVoisin(j % 6, neigh->getVoisin((in_neigh - 1) % 6));
+            Vertice* linked = getSommet(neigh->getVoisin((in_neigh - 1) % 6));
+            int in_linked = linked->isXthVoisin(v->getVoisin((j - 1) % 6));
+            linked->setVoisin((in_linked - 1) % 6, i);
         }
     }
 }
 
-// TODO : replier() distance(1) distance(2)
+void Graph_01::completerADistance1(){
+    for(int i(0); i < TAILLE_TABLEAU; ++i){
+        Vertice* v;
+        try {
+            v = getSommet(i);
+        } catch(NonExistentVerticeException &e) {
+            continue;
+        }
+        if(v->getNbVoisins == 6)
+            continue;
+        for(int j(0); j < v->getNbVoisins(); ++i){
+            if(v->getVoisin(j) != -1)
+                continue;
+            int nb = ajouterSommet();
+            Vertice* newbie = getSommet(nb);
+            newbie->addVoisin(0, i);
+            v->addVoisin(j, nb);
+            relier(nb);
+        }
+    }
+}
+
+// TODO : distance2 (follow .hpp)
 
 /*** EXCEPTIONS ***/
 

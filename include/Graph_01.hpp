@@ -50,6 +50,7 @@ class Graph_01 : public Graph {
   private:
 
     void replier(int v, int d, int type);
+    void relier(int v);
     void relier();
     void completerADistance1();
     void completerADistance2();
