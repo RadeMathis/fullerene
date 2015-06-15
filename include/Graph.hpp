@@ -35,6 +35,12 @@ class Graph {
     virtual int getNbSommets() const = 0;
         /* Return how many vertice there are in the graph.
          # Retourne le nombre de sommet presents dans le grahe. */
+    virtual int getNbPenta() const = 0;
+        /* Return the number of pentagon in the graph.
+         # Retourne le nombre de pentagones presents dans le graphe. */
+    virtual int getNbQuadra() const = 0;
+        /* Return the number of square in the graph.
+         # Retourne le nombre de quadrilaterres presents dans le graphe. */
     virtual int ajouterSommet() = 0;
         /* Ad an empty vertice in the graph, return the place it has been put.
          * throw FullGraphException if th eimplementation isn't able to contain
@@ -69,18 +75,13 @@ class Graph {
     virtual void libererMarque(int n) = 0;
         /* Free a reserved marker by above function.
          # Libere un markeur reserve par le methode ci-dessus. */
-    virtual int distance(int v1, int v2) const = 0;
+    virtual int distance(int v1, int v2) /*const*/ = 0;
         /* Return distance between vertices in v1 and v2.
          * Return 0 if v1==v2, return 1 if they are neighbours ... etc ...
          * Return -1 if there isn't any path between v1 and v2.
          # Retourne la distance entre les sommets ranges en v1 et v2
          # Retourne 0 si v1 ==v2, retourn 1 s'ils sont voisins ... etc ... 
          # Retourne -1 s'il n'existe pas de chemin entre v1 et v2.*/
-    virtual void completerADistance2() = 0;
-        /* Fill with exagon the graph's border such as all pentagon and
-         * quadrilaterals are at distance 2 from the border.
-         # Rajoute des exagones tout autour du graphe jusqu'a ce que tout les
-         # pentagones et quadrialateres soit a distance 2 du bord. */
     virtual void bienFormer() = 0;
         /* Put the graph "as he has to be" (see the "forme d'un graphe")
          * part of the manifest.
@@ -88,7 +89,7 @@ class Graph {
     virtual void intitialiserPenta() = 0; 
         /* Create the graph composed of one pentagon.
          # Cree le grpahe compose d'un pentagone. */
-    virtual void intitialiserQuadra() = 0; 
+    virtual void initialiserQuadri() = 0; 
         /* Create the graph composed of one square.
          # Cree le graphe compose d'un quadrilaltere. */
     virtual void replierPenta(int v, int d) = 0;

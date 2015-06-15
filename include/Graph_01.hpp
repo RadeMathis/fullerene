@@ -29,20 +29,22 @@ class Graph_01 : public Graph {
     Graph_01(Graph const& g);
     ~Graph_01();
 
-    static Graph* readFromFile(std::string dataFile);
+    static Graph* readFromFile(std::string dataFile); //find a solution
     Graph* clone() const;
 
     int getNbSommets() const;
+    int getNbPenta() const;
+    int getNbQuadra() const;
     int ajouterSommet();
     void supprimerSommet(int n);
     Vertice* getSommet(int n) const;
     int reserverMarque();
     void libererMarque(int n);
 
-    int distance(int v1, int v2) const ;
+    int distance(int v1, int v2) /*const*/;
     void bienFormer();
     void intitialiserPenta();
-    void intitialiserQuadri();
+    void initialiserQuadri();
     void replierPenta(int v, int d);
     void replierQuadri(int v, int d);
     void writeInFile(std::string dataFile) const;
@@ -70,10 +72,10 @@ class Graph_01 : public Graph {
 
 class OpenFileFailureException : public std::exception {
   public:
-    OpenFileFailureException(string file);
+    OpenFileFailureException(std::string file);
     const char* what() const throw();
   private:
-    string m_fileFailed;
+    std::string m_fileFailed;
 };
 
 class FullGraphException : public std::exception {

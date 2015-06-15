@@ -32,6 +32,7 @@ class Vertice{
     virtual void setVoisin(int n, int p) = 0;
       // means that the p-th Vertice will be the n-th neighbour
     virtual void addVoisin(int n, int p) = 0;
+      // same rules
     virtual void delVoisin(int n) = 0;
     virtual int isXthVoisin(int n) const = 0;
       // return the place we got the vertice 'n' as neighbour.

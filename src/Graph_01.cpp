@@ -15,13 +15,13 @@
 
 Graph_01::Graph_01() : m_nbSommets(0), m_nbPenta(0), m_nbQuadra(0) {
     for(int i(0); i < 8; ++i)
-        m_marquesReseves[i] = 0;
+        m_marquesReserves[i] = 0;
     for(int i(0); i < TAILLE_TABLEAU; ++i)
         m_sommets[i] = NULL;
 }
 
 Graph_01::Graph_01(std::string dataFile){
-    ifstream dataStream(dataFile.c_str(), ios::in);
+    std::ifstream dataStream(dataFile.c_str(), std::ios::in);
     if(! dataStream) 
     	throw OpenFileFailureException(dataFile);
     std::string lineBuffer;
@@ -32,9 +32,8 @@ Graph_01::Graph_01(std::string dataFile){
     m_nbSommets = atoi(sentenceBuffer[0].c_str());
     m_nbPenta = atoi(sentenceBuffer[1].c_str());
     m_nbQuadra = atoi(sentenceBuffer[2].c_str());
-    m_signature = stringToVectorInt(sentenceBuffer[3]);
     for(int i(0); i < 8; ++i)
-        m_marquesReseves[i] = 0;
+        m_marquesReserves[i] = 0;
 
     for(int i(0); i < TAILLE_TABLEAU; ++i)
         m_sommets[i] = NULL; //on initialise le tableau.
@@ -42,22 +41,23 @@ Graph_01::Graph_01(std::string dataFile){
     for(int i(0); i < m_nbSommets; ++i){
         std::getline(dataStream, lineBuffer);
         sentenceBuffer = decouperString(lineBuffer);
-        thisVertice = atoi(sentenceBuffer[0].c_str());
-        m_sommets[thisVertice] = new Vertice();
-        for(int j(2); j < (2 + sentenceBuffer[1]); ++j){
+        int thisVertice = atoi(sentenceBuffer[0].c_str());
+        m_sommets[thisVertice] = new Vertice_01();
+        for(int j(2); j < (2 + atoi(sentenceBuffer[1].c_str())); ++j){
             if(sentenceBuffer[j] == "none")
-                m_sommets[thisVertice]->addVoisin(-1);
-            m_sommets[thisVertice]->addVoisin(atoi(sentenceBuffer[j].c_str()));
+                m_sommets[thisVertice]->addVoisin(j -2, -1);
+            m_sommets[thisVertice]->addVoisin(j - 2, 
+                                            atoi(sentenceBuffer[j].c_str()));
         }
     }
 }
 
-Graph_01::Graph_01(Graph const& g) : m_nbSommets(g.m_nbSommets), 
-        m_nbPenta(g.m_nbPenta), m_nbQuadra(g.m_nbQuadra) {
+Graph_01::Graph_01(Graph const& g) : m_nbSommets(g.getNbSommets()), 
+        m_nbPenta(g.getNbPenta()), m_nbQuadra(g.getNbQuadra()) {
     for(int i(0); i < 8; ++i)
-        m_marquesReseves[i] = 0;
+        m_marquesReserves[i] = 0;
     for(int i(0); i < TAILLE_TABLEAU; ++i)
-        m_sommets[i] = g.m_sommets[i]->clone();
+        m_sommets[i] = g.getSommet(i)->clone();
 }
 
 Graph* Graph_01::readFromFile(std::string dataFile){
@@ -70,6 +70,14 @@ Graph* Graph_01::clone() const {
 
 int Graph_01::getNbSommets() const {
     return m_nbSommets;
+}
+
+int Graph_01::getNbPenta() const {
+    return m_nbPenta;
+}
+
+int Graph_01::getNbQuadra() const {
+    return m_nbQuadra;
 }
 
 int Graph_01::ajouterSommet(){
@@ -87,7 +95,7 @@ int Graph_01::ajouterSommet(){
 
 
 void Graph_01::supprimerSommet(int n){
-    if(m_nbSommets[n] == NULL)
+    if(m_sommets[n] == NULL)
         throw NonExistentVerticeException(n);
     --m_nbSommets;
     if(m_sommets[n]->getNbVoisins() == 5)
@@ -99,7 +107,7 @@ void Graph_01::supprimerSommet(int n){
 }
 
 Vertice* Graph_01::getSommet(int n) const {
-    if(m_nbSommets[n] == NULL)
+    if(m_sommets[n] == NULL)
         throw NonExistentVerticeException(n);
     return m_sommets[n];
 }
@@ -107,8 +115,8 @@ Vertice* Graph_01::getSommet(int n) const {
 int Graph_01::reserverMarque(){
     int reservation(0);
     while(reservation < 8){
-        if(! m_marquesReseves[reservation]){
-            m_marquesReseves[reservation] = true;
+        if(! m_marquesReserves[reservation]){
+            m_marquesReserves[reservation] = true;
             return reservation;
         }
         ++reservation;
@@ -117,11 +125,11 @@ int Graph_01::reserverMarque(){
 }
 
 void Graph_01::libererMarque(int n){
-    m_marquesReseves[n] = false;
+    m_marquesReserves[n] = false;
 }
 
-int Graph_01::distance(int v1, int v2) const { //stratum marked oigon algorithm
-    queue<int> enCour;
+int Graph_01::distance(int v1, int v2)/*const*/ { //stratum marked oigon algorithm
+    std::queue<int> enCour;
     int distance = 0;
     int passed = reserverMarque();
     if(v1 == v2)
@@ -132,35 +140,35 @@ int Graph_01::distance(int v1, int v2) const { //stratum marked oigon algorithm
         getSommet(v1)->mark(passed); //we mark v1 as passed
     }
     while(! enCour.empty()){
-        int va = enCour.pop(); //va for actaul vertice
+        int va = enCour.front(); //va for actaul vertice
+        enCour.pop();
         if(va == -2){ //if we are between 2 stratum
             ++distance;
             enCour.push(-2);
             continue;
         }
-        int vaSize = getSommet(va)->getNbVoisins;
-        int const* vaNeighbours = getSommet(va)->getVoisins();
+        int vaSize = getSommet(va)->getNbVoisins();
+        int const* vaNeighbours = getSommet(va)->getAllVoisins();
         for(int i(0); i < vaSize; ++i){
-            if(getSommet(vaNeighbours[i]) == -1)
+            if(vaNeighbours[i] == -1)
                 continue; // we don't wanna look about the border
             if(! getSommet(vaNeighbours[i])->isMarked(passed)){
-                if(getSommet(vaNeighbours[i]) == v2){
-                    libererMarque[passed];
+                if(vaNeighbours[i] == v2){
+                    libererMarque(passed);
                     return distance;
                 }
                 enCour.push(vaNeighbours[i]);
-                getSommet(vaNeighbours[i])->mark();
+                getSommet(vaNeighbours[i])->mark(passed);
             }
         }
     }
-    libererMarque[passed];
+    libererMarque(passed);
     return -1; //There is no path between v1 and v2
 }
 
 void Graph_01::bienFormer(){
     relier();
     completerADistance2();
-    boucherLesTrous(); //useless?
 }
 
 void Graph_01::intitialiserPenta(){
@@ -186,16 +194,15 @@ void Graph_01::replierPenta(int v, int d){
     replier(v, d, 5);
 }
 
-void Graph_01::replierQuadra(int v, int d){
+void Graph_01::replierQuadri(int v, int d){
     replier(v, d, 4);
 }
 
 void Graph_01::writeInFile(std::string dataFile) const {
-    ofstream dataStream(dataFile.c_str(), ios::out | ios::trunc);
+    std::ofstream dataStream(dataFile.c_str(), std::ios::out | std::ios::trunc);
     if (! dataStream)
-        throw OpenFileFailureException();
-    dataStream << m_nbSommets << ' ' << m_nbPenta << ' ' << m_nbQuadra << ' '
-               << vectorToString(m_ceinture) << std::endl;
+        throw OpenFileFailureException(dataFile);
+    dataStream << m_nbSommets <<' '<< m_nbPenta <<' '<< m_nbQuadra << std::endl;
     for(int i(0); i < TAILLE_TABLEAU; ++i){
         if (m_sommets[i] == NULL)
             continue;
@@ -308,7 +315,7 @@ void Graph_01::replier(int v, int d, int type){ //v: vertice, d: direction
         }
     }
   // Secondly : reduce v and delete what is useless.
-    queue<int> toDel;
+    std::queue<int> toDel;
     toDel.push(origin->getVoisin((d + 1) % 6));
     for(int i(0); i < 6-type; ++i){
         Vertice* xi = getSommet(origin->getVoisin((d + 1) % 6));
@@ -318,7 +325,7 @@ void Graph_01::replier(int v, int d, int type){ //v: vertice, d: direction
     m_nbPenta  += (type == 5);
     m_nbQuadra += (type == 6);
     int isInQueue = reserverMarque();
-    while(!queue.empty()){
+    while(!toDel.empty()){
         for(int i(0); i < 6; ++i){
             int neigh_place = getSommet(toDel.front())->getVoisin(i);
             Vertice* neigh = getSommet(neigh_place);
@@ -327,7 +334,7 @@ void Graph_01::replier(int v, int d, int type){ //v: vertice, d: direction
             neigh->setVoisin(neigh->isXthVoisin(toDel.front()), -1);
             toDel.push(getSommet(toDel.front())->getVoisin(i));
         }
-        delete toDel.front();
+        delete getSommet(toDel.front());
         --m_nbSommets;
         toDel.pop();
     }
@@ -335,15 +342,9 @@ void Graph_01::replier(int v, int d, int type){ //v: vertice, d: direction
 }
 
 void Graph_01::relier(){
-    for(int i(0); i < TAILLE_TABLEAU; ++i){
-        Vertice* v;
-        try{
-            v = getSommet(i);
-        } catch(NonExistentVerticeException &e) {
-            continue;
-        }
-        relier(i);
-    }
+    for(int i(0); i < TAILLE_TABLEAU; ++i)
+        if(m_sommets[i] != NULL)
+            relier(i);
 }
 
 void Graph_01::relier(int i){
@@ -353,7 +354,7 @@ void Graph_01::relier(int i){
             continue;
         if(v->getVoisin((j + 1) % 6) != -1) {
             Vertice* neigh = getSommet(v->getVoisin((j + 1) % 6));
-            in_neigh = neigh->isXthVoisin(i);
+            int in_neigh = neigh->isXthVoisin(i);
             v->setVoisin(j % 6, neigh->getVoisin((in_neigh + 1) % 6));
             Vertice* linked = getSommet(neigh->getVoisin((in_neigh + 1) % 6));
             int in_linked = linked->isXthVoisin(v->getVoisin((j + 1) % 6));
@@ -361,7 +362,7 @@ void Graph_01::relier(int i){
         }
         if(v->getVoisin((j - 1) % 6) != -1) {
             Vertice* neigh = getSommet(v->getVoisin((j - 1) % 6));
-            in_neigh = neigh->isXthVoisin(i);
+            int in_neigh = neigh->isXthVoisin(i);
             v->setVoisin(j % 6, neigh->getVoisin((in_neigh - 1) % 6));
             Vertice* linked = getSommet(neigh->getVoisin((in_neigh - 1) % 6));
             int in_linked = linked->isXthVoisin(v->getVoisin((j - 1) % 6));
@@ -378,7 +379,7 @@ void Graph_01::completerADistance1(){
         } catch(NonExistentVerticeException &e) {
             continue;
         }
-        if(v->getNbVoisins == 6)
+        if(v->getNbVoisins() == 6)
             continue;
         for(int j(0); j < v->getNbVoisins(); ++i){
             if(v->getVoisin(j) != -1)
@@ -401,12 +402,13 @@ void Graph_01::completerADistance2(){
         } catch(NonExistentVerticeException &e) {
             continue;
         }
-        if(v->getNbVoisins != 6)
+        if(v->getNbVoisins() != 6)
             continue;
         bool needToComplete = false;
         for(int j(0); j < v->getNbVoisins(); ++j)
-            if(v->getVoisin(j) != -1 && getSommet(v->getVoisin(j)->getNbVoisins != 6)
-                needToComplete = true;
+            if(v->getVoisin(j) != -1)
+                if(getSommet(v->getVoisin(j))->getNbVoisins() != 6)
+                    needToComplete = true;
         if(needToComplete == false)
             continue;
         for(int j(0); j < v->getNbVoisins(); ++i){
@@ -429,14 +431,17 @@ OpenFileFailureException::OpenFileFailureException(std::string file)
         : exception() , m_fileFailed(file) {}
 
 const char* OpenFileFailureException::what() const throw(){
-    return "Don't know why, but we were unable to open file : " + m_fileFailed;
+    return ("Don't know why, but we were unable to open file : " 
+            + m_fileFailed).c_str();
 }
 
 
 const char* FullGraphException::what() const throw(){
     return "Sorry but this graph is only able to contain "
-           + TAILLE_TABLEAU + " vertices.";
+            + TAILLE_TABLEAU + " vertices.";
 }
+
+// TODO : gerer le bordel des string en c++
 
 NonExistentVerticeException::NonExistentVerticeException(int place)
         : exception() , m_place(place) {}
