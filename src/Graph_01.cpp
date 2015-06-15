@@ -392,6 +392,35 @@ void Graph_01::completerADistance1(){
     }
 }
 
+void Graph_01::completerADistance2(){
+    completerADistance1();
+    for(int i(0); i < TAILLE_TABLEAU; ++i){
+        Vertice* v;
+        try {
+            v = getSommet(i);
+        } catch(NonExistentVerticeException &e) {
+            continue;
+        }
+        if(v->getNbVoisins != 6)
+            continue;
+        bool needToComplete = false;
+        for(int j(0); j < v->getNbVoisins(); ++j)
+            if(v->getVoisin(j) != -1 && getSommet(v->getVoisin(j)->getNbVoisins != 6)
+                needToComplete = true;
+        if(needToComplete == false)
+            continue;
+        for(int j(0); j < v->getNbVoisins(); ++i){
+            if(v->getVoisin(j) != -1)
+                continue;
+            int nb = ajouterSommet();
+            Vertice* newbie = getSommet(nb);
+            newbie->addVoisin(0, i);
+            v->addVoisin(j, nb);
+            relier(nb);
+        }
+    }
+}
+
 // TODO : distance2 (follow .hpp)
 
 /*** EXCEPTIONS ***/
