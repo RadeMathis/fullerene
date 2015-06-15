@@ -10,6 +10,7 @@
 #include <Graph_01.hpp>
 #include <functions.hpp>
 #include <queue>
+#include <string>
 
 #define TAILLE_LIGNE_MAX 51 //assez arbitraire
 
@@ -437,8 +438,11 @@ const char* OpenFileFailureException::what() const throw(){
 
 
 const char* FullGraphException::what() const throw(){
-    return "Sorry but this graph is only able to contain "
-            + TAILLE_TABLEAU + " vertices.";
+    std::string buff;
+    buff.append("Sorry but this graph is only able to contain ");
+    buff.append(std::to_string(TAILLE_TABLEAU));
+    buff.append(" vertices.");
+    return buff.c_str();
 }
 
 // TODO : gerer le bordel des string en c++
