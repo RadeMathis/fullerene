@@ -19,9 +19,9 @@ std::vector<std::string> decouperString(std::string const& str)
 	return out;
 }
 
-std::std::vector<int> stringToVectorInt(std::string const& str)
+std::vector<int> stringToVectorInt(std::string const& str)
 {
-	std::std::vector<int> out;
+	std::vector<int> out;
 	for(std::string::const_iterator it = str.begin(); it != str.end(); ++it)
 		out.push_back(*it);
 	return out;
@@ -29,7 +29,7 @@ std::std::vector<int> stringToVectorInt(std::string const& str)
 
 std::string vectorToString(std::vector<int> const& vect){
 	std::string out = "";
-	for(int i(0); i < vect.size(); ++i)
+	for(unsigned int i(0); i < vect.size(); ++i)
 		out += vect[i];
 	return out;
 }
