@@ -1,4 +1,3 @@
-debbugger le linkage de  Graph_01
 tester Graph_01 (apprendre metapost non?)
 
 L'isomorphisme... olala

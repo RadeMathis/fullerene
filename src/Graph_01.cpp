@@ -61,6 +61,12 @@ Graph_01::Graph_01(Graph const& g) : m_nbSommets(g.getNbSommets()),
         m_sommets[i] = g.getSommet(i)->clone();
 }
 
+Graph_01::~Graph_01(){
+    for(int i(0); i < TAILLE_TABLEAU; ++i)
+        if(m_sommets[i] != NULL)
+            delete m_sommets[i];
+}
+
 Graph* Graph_01::readFromFile(std::string dataFile){
     return new Graph_01(dataFile); //probably need a cast (Graph*)
 }
