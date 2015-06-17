@@ -27,35 +27,35 @@ class Graph_01 : public Graph {
     Graph_01(std::string dataFile); 
       //throw OpenFileFailureException if dataFile fail to open.
     Graph_01(Graph const& g);
-    ~Graph_01();
+    ~Graph_01(); //totest (Valgrind?)
 
     static Graph* readFromFile(std::string dataFile); //find a solution
-    Graph* clone() const;
+    Graph* clone() const; //totest
 
-    int getNbSommets() const;
-    int getNbPenta() const;
-    int getNbQuadra() const;
-    int ajouterSommet();
-    void supprimerSommet(int n);
-    Vertice* getSommet(int n) const;
-    int reserverMarque();
-    void libererMarque(int n);
+    int getNbSommets() const; //totest
+    int getNbPenta() const; //totest
+    int getNbQuadra() const; //totest
+    int ajouterSommet(); //totest
+    void supprimerSommet(int n); //totest
+    Vertice* getSommet(int n) const; //totest
+    int reserverMarque(); //totest
+    void libererMarque(int n); //totest
 
-    int distance(int v1, int v2) /*const*/;
-    void bienFormer();
-    void intitialiserPenta();
-    void initialiserQuadri();
-    void replierPenta(int v, int d);
-    void replierQuadri(int v, int d);
-    void writeInFile(std::string dataFile) const;
+    int distance(int v1, int v2) /*const*/; //totest
+    void bienFormer(); //totest
+    void initialiserPenta(); //totest
+    void initialiserQuadri(); //totest
+    void replierPenta(int v, int d); //totest
+    void replierQuadri(int v, int d); //totest
+    void writeInFile(std::string dataFile) const; //totest
 
   private:
 
-    void replier(int v, int d, int type);
-    void relier(int v);
-    void relier();
-    void completerADistance1();
-    void completerADistance2();
+    void replier(int v, int d, int type); //totest
+    void relier(int v); //totest
+    void relier(); //totest
+    void completerADistance1(); //totest
+    void completerADistance2(); //totest
 
     int m_nbSommets;
     int m_nbPenta;

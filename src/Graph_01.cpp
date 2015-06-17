@@ -57,8 +57,13 @@ Graph_01::Graph_01(Graph const& g) : m_nbSommets(g.getNbSommets()),
         m_nbPenta(g.getNbPenta()), m_nbQuadra(g.getNbQuadra()) {
     for(int i(0); i < 8; ++i)
         m_marquesReserves[i] = 0;
-    for(int i(0); i < TAILLE_TABLEAU; ++i)
-        m_sommets[i] = g.getSommet(i)->clone();
+    for(int i(0); i < TAILLE_TABLEAU; ++i){
+        try{
+            m_sommets[i] = g.getSommet(i)->clone();
+        } catch(NonExistentVerticeException &e) {
+            m_sommets[i] = NULL;
+        }
+    }
 }
 
 Graph_01::~Graph_01(){
@@ -178,7 +183,7 @@ void Graph_01::bienFormer(){
     completerADistance2();
 }
 
-void Graph_01::intitialiserPenta(){
+void Graph_01::initialiserPenta(){
     m_nbSommets = 1;
     m_nbPenta = 1;
     for(int i(0); i < TAILLE_TABLEAU; ++i){
@@ -213,7 +218,7 @@ void Graph_01::writeInFile(std::string dataFile) const {
     for(int i(0); i < TAILLE_TABLEAU; ++i){
         if (m_sommets[i] == NULL)
             continue;
-        dataStream << i ;
+        dataStream << i << ' ' << m_sommets[i]->getNbVoisins();
         for(int j(0); j < m_sommets[i]->getNbVoisins(); ++j)
             dataStream << ' ' << m_sommets[i]->getVoisin(j);
         dataStream << std::endl;

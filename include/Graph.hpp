@@ -86,7 +86,7 @@ class Graph {
         /* Put the graph "as he has to be" (see the "forme d'un graphe")
          * part of the manifest.
          # Met le graphe en forme tel que decrit dans le manifest.*/
-    virtual void intitialiserPenta() = 0; 
+    virtual void initialiserPenta() = 0; 
         /* Create the graph composed of one pentagon.
          # Cree le grpahe compose d'un pentagone. */
     virtual void initialiserQuadri() = 0; 
