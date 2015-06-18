@@ -53,13 +53,26 @@ Graph_01::Graph_01(std::string dataFile){
     }
 }
 
-Graph_01::Graph_01(Graph const& g) : m_nbSommets(g.getNbSommets()), 
+Graph_01::Graph_01(Graph_01 const& g) : m_nbSommets(g.getNbSommets()), 
         m_nbPenta(g.getNbPenta()), m_nbQuadra(g.getNbQuadra()) {
     for(int i(0); i < 8; ++i)
         m_marquesReserves[i] = 0;
     for(int i(0); i < TAILLE_TABLEAU; ++i){
         try{
             m_sommets[i] = g.getSommet(i)->clone();
+        } catch(NonExistentVerticeException &e) {
+            m_sommets[i] = NULL;
+        }
+    }
+}
+
+Graph_01::Graph_01(Graph const* g) : m_nbSommets(g->getNbSommets()), 
+        m_nbPenta(g->getNbPenta()), m_nbQuadra(g->getNbQuadra()) {
+    for(int i(0); i < 8; ++i)
+        m_marquesReserves[i] = 0;
+    for(int i(0); i < TAILLE_TABLEAU; ++i){
+        try{
+            m_sommets[i] = g->getSommet(i)->clone();
         } catch(NonExistentVerticeException &e) {
             m_sommets[i] = NULL;
         }
@@ -77,7 +90,7 @@ Graph* Graph_01::readFromFile(std::string dataFile){
 }
 
 Graph* Graph_01::clone() const {
-    return new Graph_01(*this); // probably need a cast (Graph*)
+    return new Graph_01(this); // probably need a cast (Graph*)
 }
 
 int Graph_01::getNbSommets() const {

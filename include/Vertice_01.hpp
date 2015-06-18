@@ -23,7 +23,8 @@ class Vertice_01 : public Vertice {
   public:
 
     Vertice_01();
-    Vertice_01(Vertice const& s);
+    Vertice_01(Vertice_01 const& s);
+    Vertice_01(Vertice const* s);
     ~Vertice_01();
     Vertice* clone() const;
   	int getNbVoisins() const;

@@ -1,4 +1,5 @@
-tester Graph_01 (apprendre metapost non?)
+tester Graph_01 (APPRENDRE METAPOST)
+http://pauillac.inria.fr/~cheno/metapost/metapost.pdf
 
 L'isomorphisme... olala
 
