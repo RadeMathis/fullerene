@@ -1,4 +1,6 @@
-tester Graph_01 (apprendre metapost non?)
+Utiliser GraphV3, gerer tout ca ...
+
+tester Graph_01
 
 L'isomorphisme... olala
 
