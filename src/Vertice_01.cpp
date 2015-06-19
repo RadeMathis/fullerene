@@ -5,17 +5,24 @@ Vertice_01::Vertice_01() : m_nbVoisins(0) {
         m_marques[i] = false;
 }
 
-Vertice_01::Vertice_01(Vertice const& s) : m_nbVoisins(s.getNbVoisins()) {
+Vertice_01::Vertice_01(Vertice_01 const& s) : m_nbVoisins(s.getNbVoisins()) {
     for(int i(0); i < 8; ++i)
         m_marques[i] = false;
     for(int i(0); i < s.getNbVoisins(); ++i)
         m_voisins[i] = s.getVoisin(i);
 }
 
+Vertice_01::Vertice_01(Vertice const* s) : m_nbVoisins(s->getNbVoisins()) {
+    for(int i(0); i < 8; ++i)
+        m_marques[i] = false;
+    for(int i(0); i < s->getNbVoisins(); ++i)
+        m_voisins[i] = s->getVoisin(i);
+}
+
 Vertice_01::~Vertice_01(){} //only statics variable, who cares?
 
 Vertice* Vertice_01::clone() const {
-    Vertice_01* out = new Vertice_01(*this);
+    Vertice_01* out = new Vertice_01(this);
     return (Vertice*)out;
 }
 

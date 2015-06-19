@@ -26,20 +26,21 @@ class Graph_01 : public Graph {
     Graph_01();
     Graph_01(std::string dataFile); 
       //throw OpenFileFailureException if dataFile fail to open.
-    Graph_01(Graph const& g);
+    Graph_01(Graph_01 const& g);
+    Graph_01(Graph const* g);
     ~Graph_01(); //totest (Valgrind?)
 
     static Graph* readFromFile(std::string dataFile); //find a solution
-    Graph* clone() const; //totest
+    Graph* clone() const;
 
-    int getNbSommets() const; //totest
-    int getNbPenta() const; //totest
-    int getNbQuadra() const; //totest
-    int ajouterSommet(); //totest
-    void supprimerSommet(int n); //totest
-    Vertice* getSommet(int n) const; //totest
-    int reserverMarque(); //totest
-    void libererMarque(int n); //totest
+    int getNbSommets() const;
+    int getNbPenta() const;
+    int getNbQuadra() const;
+    int ajouterSommet();
+    void supprimerSommet(int n);
+    Vertice* getSommet(int n) const;
+    int reserverMarque();
+    void libererMarque(int n);
 
     int distance(int v1, int v2) /*const*/; //totest
     void bienFormer(); //totest
@@ -47,7 +48,7 @@ class Graph_01 : public Graph {
     void initialiserQuadri(); //totest
     void replierPenta(int v, int d); //totest
     void replierQuadri(int v, int d); //totest
-    void writeInFile(std::string dataFile) const; //totest
+    void writeInFile(std::string dataFile) const;
 
   private:
 
