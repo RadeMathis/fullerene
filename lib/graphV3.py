@@ -691,4 +691,4 @@ def ouvrirGraphe(nom):
         colorierSommet(sommetNom(g,s),c)
     return g
 
-print("graphV3.py")
+##print("graphV3.py")
