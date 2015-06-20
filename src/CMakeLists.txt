@@ -23,3 +23,4 @@ add_executable(
 TARGET_LINK_LIBRARIES(tests m)
 
 install(TARGETS tests DESTINATION bin)
+install(TARGETS graphPrinter DESTINATION bin)
