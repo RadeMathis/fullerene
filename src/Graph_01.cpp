@@ -192,8 +192,16 @@ int Graph_01::distance(int v1, int v2)/*const*/ { //stratum marked oigon algorit
 }
 
 void Graph_01::bienFormer(){
-    relier();
-    completerADistance2();
+    //try{
+        relier();
+    /*} catch(BadNeighborhoodException_01 &e) {
+        std::cerr << "relier" << std::endl;
+    }
+    try{*/
+        completerADistance2();
+    /*} catch(BadNeighborhoodException_01 &e) {
+        std::cerr << "completerADistance2" << std::endl;
+    }*/
 }
 
 void Graph_01::initialiserPenta(){
