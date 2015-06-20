@@ -14,6 +14,12 @@ add_executable(
 	functions.cpp
 	)
 
+add_executable(
+	graphPrinter
+	graphPrinter.cpp
+	functions.cpp
+	)
+
 TARGET_LINK_LIBRARIES(tests m)
 
 install(TARGETS tests DESTINATION bin)
