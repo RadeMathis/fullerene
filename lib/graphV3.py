@@ -336,7 +336,7 @@ def dotify (G, etiquettesAretes = True, colormark = 'Black', suffixe = 'dot'):
         else:
             entoure = 1
         if s.color:
-            if s.color == "black":
+            if s.color == "white":
                 fontcolor = "white"
             else:
                 fontcolor = "black"
