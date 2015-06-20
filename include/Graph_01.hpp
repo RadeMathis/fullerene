@@ -12,10 +12,10 @@
 
 #include <string>
 #include <vector>
-#include <exception>
  
 #include <Graph.hpp>
 #include <Vertice_01.hpp>
+#include <graphExceptions.hpp>
 
 #define TAILLE_TABLEAU 256
 
@@ -69,32 +69,5 @@ class Graph_01 : public Graph {
 
 };
 
-/*** EXCEPTIONS ***/
-
-class OpenFileFailureException : public std::exception {
-  public:
-    OpenFileFailureException(std::string file);
-    const char* what() const throw();
-  private:
-    std::string m_fileFailed;
-};
-
-class FullGraphException : public std::exception {
-  public:
-    const char* what() const throw();
-};
-
-class NonExistentVerticeException : public std::exception {
-  public:
-    NonExistentVerticeException(int place);
-    const char* what() const throw();
-  private:
-    int m_place;
-};
-
-class NoMoreMarksException : public std::exception {
-  public:
-    const char* what() const throw();
-};
 
 #endif /* INCLUDED_GRAPH_01_HPP */
