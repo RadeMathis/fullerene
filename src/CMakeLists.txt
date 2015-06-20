@@ -12,15 +12,10 @@ add_executable(
 	Graph_01.cpp
 	Graph.cpp
 	functions.cpp
-	)
-
-add_executable(
-	graphPrinter
+	graphExceptions.cpp
 	graphPrinter.cpp
-	functions.cpp
 	)
 
 TARGET_LINK_LIBRARIES(tests m)
 
 install(TARGETS tests DESTINATION bin)
-install(TARGETS graphPrinter DESTINATION bin)

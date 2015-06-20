@@ -4,6 +4,7 @@
 #define INCLUDED_GRAPH_EXCEPTIONS_HPP
 
 #include <exception>
+#include <string>
 
 class OpenFileFailureException : public std::exception {
   public:
@@ -15,7 +16,10 @@ class OpenFileFailureException : public std::exception {
 
 class FullGraphException : public std::exception {
   public:
+    FullGraphException(int max_size);
     const char* what() const throw();
+  private:
+    int m_max_size;
 };
 
 class NonExistentVerticeException : public std::exception {

@@ -4,22 +4,24 @@
 
 #include <graphPrinter.hpp>
 #include <graphExceptions.hpp>
+#include <functions.hpp>
 
 
 void 
 graphPrinter(std::string dataFile)
 {
-    std::ifstream inStream(dataFile + ".data", std::ios::in);
+    std::ifstream iStream(dataFile + ".data", std::ios::in);
     if(!iStream)
-        throw OpenFileFailureException;
+        throw OpenFileFailureException(dataFile + ".data");
     
-    std::ofstream oStream(dataFile + ".py", std::ios::out | ios::trunc);
+    std::ofstream oStream(dataFile + ".py", std::ios::out | std::ios::trunc);
     if(!oStream)
-        throw OpenFileFailureException;
+        throw OpenFileFailureException(dataFile + ".py");
     //todo: close both streams
 
-    oStream << "from lib/graphV3 import *" << std::endl;
-    oStream << "import sys" << std::endl; // Si bug, tenter de del cette ligne
+    oStream << "import sys" << std::endl; 
+    oStream << "sys.path.append('lib')" << std::endl;
+    oStream << "from graphV3 import *" << std::endl;
     oStream << std::endl;
     oStream << "outFig = construireGraphe([";
 
@@ -35,11 +37,11 @@ graphPrinter(std::string dataFile)
     for(int i(0); i < nbSommet-1; ++i){
         getline(iStream, buff);
         vectBuff = decouperString(buff);
-        if(vectBuff[1] == 5)
-            arePentagon.push_back(vectBuff[0]);
-        if(vectBuff[1] == 4)
-            areQuadrilateral.push_back(vectBuff[0]);
-        for(int j(2); j < vectBuff[1] + 2; ++j){
+        if(atoi(vectBuff[1].c_str()) == 5)
+            arePentagon.push_back(atoi(vectBuff[0].c_str()));
+        if(atoi(vectBuff[1].c_str()) == 4)
+            areQuadrilateral.push_back(atoi(vectBuff[0].c_str()));
+        for(int j(2); j < atoi(vectBuff[1].c_str()) + 2; ++j){
             if(atoi(vectBuff[j].c_str()) > atoi(vectBuff[0].c_str())){
                 oStream << "['" << vectBuff[0] << "','" << vectBuff[j] << "'],";
             }

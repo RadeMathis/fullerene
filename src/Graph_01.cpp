@@ -115,7 +115,7 @@ int Graph_01::ajouterSommet(){
         }
         ++isFree;
     }
-    throw FullGraphException();
+    throw FullGraphException(TAILLE_TABLEAU);
 }
 
 
@@ -374,24 +374,33 @@ void Graph_01::relier(){
 
 void Graph_01::relier(int i){
     Vertice* v = getSommet(i);
+    int v_mod = v->getNbVoisins();
     for(int j(0); j < 36 ; ++j){//We look every vertices, several times.
-        if(v->getVoisin(j % 6) != -1)
+        if(v->getVoisin(j % v_mod) != -1)
             continue;
-        if(v->getVoisin((j + 1) % 6) != -1) {
-            Vertice* neigh = getSommet(v->getVoisin((j + 1) % 6));
+        if(v->getVoisin((j + 1) % v_mod) != -1) {
+            Vertice* neigh = getSommet(v->getVoisin((j + 1) % v_mod));
+            int n_mod = neigh->getNbVoisins();
             int in_neigh = neigh->isXthVoisin(i);
-            v->setVoisin(j % 6, neigh->getVoisin((in_neigh + 1) % 6));
-            Vertice* linked = getSommet(neigh->getVoisin((in_neigh + 1) % 6));
-            int in_linked = linked->isXthVoisin(v->getVoisin((j + 1) % 6));
-            linked->setVoisin((in_linked + 1) % 6, i);
+            if(neigh->getVoisin((in_neigh + 1) % n_mod) != -1){
+                v->setVoisin(j % v_mod, neigh->getVoisin((in_neigh + 1) % n_mod));
+                Vertice* linked = getSommet(neigh->getVoisin((in_neigh + 1) % n_mod));
+                int in_linked = linked->isXthVoisin(v->getVoisin((j + 1) % v_mod));
+                int l_mod = linked->getNbVoisins();
+                linked->setVoisin((in_linked + 1) % l_mod, i);
+            }
         }
-        if(v->getVoisin((j - 1) % 6) != -1) {
-            Vertice* neigh = getSommet(v->getVoisin((j - 1) % 6));
+        if(v->getVoisin((j - 1) % v_mod) != -1) {
+            Vertice* neigh = getSommet(v->getVoisin((j - 1) % v_mod));
+            int n_mod = neigh->getNbVoisins();
             int in_neigh = neigh->isXthVoisin(i);
-            v->setVoisin(j % 6, neigh->getVoisin((in_neigh - 1) % 6));
-            Vertice* linked = getSommet(neigh->getVoisin((in_neigh - 1) % 6));
-            int in_linked = linked->isXthVoisin(v->getVoisin((j - 1) % 6));
-            linked->setVoisin((in_linked - 1) % 6, i);
+            if(neigh->getVoisin((in_neigh - 1) % n_mod) != -1){
+                v->setVoisin(j % v_mod, neigh->getVoisin((in_neigh - 1) % n_mod));
+                Vertice* linked = getSommet(neigh->getVoisin((in_neigh - 1) % n_mod));
+                int in_linked = linked->isXthVoisin(v->getVoisin((j - 1) % v_mod));
+                int l_mod = linked->getNbVoisins();
+                linked->setVoisin((in_linked - 1) % l_mod, i);
+            }
         }
     }
 }
@@ -412,7 +421,7 @@ void Graph_01::completerADistance1(){
             int nb = ajouterSommet();
             Vertice* newbie = getSommet(nb);
             newbie->addVoisin(0, i);
-            v->addVoisin(j, nb);
+            v->setVoisin(j, nb);
             relier(nb);
         }
     }
@@ -442,43 +451,8 @@ void Graph_01::completerADistance2(){
             int nb = ajouterSommet();
             Vertice* newbie = getSommet(nb);
             newbie->addVoisin(0, i);
-            v->addVoisin(j, nb);
+            v->setVoisin(j, nb);
             relier(nb);
         }
     }
-}
-
-// TODO : distance2 (follow .hpp)
-
-/*** EXCEPTIONS ***/
-
-OpenFileFailureException::OpenFileFailureException(std::string file) 
-        : exception() , m_fileFailed(file) {}
-
-const char* OpenFileFailureException::what() const throw(){
-    return ("Don't know why, but we were unable to open file : " 
-            + m_fileFailed).c_str();
-}
-
-
-const char* FullGraphException::what() const throw(){
-    std::string buff;
-    buff.append("Sorry but this graph is only able to contain ");
-    buff.append(std::to_string(TAILLE_TABLEAU));
-    buff.append(" vertices.");
-    return buff.c_str();
-}
-
-// TODO : gerer le bordel des string en c++
-
-NonExistentVerticeException::NonExistentVerticeException(int place)
-        : exception() , m_place(place) {}
-
-const char* NonExistentVerticeException::what() const throw(){
-    return "There isn't any vertice in place number " + m_place;
-}
-
-
-const char* NoMoreMarksException::what() const throw(){
-    return "All the marks have been reserved, you can't get more, sorry.";
 }

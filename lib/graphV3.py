@@ -395,7 +395,7 @@ def dessinerGraphe (G, etiquettesAretes = False, algo = 'dot', colormark = 'Blac
         
 dessiner = dessinerGraphe
 
-# Cela pourrait être mieux écrit avec des règles standards de lexing/parsing, mais cela évite des dépendances
+# Cela pourrait etre mieux ecrit avec des regles standards de lexing/parsing, mais cela evite des dependances
 
 def _charclass (c):
     if c >= 'a' and c <= 'z' or \
@@ -407,8 +407,8 @@ def _charclass (c):
         return '-'
     return c
 
-# Lexing. On commence à regarder à la position i
-# Retourne le mot et la position à laquelle on est arrivé
+# Lexing. On commence a regarder a la position i
+# Retourne le mot et la position a laquelle on est arrive
 def _mot (s, debut):
     while debut < len(s) and (s[debut] == ' ' or s[debut] == '\t' or s[debut] == '\n' or s[debut] == '\r'):
         debut+=1
@@ -436,53 +436,53 @@ def _mot (s, debut):
                 if s[fin] == '\\':
                     echappe = True
             fin+=1
-        raise SyntaxError("Fichier incorrect: \" not terminé à la fin du fichier")
+        raise SyntaxError("Fichier incorrect: \" not termine a la fin du fichier")
 
     charclass = _charclass(s[fin])
     while fin < len(s) and (s[fin] != ' ' and s[fin] != '\t' and s[fin] != '\n' and s[fin] != '\r'):
         if s[fin] == '#':
-            # Commentaire, ignore jusqu'à la fin de ligne
+            # Commentaire, ignore jusqu'a la fin de ligne
             fin2 = fin
             while fin2 < len(s) and (s[fin2] != '\n' and s[fin2] != '\r'):
                 fin2+=1
             if debut == fin:
-                # Pas de mot avant le commentaire, on recommence à lire à la ligne suivante
+                # Pas de mot avant le commentaire, on recommence a lire a la ligne suivante
                 return _mot(s, fin2)
             return s[debut:fin],fin2
 
         if _charclass(s[fin]) != charclass:
-            # On change de class de caractère, cela découpe le mot
+            # On change de class de caractere, cela decoupe le mot
             #print(s[debut:fin],fin)
             return s[debut:fin],fin
 
         if s[fin] == '"':
-            raise SyntaxError("Fichier incorrect: \" au milieu d'un mot à "+str(debut))
+            raise SyntaxError("Fichier incorrect: \" au milieu d'un mot a "+str(debut))
         fin+=1
     #print(s[debut:fin],fin+1)
     return s[debut:fin],fin+1
 
 # Parsing
 
-# Lit le contenu d'attributs. Le [ initial a déjà été consommé. On commence à regarder à la position i
-# Retourne un dictionnaire des attributs et la position à laquelle on est arrivé
+# Lit le contenu d'attributs. Le [ initial a deja ete consomme. On commence a regarder a la position i
+# Retourne un dictionnaire des attributs et la position a laquelle on est arrive
 def _attributs(s,i):
     nom,i = _mot(s,i)
     attributs = {}
     while nom != ']':
         if nom == "":
-            raise SyntaxError("Fichier incorrect: pas de crochet fermant à "+str(i))
+            raise SyntaxError("Fichier incorrect: pas de crochet fermant a "+str(i))
         if nom == ",":
             nom,i = _mot(s,i)
         egal,i = _mot(s,i)
         if egal != '=':
-            raise SyntaxError("Fichier incorrect: trouvé "+egal+" au lieu d'un '=' à "+str(i))
+            raise SyntaxError("Fichier incorrect: trouve "+egal+" au lieu d'un '=' a "+str(i))
         val,i = _mot(s,i)
-        #print("attribut "+nom+" défini à "+val+" .")
+        #print("attribut "+nom+" defini a "+val+" .")
         attributs[nom] = val
         nom,i = _mot(s,i)
     return attributs,i
 
-# Lit une définion de graphe, en commançant par son nom à la position i
+# Lit une defintion de graphe, en commancant par son nom a la position i
 # Retourne une liste de chemins et la nouvelle position
 def _litgrapheDOT(s,i):
     chemins = []
@@ -492,19 +492,19 @@ def _litgrapheDOT(s,i):
         nom = nom[1:-1]
     accolade,i = _mot(s,i)
     if accolade != "{":
-        raise SyntaxError("Fichier incorrect: trouvé "+accolade+" au lieu d'une accolade ouvrante à "+str(i))
+        raise SyntaxError("Fichier incorrect: trouve "+accolade+" au lieu d'une accolade ouvrante a "+str(i))
 
     mot,i = _mot(s,i)
     while mot != "}":
         #print("starting new read with "+mot+" "+str(i))
         if mot == "":
-            raise SyntaxError("Fichier incorrect: pas d'accolade fermante terminale à la fin du fichier")
+            raise SyntaxError("Fichier incorrect: pas d'accolade fermante terminale a la fin du fichier")
 
         if mot == "graph" or mot == "node" or mot == "edge":
-            # attributs par défaut, on ignore
+            # attributs par defaut, on ignore
             crochet,j = _mot(s,i)
             if crochet != '[':
-                raise SyntaxError("Fichier incorrect: trouvé "+crochet+" au lieu d'un crochet ouvrant à "+str(i)+' '+str(j))
+                raise SyntaxError("Fichier incorrect: trouve "+crochet+" au lieu d'un crochet ouvrant a "+str(i)+' '+str(j))
             i = j
             attr,i = _attributs(s,i)
             if mot == "node" and "fillcolor" in attr:
@@ -512,8 +512,8 @@ def _litgrapheDOT(s,i):
             mot,i = _mot(s,i)
 
         elif mot == "subgraph":
-            # récursion!
-            # idéalement il faudrait séparer les espaces de noms de sommets
+            # recursion!
+            # idealement il faudrait separer les espaces de noms de sommets
             _,chemins_sousgraphe,couleurs_sougraphe,i = _litgrapheDOT(s,i)
             couleurs = chemins_sousgraphe + couleurs
             chemins = chemins_sousgraphe + chemins
@@ -526,7 +526,7 @@ def _litgrapheDOT(s,i):
             mot2,i = _mot(s,i)
             chemins += [[mot]]
             if mot2 == '[':
-                # attributs d'un nœud
+                # attributs d'un noeud
                 attr,i = _attributs(s,i)
                 if "fillcolor" in attr:
                     couleurSommet = attr["fillcolor"]
@@ -548,16 +548,16 @@ def _litgrapheDOT(s,i):
                     attr,i = _attributs(s,i)
                     mot,i = _mot(s,i)
             elif mot2 == '=':
-                # attribut par défaut
+                # attribut par defaut
                 mot3,i = _mot(s,i)
                 if mot == 'fillcolor':
                     couleurDefautSommet = mot3
                 mot,i = _mot(s,i)
             elif mot2 == ';':
-                # Rien d'intéressant, en fait
+                # Rien d'interessant, en fait
                 mot = mot2
             else:
-                raise SyntaxError("Fichier non supporté: trouvé "+mot2+" à "+str(i))
+                raise SyntaxError("Fichier non supporte: trouve "+mot2+" a "+str(i))
         while mot == ';':
             mot,i = _mot(s,i)
     return nom,chemins,couleurs,i
@@ -568,10 +568,10 @@ def _litgrapheGML(s,i):
     noms = {}
     graph,i = _mot(s,i)
     if graph != "graph":
-        raise SyntaxError('Attendu "graph", trouvé '+graph+' à la place')
+        raise SyntaxError('Attendu "graph", trouve '+graph+' a la place')
     mot,i = _mot(s,i)
     if mot != '[':
-        raise SyntaxError('Attendu "[", trouvé '+mot+' à la place')
+        raise SyntaxError('Attendu "[", trouve '+mot+' a la place')
     mot,i = _mot(s,i)
     while mot != ']':
         if mot == "directed":
@@ -581,7 +581,7 @@ def _litgrapheGML(s,i):
             # un sommet
             mot,i = _mot(s,i)
             if mot != '[':
-                raise SyntaxError('Attendu "[", trouvé '+mot+' à la place')
+                raise SyntaxError('Attendu "[", trouve '+mot+' a la place')
             mot,i = _mot(s,i)
             ID = -1
             nom = ""
@@ -599,17 +599,17 @@ def _litgrapheGML(s,i):
                     value,i = _mot(s,i)
                     mot,i = _mot(s,i)
                 else:
-                    raise SyntaxError('mot-clé de sommet '+mot+' non supporté à '+str(i))
+                    raise SyntaxError('mot-cle de sommet '+mot+' non supporte a '+str(i))
             if nom == "":
                 nom = str(ID)
             noms[ID] = nom
             chemins += [[nom]]
             mot,i = _mot(s,i)
         elif mot == "edge":
-            # une arête
+            # une arete
             mot,i = _mot(s,i)
             if mot != '[':
-                raise SyntaxError('Attendu "[", trouvé '+mot+' à la place')
+                raise SyntaxError('Attendu "[", trouve '+mot+' a la place')
             mot,i = _mot(s,i)
             src = ''
             dst = ''
@@ -624,15 +624,15 @@ def _litgrapheGML(s,i):
                     value,i = _mot(s,i)
                     mot,i = _mot(s,i)
                 else:
-                    raise SyntaxError('mot-clé de sommet '+mot+' non supporté à '+str(i))
+                    raise SyntaxError('mot-cle de sommet '+mot+' non supporte a '+str(i))
             if src == '':
-                raise SyntaxError("source de l'arête manquante")
+                raise SyntaxError("source de l'arete manquante")
             if dst == '':
-                raise SyntaxError("destination de l'arête manquante")
+                raise SyntaxError("destination de l'arete manquante")
             chemins += [[noms[src],noms[dst]]]
             mot,i = _mot(s,i)
         else:
-            raise SyntaxError('mot-clé '+mot+' non supporté à '+str(i))
+            raise SyntaxError('mot-cle '+mot+' non supporte a '+str(i))
 
     return "graphe",chemins,couleurs,i
 
@@ -654,7 +654,7 @@ def _litgraphePAJ(s,i):
 
     mot,i = _mot(s,i)
     while mot != "*Edges":
-        # une arête
+        # une arete
         src = mot
         dst,i = _mot(s,i)
         chemins += [[noms[src],noms[dst]]]
@@ -685,7 +685,7 @@ def ouvrirGraphe(nom):
         elif graph == "graph":
             oriente = False
         else:
-            raise SyntaxError("Fichier .dot de type "+graph+" non supporté")
+            raise SyntaxError("Fichier .dot de type "+graph+" non supporte")
 
         nom,chemins,couleurs,i = _litgrapheDOT(s,i)
     g = construireGraphe(chemins, nom)
