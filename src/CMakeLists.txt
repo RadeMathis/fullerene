@@ -12,6 +12,8 @@ add_executable(
 	Graph_01.cpp
 	Graph.cpp
 	functions.cpp
+	graphExceptions.cpp
+	graphPrinter.cpp
 	)
 
 add_executable(
