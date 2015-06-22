@@ -1,4 +1,4 @@
-Debboguer, encore et toujours --> le % ... fait chier
+Debboguer, encore et toujours --> seg fault du a replierPenta(int,int)
 
 tester Graph_01
 

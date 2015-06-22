@@ -12,6 +12,7 @@ main(/*int argc, char *argv[]*/)
 {
     Graph* g1 = new Graph_01("premierTest.graph.data");
     g1->bienFormer();
+    g1->replierPenta(1, 4);
     g1->writeInFile("deuxiemeTest.graph.data");
 
     graphPrinter("deuxiemeTest.graph");

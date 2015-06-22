@@ -192,16 +192,8 @@ int Graph_01::distance(int v1, int v2)/*const*/ { //stratum marked oigon algorit
 }
 
 void Graph_01::bienFormer(){
-    //try{
         relier();
-    /*} catch(BadNeighborhoodException_01 &e) {
-        std::cerr << "relier" << std::endl;
-    }
-    try{*/
         completerADistance2();
-    /*} catch(BadNeighborhoodException_01 &e) {
-        std::cerr << "completerADistance2" << std::endl;
-    }*/
 }
 
 void Graph_01::initialiserPenta(){
@@ -257,10 +249,16 @@ void Graph_01::replier(int v, int d, int type){ //v: vertice, d: direction
     int           l = origin->getVoisin((d + (6 - type)) % 6); // left place
     int  previous_r = v;
     int  previous_l = v;
+    std::queue<int> toDel;
+    bool thereIsNoRight = false;
+    try{
+        toDel.push(origin->getVoisin((d + 1) % 6));
+    }catch(...){}
     try {
         right = getSommet(r);
     } catch(NonExistentVerticeException &e) {
         existRight = false;
+        thereIsNoRight = true;
     }
     try {
         left = getSommet(l);
@@ -271,18 +269,30 @@ void Graph_01::replier(int v, int d, int type){ //v: vertice, d: direction
         int in_r = right->isXthVoisin(previous_r);//The way we came in r
         int in_l =  left->isXthVoisin(previous_l);//The way we came in l
       //(1) Break links from inside to right.
-        Vertice* interne_1 = getSommet(right->getVoisin((in_r + 5) % 6));
-        interne_1->setVoisin(interne_1->isXthVoisin(r), -1);
-        Vertice* interne_2 = getSommet(right->getVoisin((in_r + 4) % 6));
-        interne_2->setVoisin(interne_2->isXthVoisin(r), -1);
+        try{
+            Vertice* interne_1 = getSommet(right->getVoisin((in_r + 5) % 6));
+            interne_1->setVoisin(interne_1->isXthVoisin(r), -1);
+        }catch(...){}
+        try{
+            Vertice* interne_2 = getSommet(right->getVoisin((in_r + 4) % 6));
+            interne_2->setVoisin(interne_2->isXthVoisin(r), -1);
+        }catch(...){}
       //(2) Link right to left-outside.
-        right->setVoisin((in_r -1) % 6, left->getVoisin((in_l + 5) % 6));
-        right->setVoisin((in_r -2) % 6, left->getVoisin((in_l + 4) % 6));
+        try{
+            right->setVoisin((in_r -1) % 6, left->getVoisin((in_l + 5) % 6));
+        }catch(...){}
+        try{
+            right->setVoisin((in_r -2) % 6, left->getVoisin((in_l + 4) % 6));
+        }catch(...){}
       //(3) Link left-outside to right.
-        Vertice* externe_1 = getSommet(left->getVoisin((in_l + 5) % 6));
-        externe_1->setVoisin(externe_1->isXthVoisin(l), r);
-        Vertice* externe_2 = getSommet(left->getVoisin((in_l + 4) % 6));
-        externe_2->setVoisin(externe_2->isXthVoisin(l), r);
+        try{
+            Vertice* externe_1 = getSommet(left->getVoisin((in_l + 5) % 6));
+            externe_1->setVoisin(externe_1->isXthVoisin(l), r);
+        }catch(...){}
+        try{
+            Vertice* externe_2 = getSommet(left->getVoisin((in_l + 4) % 6));
+            externe_2->setVoisin(externe_2->isXthVoisin(l), r);
+        }catch(...){}
       //(4) Break links from left to left-outside.
         left->setVoisin((in_l + 5) % 6, -1);
         left->setVoisin((in_l + 4) % 6, -1);
@@ -312,10 +322,18 @@ void Graph_01::replier(int v, int d, int type){ //v: vertice, d: direction
     while(existRight){
         int in_r = right->isXthVoisin(previous_r);
       //(1) Break links from inside to right.
-        Vertice* interne_1 = getSommet(right->getVoisin((in_r + 5) % 6));
-        interne_1->setVoisin(interne_1->isXthVoisin(r), -1);
-        Vertice* interne_2 = getSommet(right->getVoisin((in_r + 4) % 6));
-        interne_2->setVoisin(interne_2->isXthVoisin(r), -1);
+        try{
+            Vertice* interne_1 = getSommet(right->getVoisin((in_r + 5) % 6));
+            interne_1->setVoisin(interne_1->isXthVoisin(r), -1);
+            if(toDel.empty())
+                toDel.push(right->getVoisin((in_r + 5) % 6));
+        }catch(...){}
+        try{
+            Vertice* interne_2 = getSommet(right->getVoisin((in_r + 4) % 6));
+            interne_2->setVoisin(interne_2->isXthVoisin(r), -1);
+            if(toDel.empty())
+                toDel.push(right->getVoisin((in_r + 4) % 6));
+        }catch(...){}
       //(2) Break links from right to inside.
         right->setVoisin((in_r + 5) % 6, -1);
         right->setVoisin((in_r + 4) % 6, -1);
@@ -331,10 +349,18 @@ void Graph_01::replier(int v, int d, int type){ //v: vertice, d: direction
     while(existLeft){
         int in_l = left->isXthVoisin(previous_l);
       //(1) Break links from inside to left.
-        Vertice* interne_1 = getSommet(left->getVoisin((in_l + 1) % 6));
-        interne_1->setVoisin(interne_1->isXthVoisin(l), -1);
-        Vertice* interne_2 = getSommet(left->getVoisin((in_l + 2) % 6));
-        interne_2->setVoisin(interne_2->isXthVoisin(l), -1);
+        try{
+            Vertice* interne_1 = getSommet(left->getVoisin((in_l + 1) % 6));
+            interne_1->setVoisin(interne_1->isXthVoisin(l), -1);
+            if(toDel.empty())
+                toDel.push(left->getVoisin((in_l + 1) % 6));
+        }catch(...){}
+        try{
+            Vertice* interne_2 = getSommet(left->getVoisin((in_l + 2) % 6));
+            interne_2->setVoisin(interne_2->isXthVoisin(l), -1);
+            if(toDel.empty())
+                toDel.push(left->getVoisin((in_l + 2) % 6));
+        }catch(...){}
       //(2) Break links from left to inside.
         left->setVoisin((in_l + 1) % 6, -1);
         left->setVoisin((in_l + 2) % 6, -1);
@@ -348,12 +374,17 @@ void Graph_01::replier(int v, int d, int type){ //v: vertice, d: direction
         }
     }
   // Secondly : reduce v and delete what is useless.
-    std::queue<int> toDel;
-    toDel.push(origin->getVoisin((d + 1) % 6));
     for(int i(0); i < 6-type; ++i){
-        Vertice* xi = getSommet(origin->getVoisin((d + 1) % 6));
-        xi->setVoisin(xi->isXthVoisin(v), -1);
-        origin->delVoisin((d + 1) % 6);
+        int delVois;
+        try{
+            if(thereIsNoRight)
+                delVois = d;
+            else
+                delVois = (d + 1) % 6;
+            Vertice* xi = getSommet(origin->getVoisin(delVois));
+            xi->setVoisin(xi->isXthVoisin(v), -1);
+        }catch(...){}
+        origin->delVoisin(delVois);
     }
     m_nbPenta  += (type == 5);
     m_nbQuadra += (type == 6);
@@ -361,11 +392,13 @@ void Graph_01::replier(int v, int d, int type){ //v: vertice, d: direction
     while(!toDel.empty()){
         for(int i(0); i < 6; ++i){
             int neigh_place = getSommet(toDel.front())->getVoisin(i);
+            if(neigh_place == -1)
+                continue;
             Vertice* neigh = getSommet(neigh_place);
-            if(neigh_place == -1 || neigh->isMarked(isInQueue))
+            if(neigh->isMarked(isInQueue))
                 continue;
             neigh->setVoisin(neigh->isXthVoisin(toDel.front()), -1);
-            toDel.push(getSommet(toDel.front())->getVoisin(i));
+            toDel.push(neigh_place);
         }
         delete getSommet(toDel.front());
         --m_nbSommets;
@@ -423,12 +456,14 @@ void Graph_01::completerADistance1(){
         }
         if(v->getNbVoisins() == 6)
             continue;
-        for(int j(0); j < v->getNbVoisins(); ++i){
+        for(int j(0); j < v->getNbVoisins(); ++j){
             if(v->getVoisin(j) != -1)
                 continue;
             int nb = ajouterSommet();
             Vertice* newbie = getSommet(nb);
             newbie->addVoisin(0, i);
+            while(newbie->getNbVoisins() < 6)
+                newbie->addVoisin(newbie->getNbVoisins(), -1);
             v->setVoisin(j, nb);
             relier(nb);
         }
@@ -453,12 +488,14 @@ void Graph_01::completerADistance2(){
                     needToComplete = true;
         if(needToComplete == false)
             continue;
-        for(int j(0); j < v->getNbVoisins(); ++i){
+        for(int j(0); j < v->getNbVoisins(); ++j){
             if(v->getVoisin(j) != -1)
                 continue;
             int nb = ajouterSommet();
             Vertice* newbie = getSommet(nb);
             newbie->addVoisin(0, i);
+            while(newbie->getNbVoisins() < 6)
+                newbie->addVoisin(newbie->getNbVoisins(), -1);
             v->setVoisin(j, nb);
             relier(nb);
         }
