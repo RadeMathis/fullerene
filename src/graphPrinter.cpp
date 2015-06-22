@@ -61,5 +61,5 @@ graphPrinter(std::string dataFile)
         areQuadrilateral.pop_back();
         oStream << "colorierSommet(s, 'blue')" << std::endl;
     }
-    oStream << "dessiner(outFig, algo='fdp')" << std::endl;
+    oStream << "dessiner(outFig, algo='sfdp')" << std::endl;
 }

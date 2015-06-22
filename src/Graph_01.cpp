@@ -249,7 +249,7 @@ void Graph_01::writeInFile(std::string dataFile) const {
 void Graph_01::replier(int v, int d, int type){ //v: vertice, d: direction
   //First : Bend over "in stays".
     bool existRight = true;
-    bool existLeft  = true;
+    bool  existLeft = true;
     Vertice* origin = getSommet(v);
     Vertice*  right = NULL;
     Vertice*   left = NULL;
@@ -271,21 +271,21 @@ void Graph_01::replier(int v, int d, int type){ //v: vertice, d: direction
         int in_r = right->isXthVoisin(previous_r);//The way we came in r
         int in_l =  left->isXthVoisin(previous_l);//The way we came in l
       //(1) Break links from inside to right.
-        Vertice* interne_1 = getSommet(right->getVoisin((in_r - 1) % 6));
+        Vertice* interne_1 = getSommet(right->getVoisin((in_r + 5) % 6));
         interne_1->setVoisin(interne_1->isXthVoisin(r), -1);
-        Vertice* interne_2 = getSommet(right->getVoisin((in_r - 2) % 6));
+        Vertice* interne_2 = getSommet(right->getVoisin((in_r + 4) % 6));
         interne_2->setVoisin(interne_2->isXthVoisin(r), -1);
       //(2) Link right to left-outside.
-        right->setVoisin((in_r -1) % 6, left->getVoisin((in_l - 1) % 6));
-        right->setVoisin((in_r -2) % 6, left->getVoisin((in_l - 2) % 6));
+        right->setVoisin((in_r -1) % 6, left->getVoisin((in_l + 5) % 6));
+        right->setVoisin((in_r -2) % 6, left->getVoisin((in_l + 4) % 6));
       //(3) Link left-outside to right.
-        Vertice* externe_1 = getSommet(left->getVoisin((in_l - 1) % 6));
+        Vertice* externe_1 = getSommet(left->getVoisin((in_l + 5) % 6));
         externe_1->setVoisin(externe_1->isXthVoisin(l), r);
-        Vertice* externe_2 = getSommet(left->getVoisin((in_l - 2) % 6));
+        Vertice* externe_2 = getSommet(left->getVoisin((in_l + 4) % 6));
         externe_2->setVoisin(externe_2->isXthVoisin(l), r);
       //(4) Break links from left to left-outside.
-        left->setVoisin((in_l - 1) % 6, -1);
-        left->setVoisin((in_l - 2) % 6, -1);
+        left->setVoisin((in_l + 5) % 6, -1);
+        left->setVoisin((in_l + 4) % 6, -1);
       //(5) "Move" left and right to itterate.
         previous_r = r;
         previous_l = l;
@@ -312,13 +312,13 @@ void Graph_01::replier(int v, int d, int type){ //v: vertice, d: direction
     while(existRight){
         int in_r = right->isXthVoisin(previous_r);
       //(1) Break links from inside to right.
-        Vertice* interne_1 = getSommet(right->getVoisin((in_r - 1) % 6));
+        Vertice* interne_1 = getSommet(right->getVoisin((in_r + 5) % 6));
         interne_1->setVoisin(interne_1->isXthVoisin(r), -1);
-        Vertice* interne_2 = getSommet(right->getVoisin((in_r - 2) % 6));
+        Vertice* interne_2 = getSommet(right->getVoisin((in_r + 4) % 6));
         interne_2->setVoisin(interne_2->isXthVoisin(r), -1);
       //(2) Break links from right to inside.
-        right->setVoisin((in_r - 1) % 6, -1);
-        right->setVoisin((in_r - 2) % 6, -1);
+        right->setVoisin((in_r + 5) % 6, -1);
+        right->setVoisin((in_r + 4) % 6, -1);
       //(3) "Move" right to itterate.
         previous_r = r;
         r = right->getVoisin((in_r + 3) % 6);
@@ -398,16 +398,16 @@ void Graph_01::relier(int i){
                 linked->setVoisin((in_linked + 1) % l_mod, i);
             }
         }
-        if(v->getVoisin((j - 1) % v_mod) != -1) {
-            Vertice* neigh = getSommet(v->getVoisin((j - 1) % v_mod));
+        if(v->getVoisin((j + (v_mod - 1)) % v_mod) != -1) {
+            Vertice* neigh = getSommet(v->getVoisin((j + (v_mod - 1)) % v_mod));
             int n_mod = neigh->getNbVoisins();
             int in_neigh = neigh->isXthVoisin(i);
-            if(neigh->getVoisin((in_neigh - 1) % n_mod) != -1){
-                v->setVoisin(j % v_mod, neigh->getVoisin((in_neigh - 1) % n_mod));
-                Vertice* linked = getSommet(neigh->getVoisin((in_neigh - 1) % n_mod));
-                int in_linked = linked->isXthVoisin(v->getVoisin((j - 1) % v_mod));
+            if(neigh->getVoisin((in_neigh + (n_mod - 1)) % n_mod) != -1){
+                v->setVoisin(j % v_mod, neigh->getVoisin((in_neigh + (n_mod - 1)) % n_mod));
+                Vertice* linked = getSommet(neigh->getVoisin((in_neigh + (n_mod - 1)) % n_mod));
+                int in_linked = linked->isXthVoisin(v->getVoisin((j + (v_mod - 1)) % v_mod));
                 int l_mod = linked->getNbVoisins();
-                linked->setVoisin((in_linked - 1) % l_mod, i);
+                linked->setVoisin((in_linked + (l_mod - 1)) % l_mod, i);
             }
         }
     }
