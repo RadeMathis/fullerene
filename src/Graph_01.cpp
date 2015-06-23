@@ -133,7 +133,7 @@ void Graph_01::supprimerSommet(int n){
 }
 
 Vertice* Graph_01::getSommet(int n) const {
-    if(m_sommets[n] == NULL)
+    if(m_sommets[n] == NULL || n < 0)
         throw NonExistentVerticeException(n);
     return m_sommets[n];
 }
@@ -249,10 +249,12 @@ void Graph_01::replier(int v, int d, int type){ //v: vertice, d: direction
     int  previous_r = v;
     int  previous_l = v;
     std::queue<int> toDel;
+    int isInQueue = reserverMarque();
     bool thereIsNoRight = false;
-    try{
+    if(existRight && existLeft){
         toDel.push(origin->getVoisin((d + 1) % 6));
-    }catch(...){}
+        getSommet(toDel.front())->mark(isInQueue);
+    }
     try {
         right = getSommet(r);
     } catch(NonExistentVerticeException &e) {
@@ -310,6 +312,7 @@ void Graph_01::replier(int v, int d, int type){ //v: vertice, d: direction
             Vertice* oldLeft = getSommet(previous_l);
             oldLeft->setVoisin(oldLeft->isXthVoisin(l), -1);
             getSommet(previous_r)->setVoisin((in_r + 3) % 6, l);
+            in_l = left->isXthVoisin(previous_l);
             left->setVoisin(in_l, previous_r);
             previous_l = previous_r; //need it for first while(existLeft) itter
         }
@@ -320,14 +323,18 @@ void Graph_01::replier(int v, int d, int type){ //v: vertice, d: direction
         try{
             Vertice* interne_1 = getSommet(right->getVoisin((in_r + 5) % 6));
             interne_1->setVoisin(interne_1->isXthVoisin(r), -1);
-            if(toDel.empty())
+            if(toDel.empty()){
                 toDel.push(right->getVoisin((in_r + 5) % 6));
+                getSommet(toDel.front())->mark(isInQueue);
+            }
         }catch(...){}
         try{
             Vertice* interne_2 = getSommet(right->getVoisin((in_r + 4) % 6));
             interne_2->setVoisin(interne_2->isXthVoisin(r), -1);
-            if(toDel.empty())
+            if(toDel.empty()){
                 toDel.push(right->getVoisin((in_r + 4) % 6));
+                getSommet(toDel.front())->mark(isInQueue);
+            }
         }catch(...){}
       //(2) Break links from right to inside.
         right->setVoisin((in_r + 5) % 6, -1);
@@ -347,14 +354,18 @@ void Graph_01::replier(int v, int d, int type){ //v: vertice, d: direction
         try{
             Vertice* interne_1 = getSommet(left->getVoisin((in_l + 1) % 6));
             interne_1->setVoisin(interne_1->isXthVoisin(l), -1);
-            if(toDel.empty())
+            if(toDel.empty()){
                 toDel.push(left->getVoisin((in_l + 1) % 6));
+                getSommet(toDel.front())->mark(isInQueue);
+            }
         }catch(...){}
         try{
             Vertice* interne_2 = getSommet(left->getVoisin((in_l + 2) % 6));
             interne_2->setVoisin(interne_2->isXthVoisin(l), -1);
-            if(toDel.empty())
+            if(toDel.empty()){
                 toDel.push(left->getVoisin((in_l + 2) % 6));
+                getSommet(toDel.front())->mark(isInQueue);
+            }
         }catch(...){}
       //(2) Break links from left to inside.
         left->setVoisin((in_l + 1) % 6, -1);
@@ -382,9 +393,7 @@ void Graph_01::replier(int v, int d, int type){ //v: vertice, d: direction
         origin->delVoisin(delVois);
     }
     m_nbPenta  += (type == 5);
-    m_nbQuadra += (type == 6);
-    int isInQueue = reserverMarque();
-    writeInFile("encour.graph.data");
+    m_nbQuadra += (type == 4);
     while(!toDel.empty()){
         for(int i(0); i < 6; ++i){
             int neigh_place = getSommet(toDel.front())->getVoisin(i);
@@ -395,10 +404,12 @@ void Graph_01::replier(int v, int d, int type){ //v: vertice, d: direction
                 continue;
             neigh->setVoisin(neigh->isXthVoisin(toDel.front()), -1);
             toDel.push(neigh_place);
+            neigh->mark(isInQueue);
         }
         supprimerSommet(toDel.front());
         toDel.pop();
     }
+    libererMarque(isInQueue);
     relier();
 }
 
