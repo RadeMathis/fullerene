@@ -52,8 +52,8 @@ class Graph_01 : public Graph {
 
   private:
 
-    void replier(int v, int d, int type); //totest
     void relier(int v); //totest
+    void replier(int v, int d, int type); //totest
     void relier(); //totest
     void completerADistance1(); //totest
     void completerADistance2(); //totest

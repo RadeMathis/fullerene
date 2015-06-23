@@ -11,6 +11,7 @@
 #include <functions.hpp>
 #include <queue>
 #include <string>
+#include <exception>
 
 #define TAILLE_LIGNE_MAX 51 //assez arbitraire
 
@@ -199,9 +200,6 @@ void Graph_01::bienFormer(){
 void Graph_01::initialiserPenta(){
     m_nbSommets = 1;
     m_nbPenta = 1;
-    for(int i(0); i < TAILLE_TABLEAU; ++i){
-
-    }
     m_sommets[0] = new Vertice_01();
     for(int i(0); i < 5; ++i)
         m_sommets[0]->addVoisin(i, -1);
@@ -209,6 +207,7 @@ void Graph_01::initialiserPenta(){
 
 void Graph_01::initialiserQuadri(){
     m_nbSommets = 1;
+    m_nbQuadra = 1;
     m_sommets[0] = new Vertice_01();
     for(int i(0); i < 4; ++i)
         m_sommets[0]->addVoisin(i, -1);
@@ -278,12 +277,8 @@ void Graph_01::replier(int v, int d, int type){ //v: vertice, d: direction
             interne_2->setVoisin(interne_2->isXthVoisin(r), -1);
         }catch(...){}
       //(2) Link right to left-outside.
-        try{
-            right->setVoisin((in_r -1) % 6, left->getVoisin((in_l + 5) % 6));
-        }catch(...){}
-        try{
-            right->setVoisin((in_r -2) % 6, left->getVoisin((in_l + 4) % 6));
-        }catch(...){}
+        right->setVoisin((in_r +5) % 6, left->getVoisin((in_l + 5) % 6));
+        right->setVoisin((in_r +4) % 6, left->getVoisin((in_l + 4) % 6));
       //(3) Link left-outside to right.
         try{
             Vertice* externe_1 = getSommet(left->getVoisin((in_l + 5) % 6));
@@ -389,6 +384,7 @@ void Graph_01::replier(int v, int d, int type){ //v: vertice, d: direction
     m_nbPenta  += (type == 5);
     m_nbQuadra += (type == 6);
     int isInQueue = reserverMarque();
+    writeInFile("encour.graph.data");
     while(!toDel.empty()){
         for(int i(0); i < 6; ++i){
             int neigh_place = getSommet(toDel.front())->getVoisin(i);
@@ -400,8 +396,7 @@ void Graph_01::replier(int v, int d, int type){ //v: vertice, d: direction
             neigh->setVoisin(neigh->isXthVoisin(toDel.front()), -1);
             toDel.push(neigh_place);
         }
-        delete getSommet(toDel.front());
-        --m_nbSommets;
+        supprimerSommet(toDel.front());
         toDel.pop();
     }
     relier();
@@ -409,8 +404,13 @@ void Graph_01::replier(int v, int d, int type){ //v: vertice, d: direction
 
 void Graph_01::relier(){
     for(int i(0); i < TAILLE_TABLEAU; ++i)
-        if(m_sommets[i] != NULL)
-            relier(i);
+        if(m_sommets[i] != NULL){
+            try{
+                relier(i);
+            }catch(NonExistentVerticeException &e){
+                std::cout << "i = " << i << std::endl;
+            }
+        }
 }
 
 void Graph_01::relier(int i){
@@ -420,6 +420,8 @@ void Graph_01::relier(int i){
         if(v->getVoisin(j % v_mod) != -1)
             continue;
         if(v->getVoisin((j + 1) % v_mod) != -1) {
+            if(i == 17)
+                std::cout << v->getVoisin((j + 1) % v_mod) << std::endl;
             Vertice* neigh = getSommet(v->getVoisin((j + 1) % v_mod));
             int n_mod = neigh->getNbVoisins();
             int in_neigh = neigh->isXthVoisin(i);
@@ -432,6 +434,8 @@ void Graph_01::relier(int i){
             }
         }
         if(v->getVoisin((j + (v_mod - 1)) % v_mod) != -1) {
+            if(i == 17)
+                std::cout << v->getVoisin((j + (v_mod - 1)) % v_mod) << std::endl;
             Vertice* neigh = getSommet(v->getVoisin((j + (v_mod - 1)) % v_mod));
             int n_mod = neigh->getNbVoisins();
             int in_neigh = neigh->isXthVoisin(i);

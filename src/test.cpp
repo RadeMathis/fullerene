@@ -10,9 +10,13 @@ using namespace std;
 int
 main(/*int argc, char *argv[]*/)
 {
-    Graph* g1 = new Graph_01("premierTest.graph.data");
+    Graph* g1 = new Graph_01();
+    g1->initialiserQuadri();
     g1->bienFormer();
-    g1->replierPenta(1, 4);
+    g1->writeInFile("deuxiemeTest.graph.data");
+    graphPrinter("deuxiemeTest.graph");
+    g1->replierQuadri(1, 3);
+    g1->bienFormer();
     g1->writeInFile("deuxiemeTest.graph.data");
 
     graphPrinter("deuxiemeTest.graph");

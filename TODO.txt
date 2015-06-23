@@ -1,4 +1,4 @@
-Debboguer, encore et toujours --> seg fault du a replierPenta(int,int)
+Debboguer, encore et toujours --> seg fault du a replierQuadri(int,int)
 
 tester Graph_01
 
