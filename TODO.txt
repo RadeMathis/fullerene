@@ -1,4 +1,4 @@
-Debboguer, encore et toujours --> uncatch exception from replierQuadri(int,int)
+Pas de bug en vue, mais un affichage parfois degueu
 
 tester Graph_01
 

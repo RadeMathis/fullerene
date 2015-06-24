@@ -277,7 +277,7 @@ void Graph_01::replier(int v, int d, int type){ //v: vertice, d: direction
         try{
             Vertice* interne_2 = getSommet(right->getVoisin((in_r + 4) % 6));
             interne_2->setVoisin(interne_2->isXthVoisin(r), -1);
-        }catch(...){}
+        }catch(...){}        
       //(2) Link right to left-outside.
         right->setVoisin((in_r +5) % 6, left->getVoisin((in_l + 5) % 6));
         right->setVoisin((in_r +4) % 6, left->getVoisin((in_l + 4) % 6));
@@ -400,9 +400,9 @@ void Graph_01::replier(int v, int d, int type){ //v: vertice, d: direction
             if(neigh_place == -1)
                 continue;
             Vertice* neigh = getSommet(neigh_place);
+            neigh->setVoisin(neigh->isXthVoisin(toDel.front()), -1);
             if(neigh->isMarked(isInQueue))
                 continue;
-            neigh->setVoisin(neigh->isXthVoisin(toDel.front()), -1);
             toDel.push(neigh_place);
             neigh->mark(isInQueue);
         }
@@ -415,13 +415,8 @@ void Graph_01::replier(int v, int d, int type){ //v: vertice, d: direction
 
 void Graph_01::relier(){
     for(int i(0); i < TAILLE_TABLEAU; ++i)
-        if(m_sommets[i] != NULL){
-            try{
-                relier(i);
-            }catch(NonExistentVerticeException &e){
-                std::cout << "i = " << i << std::endl;
-            }
-        }
+        if(m_sommets[i] != NULL)
+            relier(i);
 }
 
 void Graph_01::relier(int i){
