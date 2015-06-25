@@ -237,6 +237,58 @@ void Graph_01::writeInFile(std::string dataFile) const {
     }
 }
 
+bool Graph_01::isomorphe(Graph const& g) const {
+    if(getNbSommets() != g.getNbSommets())
+        return false;
+    if(getNbQuadra() != g.getNbQuadra())
+        return false;
+    if(getNbPenta() != g.getNbPenta())
+        return false;
+    int ceintureThis[TAILLE_TABLEAU][2];
+    int    ceintureG[TAILLE_TABLEAU][2];
+    // each element get: [0]: place of a blet's Vertice, [1]: nb of -1 neigh.
+    int sizeBeltThis = 0;
+    for(int i(0); i < TAILLE_TABLEAU; ++i){
+        Vertice* vi;
+        try{
+            vi = getSommet(i);
+        } catch(NonExistentVerticeException &e) {
+            continue;
+        }
+        int nbNoneVoisin = 0;
+        for(int j(0); j < vi->getNbVoisins(); ++j){
+            if(vi->getVoisin(j) == -1)
+                ++nbNoneVoisin;
+        }
+        if(nbNoneVoisin != 0){
+            ceintureThis[sizeBeltThis][0] = i;
+            ceintureThis[sizeBeltThis][1] = nbNoneVoisin;
+            ++sizeBeltThis;
+        }
+    }
+    for(int i(0); i < TAILLE_TABLEAU; ++i){
+        Vertice* vi;
+        try{
+            vi = g.getSommet(i);
+        } catch(NonExistentVerticeException &e) {
+            continue;
+        }
+        int nbNoneVoisin = 0;
+        for(int j(0); j < vi->getNbVoisins(); ++j){
+            if(vi->getVoisin(j) == -1)
+                ++nbNoneVoisin;
+        }
+        if(nbNoneVoisin != 0){
+            ceintureG[sizeBeltG][0] = i;
+            ceintureG[sizeBeltG][1] = nbNoneVoisin;
+            ++sizeBeltG;
+        }
+    }
+    if(sizeBeltThis != sizeBeltG)
+        return false;
+    //TODO : endit.
+}
+
 void Graph_01::replier(int v, int d, int type){ //v: vertice, d: direction
   //First : Bend over "in stays".
     bool existRight = true;

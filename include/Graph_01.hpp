@@ -43,12 +43,14 @@ class Graph_01 : public Graph {
     void libererMarque(int n);
 
     int distance(int v1, int v2) /*const*/; //totest
-    void bienFormer(); //totest
-    void initialiserPenta(); //totest
-    void initialiserQuadri(); //totest
-    void replierPenta(int v, int d); //totest
-    void replierQuadri(int v, int d); //totest
+    void bienFormer(); //work in simple cases
+    void initialiserPenta();
+    void initialiserQuadri();
+    void replierPenta(int v, int d); //work in simple cases
+    void replierQuadri(int v, int d); //work in simple cases
     void writeInFile(std::string dataFile) const;
+
+    bool isomorphe(Graph const& g) const;
 
   private:
 

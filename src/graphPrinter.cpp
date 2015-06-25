@@ -61,6 +61,6 @@ graphPrinter(std::string dataFile)
         areQuadrilateral.pop_back();
         oStream << "colorierSommet(s, 'blue')" << std::endl;
     }
-    oStream << "outFig.drawopts = 'rankdir=LR ratio=.5 edge [len = 2]'" << std::endl;
-    oStream << "dessiner(outFig, algo='neato')" << std::endl;
+    oStream << "outFig.drawopts = 'rankdir=LR ratio=0.866 edge [len = 2]'" << std::endl;
+    oStream << "dessiner(outFig, algo='twopi')" << std::endl;
 }
