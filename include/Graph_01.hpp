@@ -50,7 +50,14 @@ class Graph_01 : public Graph {
     void replierQuadri(int v, int d); //work in simple cases
     void writeInFile(std::string dataFile) const;
 
-    bool isomorphe(Graph const& g) const;
+    bool isomorphe(Graph* g) const; //totest, for real, realy
+        //test it with serious... noob.
+  
+  protected:
+
+    int _getCeinture(int array[][2]) const;//totest
+        // Calculate the graph's belt, put it in array. Return belt's size.
+        // Array should be int[TAILLE_TABLEAU][2] minimum.
 
   private:
 

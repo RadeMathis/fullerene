@@ -112,9 +112,12 @@ class Graph {
          # Ecrit le graphe dans un fichier .graph.data comme decrit dans le
          # manifest. 
          # peut lancer une OpenFileFailureException. */
-    virtual bool isomorphe(Graph const& g) const = 0;
+    virtual bool isomorphe(Graph* g) const = 0;
         /* Return true if this and g are isomorph. Else, return false.
          # Retourne true si this et g sont isomorphes. false sinon. */
+
+  protected:
+    virtual int _getCeinture(int array[][2]) const = 0;
 };
 
 #endif /* INCLUDED_GRAPH_HPP */

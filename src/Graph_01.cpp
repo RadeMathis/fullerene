@@ -133,7 +133,7 @@ void Graph_01::supprimerSommet(int n){
 }
 
 Vertice* Graph_01::getSommet(int n) const {
-    if(m_sommets[n] == NULL || n < 0)
+    if(m_sommets[n] == NULL || n < 0 || n >= TAILLE_TABLEAU)
         throw NonExistentVerticeException(n);
     return m_sommets[n];
 }
@@ -166,7 +166,7 @@ int Graph_01::distance(int v1, int v2)/*const*/ { //stratum marked oigon algorit
         getSommet(v1)->mark(passed); //we mark v1 as passed
     }
     while(! enCour.empty()){
-        int va = enCour.front(); //va for actaul vertice
+        int va = enCour.front(); //va for actual vertice
         enCour.pop();
         if(va == -2){ //if we are between 2 stratum
             ++distance;
@@ -237,56 +237,97 @@ void Graph_01::writeInFile(std::string dataFile) const {
     }
 }
 
-bool Graph_01::isomorphe(Graph const& g) const {
-    if(getNbSommets() != g.getNbSommets())
+bool Graph_01::isomorphe(Graph* g) const {
+    if(getNbSommets() != g->getNbSommets())
         return false;
-    if(getNbQuadra() != g.getNbQuadra())
+    if(getNbQuadra() != g->getNbQuadra())
         return false;
-    if(getNbPenta() != g.getNbPenta())
+    if(getNbPenta() != g->getNbPenta())
         return false;
     int ceintureThis[TAILLE_TABLEAU][2];
     int    ceintureG[TAILLE_TABLEAU][2];
-    // each element get: [0]: place of a blet's Vertice, [1]: nb of -1 neigh.
-    int sizeBeltThis = 0;
-    for(int i(0); i < TAILLE_TABLEAU; ++i){
-        Vertice* vi;
-        try{
-            vi = getSommet(i);
-        } catch(NonExistentVerticeException &e) {
-            continue;
-        }
-        int nbNoneVoisin = 0;
-        for(int j(0); j < vi->getNbVoisins(); ++j){
-            if(vi->getVoisin(j) == -1)
-                ++nbNoneVoisin;
-        }
-        if(nbNoneVoisin != 0){
-            ceintureThis[sizeBeltThis][0] = i;
-            ceintureThis[sizeBeltThis][1] = nbNoneVoisin;
-            ++sizeBeltThis;
-        }
-    }
-    for(int i(0); i < TAILLE_TABLEAU; ++i){
-        Vertice* vi;
-        try{
-            vi = g.getSommet(i);
-        } catch(NonExistentVerticeException &e) {
-            continue;
-        }
-        int nbNoneVoisin = 0;
-        for(int j(0); j < vi->getNbVoisins(); ++j){
-            if(vi->getVoisin(j) == -1)
-                ++nbNoneVoisin;
-        }
-        if(nbNoneVoisin != 0){
-            ceintureG[sizeBeltG][0] = i;
-            ceintureG[sizeBeltG][1] = nbNoneVoisin;
-            ++sizeBeltG;
-        }
-    }
+    // each element get: [0]: place of a belt's Vertice, [1]: nb of -1 neigh.
+    int sizeBeltThis = _getCeinture(ceintureThis);
+    int    sizeBeltG = g->_getCeinture(ceintureG);
     if(sizeBeltThis != sizeBeltG)
         return false;
-    //TODO : endit.
+    std::vector<int> gaps = arrayEgalsCycle(ceintureThis, ceintureG);
+    //for it in "ecart possible au niveau de l'== de ceinture"
+    for (std::vector<int>::iterator it = gaps.begin(); it != gaps.end(); ++it){
+        int isomorphisme[TAILLE_TABLEAU]; //Tableau des antecedants-image
+        for(int j(0); j < TAILLE_TABLEAU; ++j)
+            isomorphisme[j] = -1;
+        for(int j(0); j < sizeBeltG; ++j)
+            isomorphisme[ceintureThis[j][0]] = ceintureG[j + (*it)][0];
+        bool continuer = true;
+        //while on trouve des truc en commun
+        while(continuer){
+            continuer = false;
+                //On continuera si on trouve un truc dans la boucle
+            //for j in "les sommets de *this"
+            for(int j(0); j < TAILLE_TABLEAU; ++j){
+                Vertice* vj;
+                try{
+                    vj = getSommet(j);
+                } catch(NonExistentVerticeException &e) {
+                    continue;
+                }
+                if(isomorphisme[j] != -1)
+                    continue;
+                int nbTreatedVoisins = 0;
+                std::vector<int> treatedVoisins;
+                for(int k(0); k < vj->getNbVoisins(); ++k)
+                    if(isomorphisme[vj->getVoisin(k)] != -1){
+                        treatedVoisins.push_back(vj->getVoisin(k));
+                        ++nbTreatedVoisins;
+                    }else 
+                        treatedVoisins.push_back(-1);
+                if(nbTreatedVoisins < 3)
+                    continue;
+                std::vector<int>treatedVoisinsIso;
+                for(std::vector<int>::iterator kt = treatedVoisins.begin();
+                                              kt != treatedVoisins.end(); ++kt)
+                    treatedVoisinsIso.push_back(*kt);
+                int aTreatedVoisin;
+                for(std::vector<int>::iterator kt = treatedVoisins.begin();
+                                              kt != treatedVoisins.end(); ++kt)
+                    if(*kt != -1){
+                        aTreatedVoisin = *kt;
+                        break;
+                    }
+                Vertice* isoATrVsn = g->getSommet(isomorphisme[aTreatedVoisin]);
+                //for k in isoATrVsn (we serach j's image)
+                for(int k(0); k < isoATrVsn->getNbVoisins(); ++k){
+                    Vertice* vk;
+                    try{
+                        vk = g->getSommet(isoATrVsn->getVoisin(k));
+                    } catch(NonExistentVerticeException &e) {
+                        continue;
+                    }
+                    int isoNbTreatedVoisins = 0;
+                    std::vector<int> isoTreatedVoisins;
+                    for(int l(0); l < vk->getNbVoisins(); ++l)
+                        if(isomorphisme[vk->getVoisin(l)] != -1){
+                            isoTreatedVoisins.push_back(vk->getVoisin(l));
+                            ++isoNbTreatedVoisins;
+                        }else 
+                            isoTreatedVoisins.push_back(-1);
+                    if(vectorEgalsCycle(treatedVoisins, isoTreatedVoisins).size()){
+                        isomorphisme[j] = vj->getVoisin(k);
+                        continuer = true;
+                        break; //On a trouve et ajoute le voisin cherche.
+                    }
+                }
+            }                
+        }
+        bool isomorphIsComplete = true;
+        for(int j(0); i < TAILLE_TABLEAU; ++j) //test if we get isomorphisme
+            if(isomorphisme[j] == -1)
+                isomorphIsComplete = false;
+        if(isomorphIsComplete)
+            return true; 
+    }
+    return false;
 }
 
 void Graph_01::replier(int v, int d, int type){ //v: vertice, d: direction
@@ -301,7 +342,7 @@ void Graph_01::replier(int v, int d, int type){ //v: vertice, d: direction
     int  previous_r = v;
     int  previous_l = v;
     std::queue<int> toDel;
-    int isInQueue = reserverMarque();
+    int   isInQueue = reserverMarque();
     bool thereIsNoRight = false;
     if(existRight && existLeft){
         toDel.push(origin->getVoisin((d + 1) % 6));
@@ -478,8 +519,6 @@ void Graph_01::relier(int i){
         if(v->getVoisin(j % v_mod) != -1)
             continue;
         if(v->getVoisin((j + 1) % v_mod) != -1) {
-            if(i == 17)
-                std::cout << v->getVoisin((j + 1) % v_mod) << std::endl;
             Vertice* neigh = getSommet(v->getVoisin((j + 1) % v_mod));
             int n_mod = neigh->getNbVoisins();
             int in_neigh = neigh->isXthVoisin(i);
@@ -492,8 +531,6 @@ void Graph_01::relier(int i){
             }
         }
         if(v->getVoisin((j + (v_mod - 1)) % v_mod) != -1) {
-            if(i == 17)
-                std::cout << v->getVoisin((j + (v_mod - 1)) % v_mod) << std::endl;
             Vertice* neigh = getSommet(v->getVoisin((j + (v_mod - 1)) % v_mod));
             int n_mod = neigh->getNbVoisins();
             int in_neigh = neigh->isXthVoisin(i);
@@ -562,4 +599,45 @@ void Graph_01::completerADistance2(){
             relier(nb);
         }
     }
+}
+
+int Graph_01::_getCeinture(int array[][2]) const {
+    int sizeBelt = 0;
+    int actual;
+    for(int i(0); i < TAILLE_TABLEAU; ++i){
+        Vertice* vi;
+        try{
+            vi = getSommet(i);
+        } catch(NonExistentVerticeException &e) {
+            continue;
+        }
+        bool isOnBelt = false;
+        for(int j(0); j < vi->getNbVoisins(); ++j)
+            if(vi->getVoisin(j) == -1){
+                isOnBelt = true;
+                break;
+            }
+        if(isOnBelt){
+            actual = i;
+            break;
+        }
+    }
+    do{
+        Vertice* va = getSommet(actual);
+        array[sizeBelt][1] = 0;
+        for(int i(0); i < va->getNbVoisins(); ++i)
+            if(va->getVoisin(i) == -1)
+                ++array[sizeBelt][1];
+        array[sizeBelt][0] = actual;
+        ++sizeBelt;
+        int leftNeigh = 0;
+        //first: go in none
+        while(va->getVoisin(leftNeigh) != -1)
+            ++leftNeigh;
+        //then: go out of none
+        while(va->getVoisin(leftNeigh) == -1)
+            ++leftNeigh;
+        actual = va->getVoisin(leftNeigh);
+    }while(actual != array[0][0]);
+    return sizeBelt;
 }
