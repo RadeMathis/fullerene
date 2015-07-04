@@ -11,11 +11,14 @@
  * encapsulated in graphs.
  * * */
 
-#ifndef INCLUDED_GRAPH_HPP
-#define INCLUDED_GRAPH_HPP 
+#pragma once 
 
 #include <Vertice.hpp>
 #include <string>
+
+#include <Graph_01.hpp>
+
+class Graph_01;
 
 class Graph {
 
@@ -26,7 +29,7 @@ class Graph {
      * Graph(string dataFile);
      * Graph(Graph const& g);
      */
-    virtual ~Graph() = 0;
+    virtual ~Graph(){}
 
     virtual Graph* clone() const = 0;
         /* Just return a pointer to a graph copy as in JAVA
@@ -115,12 +118,14 @@ class Graph {
     virtual bool isomorphe(Graph* g) const = 0;
         /* Return true if this and g are isomorph. Else, return false.
          # Retourne true si this et g sont isomorphes. false sinon. */
+    virtual int _getCeinture(int array[][2]) const = 0;
 
   protected:
-    virtual int _getCeinture(int array[][2]) const = 0;
-};
 
-#endif /* INCLUDED_GRAPH_HPP */
+        // Calculate the graph's belt, put it in array. Return belt's size.
+        // Array should be int[TAILLE_TABLEAU][2] minimum.
+
+};
 
 // find a solution for this:
 //    virtual Graph* readFromFile(std::string dataFile) = 0;

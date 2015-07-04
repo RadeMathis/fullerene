@@ -7,8 +7,7 @@
  * Usefull functions for the rest of the program
  * * */
 
-#ifndef INCLUDED_FUNCTIONS_H
-#define INCLUDED_FUNCTIONS_H
+#pragma once
 
 #include <vector>
 #include <string>
@@ -43,5 +42,3 @@ std::vector<int> vectorEgalsCycle(std::vector<int> a, std::vector<int> b);
 	 * a[x][0] and b[y][0].
 	 # Comme la fonction ci-dessus, sauf qu'au lieu de regarder les champs
 	 # [x][0] des tableau, on regardera les [x] des vecteurs. */
-
-#endif /* INCLUDED_FUNCTIONS_H */

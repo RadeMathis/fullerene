@@ -10,7 +10,6 @@ add_executable(
 	Vertice_01.cpp
 	Vertice.cpp
 	Graph_01.cpp
-	Graph.cpp
 	functions.cpp
 	graphExceptions.cpp
 	graphPrinter.cpp

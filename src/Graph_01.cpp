@@ -251,14 +251,16 @@ bool Graph_01::isomorphe(Graph* g) const {
     int    sizeBeltG = g->_getCeinture(ceintureG);
     if(sizeBeltThis != sizeBeltG)
         return false;
-    std::vector<int> gaps = arrayEgalsCycle(ceintureThis, ceintureG);
+    std::vector<int> gaps = arrayEgalsCycle(ceintureThis, ceintureG, sizeBeltG);
     //for it in "ecart possible au niveau de l'== de ceinture"
     for (std::vector<int>::iterator it = gaps.begin(); it != gaps.end(); ++it){
         int isomorphisme[TAILLE_TABLEAU]; //Tableau des antecedants-image
         for(int j(0); j < TAILLE_TABLEAU; ++j)
             isomorphisme[j] = -1;
-        for(int j(0); j < sizeBeltG; ++j)
-            isomorphisme[ceintureThis[j][0]] = ceintureG[j + (*it)][0];
+        for(int j(0); j < sizeBeltG; ++j){
+            int image = ceintureG[(j + (*it)) % sizeBeltG][0];
+            isomorphisme[ceintureThis[j][0]] = image;
+        }
         bool continuer = true;
         //while on trouve des truc en commun
         while(continuer){
@@ -321,9 +323,16 @@ bool Graph_01::isomorphe(Graph* g) const {
             }                
         }
         bool isomorphIsComplete = true;
-        for(int j(0); i < TAILLE_TABLEAU; ++j) //test if we get isomorphisme
+        for(int j(0); j < TAILLE_TABLEAU; ++j){ //test if we get isomorphisme
+            try{ 
+                getSommet(j);
+            }
+            catch(NonExistentVerticeException &e){
+                continue;
+            }
             if(isomorphisme[j] == -1)
                 isomorphIsComplete = false;
+        }
         if(isomorphIsComplete)
             return true; 
     }

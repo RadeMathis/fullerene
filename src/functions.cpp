@@ -45,7 +45,7 @@ arrayEgalsCycle(int a[][2], int b[][2], int sizeArrays)
     for(int i(0); i < sizeArrays; ++i){
         bool sontIddentiques = true;
         for(int j(0); j < sizeArrays; ++j){
-            if(a[j][1] != b[j+i][1]){
+            if(a[j][1] != b[(j + i) % sizeArrays][1]){
                 sontIddentiques = false;
                 break;
             }
@@ -63,10 +63,10 @@ vectorEgalsCycle(std::vector<int> a, std::vector<int> b)
     std::vector<int> out;
     if(a.size() != b.size())
         return out;
-    for(int i(0); i < a.size(); ++i){
+    for(unsigned int i(0); i < a.size(); ++i){
         bool sontIddentiques = true;
-        for(int j(0); j < a.size(); ++j){
-            if(a[j] != b[j+i]){
+        for(unsigned int j(0); j < a.size(); ++j){
+            if(a[j] != b[(j+i) % b.size()]){
                 sontIddentiques = false;
                 break;
             }

@@ -342,7 +342,7 @@ def dotify (G, etiquettesAretes = True, colormark = 'Black', suffixe = 'dot'):
                 fontcolor = "blue"
             else:
                 fontcolor = "black"
-        # ONLY FOR DEBBUGGING : ##
+        # ONLY FOR DEBBUGGING : #
 ##            fontcolor = "red"
             f.write ('  %s [style = filled, peripheries = %s, fillcolor = %s, fontcolor = %s, color = %s] %s;\n' %
                      (snom, entoure, s.color, fontcolor, bord, s.drawopts))

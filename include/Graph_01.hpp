@@ -7,8 +7,7 @@
  * This is the first implementation of v1.Graph
  * * */
 
-#ifndef INCLUDED_GRAPH_01_HPP
-#define INCLUDED_GRAPH_01_HPP
+#pragma once
 
 #include <string>
 #include <vector>
@@ -18,6 +17,8 @@
 #include <graphExceptions.hpp>
 
 #define TAILLE_TABLEAU 256
+
+class Graph;
 
 class Graph_01 : public Graph {
 
@@ -52,12 +53,10 @@ class Graph_01 : public Graph {
 
     bool isomorphe(Graph* g) const; //totest, for real, realy
         //test it with serious... noob.
+    int _getCeinture(int array[][2]) const;//totest
   
   protected:
 
-    int _getCeinture(int array[][2]) const;//totest
-        // Calculate the graph's belt, put it in array. Return belt's size.
-        // Array should be int[TAILLE_TABLEAU][2] minimum.
 
   private:
 
@@ -77,6 +76,3 @@ class Graph_01 : public Graph {
 
 
 };
-
-
-#endif /* INCLUDED_GRAPH_01_HPP */
