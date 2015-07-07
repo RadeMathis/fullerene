@@ -7,19 +7,19 @@
  * Supposed to transform a .graph.data into .graph.py
  * * */
 
-#ifndef INCLUDED_GRAPH_PRINTER_HPP
-#define INCLUDED_GRAPH_PRINTER_HPP
+#pragma once
 
 #include <string>
 
-void graphPrinter(std::string);
-	/* This function takes a .graph.data file (call it only with .graph), 
+void graphPrinter(std::string, std::string dir);
+	/* This function takes a .graph.data file (call it without .graph.data), 
 	 * translate it into a .graph.py Using the command : 
 	 * python <myFile>.graph will print the graph in your default browser.
+	 * Will put .gaph.py in dir
 	 # Cette fonction prend comme paramettre un fichier .graph.data et le
 	 # traduit en .graph.py (passer seulement <monFichier>.graph en parametre)
 	 # La commande : pyhton <monFichier>.graph affichera une image du graphe
 	 # dans le navigateur par defaut. */
-
-
-#endif /* INCLUDED_GRAPH_PRINTER_HPP */
+void graphPrinter(std::string);
+	/* Just call graphPrinter( , "");
+	 # Appelle juste graphPrinter( , ""); */

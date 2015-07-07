@@ -6,17 +6,23 @@
 #include <graphExceptions.hpp>
 #include <functions.hpp>
 
-
-void 
+void
 graphPrinter(std::string dataFile)
 {
-    std::ifstream iStream(dataFile + ".data", std::ios::in);
+    graphPrinter(dataFile, "");
+}
+
+void 
+graphPrinter(std::string dataFile, std::string dir)
+{
+    std::string fileName = dataFile + ".graph";
+    std::ifstream iStream(fileName + ".data", std::ios::in);
     if(!iStream)
-        throw OpenFileFailureException(dataFile + ".data");
+        throw OpenFileFailureException(fileName + ".data");
     
-    std::ofstream oStream(dataFile + ".py", std::ios::out | std::ios::trunc);
+    std::ofstream oStream(dir+fileName+".py", std::ios::out | std::ios::trunc);
     if(!oStream)
-        throw OpenFileFailureException(dataFile + ".py");
+        throw OpenFileFailureException(dir + fileName + ".py");
     //todo: close both streams
 
     oStream << "import sys" << std::endl; 

@@ -23,9 +23,10 @@ Graph_01::Graph_01() : m_nbSommets(0), m_nbPenta(0), m_nbQuadra(0) {
 }
 
 Graph_01::Graph_01(std::string dataFile){
-    std::ifstream dataStream(dataFile.c_str(), std::ios::in);
+    std::string fileName = dataFile + ".graph.data";
+    std::ifstream dataStream(fileName.c_str(), std::ios::in);
     if(! dataStream) 
-    	throw OpenFileFailureException(dataFile);
+    	throw OpenFileFailureException(fileName);
     std::string lineBuffer;
     std::vector<std::string> sentenceBuffer;
 
@@ -223,9 +224,10 @@ void Graph_01::replierQuadri(int v, int d){
 }
 
 void Graph_01::writeInFile(std::string dataFile) const {
-    std::ofstream dataStream(dataFile.c_str(), std::ios::out | std::ios::trunc);
+    std::string fileName = dataFile + ".graph.data";
+    std::ofstream dataStream(fileName.c_str(), std::ios::out | std::ios::trunc);
     if (! dataStream)
-        throw OpenFileFailureException(dataFile);
+        throw OpenFileFailureException(fileName);
     dataStream << m_nbSommets <<' '<< m_nbPenta <<' '<< m_nbQuadra << std::endl;
     for(int i(0); i < TAILLE_TABLEAU; ++i){
         if (m_sommets[i] == NULL)
@@ -347,10 +349,6 @@ void Graph_01::replier(int v, int d, int type){ //v: vertice, d: direction
     std::queue<int> toDel;
     int   isInQueue = reserverMarque();
     bool thereIsNoRight = false;
-    if(existRight && existLeft){
-        toDel.push(origin->getVoisin((d + 1) % 6));
-        getSommet(toDel.front())->mark(isInQueue);
-    }
     try {
         right = getSommet(r);
     } catch(NonExistentVerticeException &e) {
@@ -361,6 +359,10 @@ void Graph_01::replier(int v, int d, int type){ //v: vertice, d: direction
         left = getSommet(l);
     } catch(NonExistentVerticeException &e) {
         existLeft = false;
+    }
+    if(existRight && existLeft){
+        toDel.push(origin->getVoisin((d + 1) % 6));
+        getSommet(toDel.front())->mark(isInQueue);
     }
     while(existRight && existLeft){ //Bend over "in stays"
         int in_r = right->isXthVoisin(previous_r);//The way we came in r
@@ -506,7 +508,7 @@ void Graph_01::replier(int v, int d, int type){ //v: vertice, d: direction
         toDel.pop();
     }
     libererMarque(isInQueue);
-    relier();
+    bienFormer();
 }
 
 void Graph_01::relier(){
