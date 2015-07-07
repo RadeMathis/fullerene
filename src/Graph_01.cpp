@@ -287,18 +287,17 @@ bool Graph_01::isomorphe(Graph* g) const {
                 if(nbTreatedVoisins < 3)
                     continue;
                 std::vector<int>treatedVoisinsIso;
-                for(std::vector<int>::iterator kt = treatedVoisins.begin();
-                                              kt != treatedVoisins.end(); ++kt)
-                    treatedVoisinsIso.push_back(*kt);
                 int aTreatedVoisin;
                 for(std::vector<int>::iterator kt = treatedVoisins.begin();
                                               kt != treatedVoisins.end(); ++kt)
                     if(*kt != -1){
+                        treatedVoisinsIso.push_back(isomorphisme[*kt]);
                         aTreatedVoisin = *kt;
-                        break;
                     }
+                    else
+                        treatedVoisinsIso.push_back(-1);
                 Vertice* isoATrVsn = g->getSommet(isomorphisme[aTreatedVoisin]);
-                //for k in isoATrVsn (we serach j's image)
+                //for k in isoATrVsn's voisins (we serach j's image)
                 for(int k(0); k < isoATrVsn->getNbVoisins(); ++k){
                     Vertice* vk;
                     try{
@@ -306,16 +305,11 @@ bool Graph_01::isomorphe(Graph* g) const {
                     } catch(NonExistentVerticeException &e) {
                         continue;
                     }
-                    int isoNbTreatedVoisins = 0;
-                    std::vector<int> isoTreatedVoisins;
+                    std::vector<int> isoVoisins;
                     for(int l(0); l < vk->getNbVoisins(); ++l)
-                        if(isomorphisme[vk->getVoisin(l)] != -1){
-                            isoTreatedVoisins.push_back(vk->getVoisin(l));
-                            ++isoNbTreatedVoisins;
-                        }else 
-                            isoTreatedVoisins.push_back(-1);
-                    if(vectorEgalsCycle(treatedVoisins, isoTreatedVoisins).size()){
-                        isomorphisme[j] = vj->getVoisin(k);
+                        isoVoisins.push_back(vk->getVoisin(l));
+                    if(sameTreatedVoisins(treatedVoisinsIso, isoVoisins)){
+                        isomorphisme[j] = isoATrVsn->getVoisin(k);
                         continuer = true;
                         break; //On a trouve et ajoute le voisin cherche.
                     }

@@ -42,3 +42,10 @@ std::vector<int> vectorEgalsCycle(std::vector<int> a, std::vector<int> b);
 	 * a[x][0] and b[y][0].
 	 # Comme la fonction ci-dessus, sauf qu'au lieu de regarder les champs
 	 # [x][0] des tableau, on regardera les [x] des vecteurs. */
+bool sameTreatedVoisins(std::vector<int> a, std::vector<int> b);
+	/* Will do the same as upper function.
+	 * But will only return true if exist a possible cycle.
+	 * Also, consider -1 as a wildcard.
+	 # Pareil que la fonction d'au desus, mais se contente de retourner
+	 # true s'il existe une agalite.
+	 # Considere que -1 est == à tout. */

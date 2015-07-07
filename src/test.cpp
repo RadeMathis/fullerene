@@ -8,7 +8,7 @@
 using namespace std;
 
 int
-main(/*int argc, char *argv[]*/)
+main(void)
 {
     Graph* g1 = new Graph_01("premierTest.graph.data");
     Graph* g2 = new Graph_01("isoPremTest.graph.data");
@@ -18,7 +18,7 @@ main(/*int argc, char *argv[]*/)
     g2->writeInFile("isoDeuxTest.graph.data");
     /*graphPrinter("deuxiemeTest.graph");
     graphPrinter("isoDeuxTest.graph");*/
-    cout << g1->isomorphe(g2) << endl;
+    cout << boolalpha << g1->isomorphe(g2) << endl;
 
     return 0;
 }

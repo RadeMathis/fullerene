@@ -77,3 +77,21 @@ vectorEgalsCycle(std::vector<int> a, std::vector<int> b)
     }
     return out;
 }
+
+bool 
+sameTreatedVoisins(std::vector<int> a, std::vector<int> b)
+{
+    if(a.size() != b.size())
+        return false;
+    for(unsigned int i(0); i < a.size(); ++i){
+        bool sontIddentiques = true;
+        for(unsigned int j(0); j < a.size(); ++j)
+            if(a[j] != -1 && b[(j+i) % b.size()] != a[j]){
+                sontIddentiques = false;
+                break;
+            }
+        if(sontIddentiques)
+            return true;
+    }
+    return false;
+}
