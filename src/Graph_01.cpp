@@ -161,6 +161,15 @@ int Graph_01::distance(int v1, int v2)/*const*/ { //stratum marked oigon algorit
     std::queue<int> enCour;
     int distance = 0;
     int passed = reserverMarque();
+    for(int i(0); i < TAILLE_TABLEAU; ++i){
+        Vertice* vi;
+        try{
+            vi = getSommet(i);
+        } catch(NonExistentVerticeException &e) {
+            continue;
+        }
+        vi->unmark(passed);
+    }
     if(v1 == v2)
         return 0;
     else {
@@ -168,10 +177,12 @@ int Graph_01::distance(int v1, int v2)/*const*/ { //stratum marked oigon algorit
         enCour.push(v1);
         getSommet(v1)->mark(passed); //we mark v1 as passed
     }
-    while(! enCour.empty()){
+    while(true){ // real stop condition 4 lines below (enCour.empty())
         int va = enCour.front(); //va for actual vertice
         enCour.pop();
         if(va == -2){ //if we are between 2 stratum
+            if(enCour.empty())
+                break;
             ++distance;
             enCour.push(-2);
             continue;
@@ -238,8 +249,7 @@ void Graph_01::writeInFile(std::string dataFile) const {
         dataStream << i << ' ' << m_sommets[i]->getNbVoisins();
         for(int j(0); j < m_sommets[i]->getNbVoisins(); ++j)
             dataStream << ' ' << m_sommets[i]->getVoisin(j);
-        dataStream << ' ' << m_sommets[i]->isArkenMarked() << std::endl;
-        dataStream << std::endl;
+        dataStream << ' ' << m_sommets[i]->isArkenMarked() << std::endl;=
     }
 }
 
@@ -248,7 +258,62 @@ bool isArkenMarked(int v) const {
 }
 
 void markArken(){
-    //TODO : chier des bulles
+    std::vector<int> indiceDistances; //see below
+    std::vector<std::array<int, TAILLE_TABLEAU>> distances; //see below
+        //distannce[x][y] is the distance between indiceDistances[x] and y.
+    for(int i(0); i < TAILLE_TABLEAU; ++i){
+        Vertice* vi;
+        try{
+            vi = getSommet(i);
+        } catch(NonExistentVerticeException &e) {
+            continue;
+        }
+        if(vi->getNbVoisins == 6)
+            continue;
+        std::array<int, TAILLE_TABLEAU> distanceToVi;
+        std::queue<int> oignon; //for stratum marked oignon algorithm (manifest)
+        int isInQueue = reserverMarque();
+        for(int j(0); j < TAILLE_TABLEAU; ++j){
+            Vertice* vj;
+            try{
+                vj = getSommet(j);
+            } catch(NonExistentVerticeException &e) {
+                continue;
+            }
+            vj->unmark(passed);
+        }
+        int actualDistance = 0;
+        oignon.push(i);
+        vi->mark(isInQueue);
+        oignon.push(-1); //<-- This is the stratum marker.
+        while(true){ //real stop condition 3 lines below (oignon.empty())
+            if(oignon.front() == -1){
+                oignon.pop();
+                if(oignon.empty())
+                    break;
+                oignon.push(-1);
+                ++actualDistance;
+                continue;
+            }
+            distanceToVi[oignon.front()] = actualDistance;
+            vFront = getSommet(oignon.front);
+            oignon.pop();
+            for(int j(0); j < vFront->getNbVoisins(); ++j){
+                Vertice* vj = vFront->getVoisin(j);
+                if(! vj->isMarked(isInQueue)){
+                    vj->mark(isInQueue);
+                    oignon.push(j);
+                }
+            }
+        }
+        libererMarque(isInQueue);
+        indiceDistances.push_back(i);
+        distances.push_back(distanceToVi);
+    }
+   /////////////////////////////////////////////////////////////////////////////
+  ///////////////////  TODO  ////////////////use distance to make//////////////
+ /////////////////// END IT /////////////////a triangular inequality/////////
+/////////////////////////////////////////////////////////////////////////////
 }
 
 bool Graph_01::isomorphe(Graph* g) const {
@@ -360,6 +425,15 @@ void Graph_01::replier(int v, int d, int type){ //v: vertice, d: direction
     int  previous_l = v;
     std::queue<int> toDel;
     int   isInQueue = reserverMarque();
+    for(int i(0); i < TAILLE_TABLEAU; ++i){
+        Vertice* vi;
+        try{
+            vi = getSommet(i);
+        } catch(NonExistentVerticeException &e) {
+            continue;
+        }
+        vi->unmark(passed);
+    }//this loop initialise the marking
     bool thereIsNoRight = false;
     try {
         right = getSommet(r);
