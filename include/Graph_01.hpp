@@ -50,6 +50,8 @@ class Graph_01 : public Graph {
     void replierPenta(int v, int d); //work in simple cases
     void replierQuadri(int v, int d); //work in simple cases
     void writeInFile(std::string dataFile) const;
+    bool isArkenMarked(int) const;
+    void markArken();
 
     bool isomorphe(Graph* g) const; //totest, for real, realy
         //test it with serious... noob.

@@ -17,7 +17,7 @@
 
 Graph_01::Graph_01() : m_nbSommets(0), m_nbPenta(0), m_nbQuadra(0) {
     for(int i(0); i < 8; ++i)
-        m_marquesReserves[i] = 0;
+        m_marquesReserves[i] = false;
     for(int i(0); i < TAILLE_TABLEAU; ++i)
         m_sommets[i] = NULL;
 }
@@ -52,6 +52,8 @@ Graph_01::Graph_01(std::string dataFile){
             m_sommets[thisVertice]->addVoisin(j - 2, 
                                             atoi(sentenceBuffer[j].c_str()));
         }
+        if(sentenceBuffer[sentenceBuffer[1] + 2])
+            m_sommets[thisVertice]->arkenMark();
     }
 }
 
@@ -196,6 +198,7 @@ int Graph_01::distance(int v1, int v2)/*const*/ { //stratum marked oigon algorit
 void Graph_01::bienFormer(){
         relier();
         completerADistance2();
+        arkenMark();
 }
 
 void Graph_01::initialiserPenta(){
@@ -235,8 +238,17 @@ void Graph_01::writeInFile(std::string dataFile) const {
         dataStream << i << ' ' << m_sommets[i]->getNbVoisins();
         for(int j(0); j < m_sommets[i]->getNbVoisins(); ++j)
             dataStream << ' ' << m_sommets[i]->getVoisin(j);
+        dataStream << ' ' << m_sommets[i]->isArkenMarked() << std::endl;
         dataStream << std::endl;
     }
+}
+
+bool isArkenMarked(int v) const {
+    return getSommet(v)->isArkenMarked();
+}
+
+void markArken(){
+    //TODO : chier des bulles
 }
 
 bool Graph_01::isomorphe(Graph* g) const {

@@ -43,6 +43,9 @@ class Vertice_01 : public Vertice {
   	bool isMarked(int n) const; //0 <= n < 8, we got 8 marks
   	void mark(int n); //idem
   	void unmark(int n); //idem
+    bool isArkenMarqued();
+    void markArken();
+    void unmarkArken();
 
   private:
 
@@ -51,6 +54,7 @@ class Vertice_01 : public Vertice {
     int m_nbVoisins;
     int m_voisins[6]; //we'll never have to treat more than 6 neightborgs
     bool m_marques[8]; //used in algorithm to mark vertices
+    bool m_arkenMarque;
 
 };
 

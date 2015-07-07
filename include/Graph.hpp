@@ -115,15 +115,22 @@ class Graph {
          # Ecrit le graphe dans un fichier .graph.data comme decrit dans le
          # manifest. 
          # peut lancer une OpenFileFailureException. */
+    virtual bool isArkenMarked(int) const = 0;
+        /* Return true if the parameter's passed vertice is arkenMarked.
+         # retourne vrai si the sommet passe en parametre est arkenMarque. */
+    virtual void markArken() = 0;
+        /* All the Vertice in the Arken will be arkenMarked. (see manifest).
+         # Tout les sommets de l'arken seront arkenMarqués. (cf manifest).*/
     virtual bool isomorphe(Graph* g) const = 0;
         /* Return true if this and g are isomorph. Else, return false.
          # Retourne true si this et g sont isomorphes. false sinon. */
+
+//should be protected: don't know why I cannot:
     virtual int _getCeinture(int array[][2]) const = 0;
-
-  protected:
-
         // Calculate the graph's belt, put it in array. Return belt's size.
         // Array should be int[TAILLE_TABLEAU][2] minimum.
+
+  protected:
 
 };
 

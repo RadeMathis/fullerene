@@ -40,6 +40,9 @@ class Vertice{
     virtual bool isMarked(int n) const = 0; //0 <= n < 8, we got 8 marks
     virtual void mark(int n) = 0; //idem
     virtual void unmark(int n) = 0; //idem
+    virtual bool isArkenMarked() const = 0; //special mark, for arken.
+    virtual void markArken() = 0;
+    virtual void unmarkArken() = 0;
 
     friend std::ostream &operator<<( std::ostream &steam, Vertice const& s);
 
