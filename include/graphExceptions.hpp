@@ -1,7 +1,6 @@
 /* Exceptions for Graph class */
 
-#ifndef INCLUDED_GRAPH_EXCEPTIONS_HPP
-#define INCLUDED_GRAPH_EXCEPTIONS_HPP
+#pragma once
 
 #include <exception>
 #include <string>
@@ -34,5 +33,3 @@ class NoMoreMarksException : public std::exception {
   public:
     const char* what() const throw();
 };
-
-#endif /* INCLUDED_GRAPH_EXCEPTIONS_HPP */
