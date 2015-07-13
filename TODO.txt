@@ -1,5 +1,3 @@
-comprend pk OpenFileFAilureException
-TESTER(pour de vrai: Graph_01::isomorphisme(Graph const&)
 mettre un _ devant les methodes private
 Pas de bug en vue, mais un affichage parfois degueu
 
