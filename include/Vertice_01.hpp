@@ -43,7 +43,7 @@ class Vertice_01 : public Vertice {
   	bool isMarked(int n) const; //0 <= n < 8, we got 8 marks
   	void mark(int n); //idem
   	void unmark(int n); //idem
-    bool isArkenMarqued();
+    bool isArkenMarked() const;
     void markArken();
     void unmarkArken();
 

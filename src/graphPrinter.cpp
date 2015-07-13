@@ -35,6 +35,7 @@ graphPrinter(std::string dataFile, std::string dir)
     std::vector<std::string> vectBuff;
     std::vector<int> arePentagon;
     std::vector<int> areQuadrilateral; //Faut que j'apprenne a ecrire ca
+    std::vector<int> areInArken;
 
     getline(iStream, buff);
     vectBuff = decouperString(buff);
@@ -52,6 +53,8 @@ graphPrinter(std::string dataFile, std::string dir)
                 oStream << "['" << vectBuff[0] << "','" << vectBuff[j] << "'],";
             }
         }
+        if(atoi(vectBuff[atoi(vectBuff[1].c_str()) + 2].c_str()))
+            areInArken.push_back(atoi(vectBuff[0].c_str()));
     }
     oStream.seekp(-1, std::ios::cur); //Back one char to del last ','
     oStream << "], \"outFig\")" << std::endl;
@@ -66,6 +69,12 @@ graphPrinter(std::string dataFile, std::string dir)
         oStream << std::endl;
         areQuadrilateral.pop_back();
         oStream << "colorierSommet(s, 'blue')" << std::endl;
+    }
+    while(!areInArken.empty()){
+        oStream << "s = sommetNom(outFig, '" << areInArken.back() << "')";
+        oStream << std::endl;
+        areInArken.pop_back();
+        oStream << "marquerSommet(s)" << std::endl;
     }
     oStream << "outFig.drawopts = 'rankdir=LR ratio=0.866 edge [len = 2]'" << std::endl;
     oStream << "dessiner(outFig, algo='twopi')" << std::endl;

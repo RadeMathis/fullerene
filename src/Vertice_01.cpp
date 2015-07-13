@@ -1,12 +1,12 @@
 #include <Vertice_01.hpp>
 
-Vertice_01::Vertice_01() : m_nbVoisins(0) , arkenMarque(0) {
+Vertice_01::Vertice_01() : m_nbVoisins(0) , m_arkenMarque(0) {
     for(int i(0); i < 8; ++i)
         m_marques[i] = false;
 }
 
 Vertice_01::Vertice_01(Vertice_01 const& s) : m_nbVoisins(s.getNbVoisins()) {
-    arkenMarque = s.isArkenMarked();
+    m_arkenMarque = s.isArkenMarked();
     for(int i(0); i < 8; ++i)
         m_marques[i] = false;
     for(int i(0); i < s.getNbVoisins(); ++i)
@@ -14,7 +14,7 @@ Vertice_01::Vertice_01(Vertice_01 const& s) : m_nbVoisins(s.getNbVoisins()) {
 }
 
 Vertice_01::Vertice_01(Vertice const* s) : m_nbVoisins(s->getNbVoisins()) {
-    arkenMarque = s->isArkenMarked();
+    m_arkenMarque = s->isArkenMarked();
     for(int i(0); i < 8; ++i)
         m_marques[i] = false;
     for(int i(0); i < s->getNbVoisins(); ++i)
@@ -96,15 +96,15 @@ void Vertice_01::afficher(std::ostream &stream) const {
 }
 
 bool Vertice_01::isArkenMarked() const {
-    return arkenMarque;
+    return m_arkenMarque;
 }
 
 void Vertice_01::markArken(){
-    arkenMarque = true;
+    m_arkenMarque = true;
 }
 
 void Vertice_01::unmarkArken(){
-    arkenMarque = false;
+    m_arkenMarque = false;
 }
 
 std::ostream& operator<<( std::ostream &out, Vertice const& vertex )

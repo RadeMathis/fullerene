@@ -10,6 +10,7 @@
 #include <Graph_01.hpp>
 #include <functions.hpp>
 #include <queue>
+#include <array>
 #include <string>
 #include <exception>
 
@@ -52,13 +53,14 @@ Graph_01::Graph_01(std::string dataFile){
             m_sommets[thisVertice]->addVoisin(j - 2, 
                                             atoi(sentenceBuffer[j].c_str()));
         }
-        if(sentenceBuffer[sentenceBuffer[1] + 2])
-            m_sommets[thisVertice]->arkenMark();
+        if(atoi(sentenceBuffer[atoi(sentenceBuffer[1].c_str()) + 2].c_str()))
+            m_sommets[thisVertice]->markArken();
     }
 }
 
 Graph_01::Graph_01(Graph_01 const& g) : m_nbSommets(g.getNbSommets()), 
-        m_nbPenta(g.getNbPenta()), m_nbQuadra(g.getNbQuadra()) {
+        m_nbPenta(g.getNbPenta()), m_nbQuadra(g.getNbQuadra())
+{
     for(int i(0); i < 8; ++i)
         m_marquesReserves[i] = 0;
     for(int i(0); i < TAILLE_TABLEAU; ++i){
@@ -71,7 +73,8 @@ Graph_01::Graph_01(Graph_01 const& g) : m_nbSommets(g.getNbSommets()),
 }
 
 Graph_01::Graph_01(Graph const* g) : m_nbSommets(g->getNbSommets()), 
-        m_nbPenta(g->getNbPenta()), m_nbQuadra(g->getNbQuadra()) {
+        m_nbPenta(g->getNbPenta()), m_nbQuadra(g->getNbQuadra()) 
+{
     for(int i(0); i < 8; ++i)
         m_marquesReserves[i] = 0;
     for(int i(0); i < TAILLE_TABLEAU; ++i){
@@ -209,7 +212,7 @@ int Graph_01::distance(int v1, int v2)/*const*/ { //stratum marked oigon algorit
 void Graph_01::bienFormer(){
         relier();
         completerADistance2();
-        arkenMark();
+        markArken();
 }
 
 void Graph_01::initialiserPenta(){
@@ -218,6 +221,7 @@ void Graph_01::initialiserPenta(){
     m_sommets[0] = new Vertice_01();
     for(int i(0); i < 5; ++i)
         m_sommets[0]->addVoisin(i, -1);
+    bienFormer();
 }
 
 void Graph_01::initialiserQuadri(){
@@ -226,6 +230,7 @@ void Graph_01::initialiserQuadri(){
     m_sommets[0] = new Vertice_01();
     for(int i(0); i < 4; ++i)
         m_sommets[0]->addVoisin(i, -1);
+    bienFormer();
 }
 
 
@@ -249,18 +254,18 @@ void Graph_01::writeInFile(std::string dataFile) const {
         dataStream << i << ' ' << m_sommets[i]->getNbVoisins();
         for(int j(0); j < m_sommets[i]->getNbVoisins(); ++j)
             dataStream << ' ' << m_sommets[i]->getVoisin(j);
-        dataStream << ' ' << m_sommets[i]->isArkenMarked() << std::endl;=
+        dataStream << ' ' << m_sommets[i]->isArkenMarked() << std::endl;
     }
 }
 
-bool isArkenMarked(int v) const {
+bool Graph_01::isArkenMarked(int v) const {
     return getSommet(v)->isArkenMarked();
 }
 
-void markArken(){
-    std::vector<int> indiceDistances; //see below
-    std::vector<std::array<int, TAILLE_TABLEAU>> distances; //see below
-        //distannce[x][y] is the distance between indiceDistances[x] and y.
+void Graph_01::markArken()
+{
+    // D'abord, dans le doute, on demarque tout.
+    // C'est peut etre inutile, je verrai ca plus tard.
     for(int i(0); i < TAILLE_TABLEAU; ++i){
         Vertice* vi;
         try{
@@ -268,7 +273,19 @@ void markArken(){
         } catch(NonExistentVerticeException &e) {
             continue;
         }
-        if(vi->getNbVoisins == 6)
+        vi->unmarkArken();
+    }
+    std::vector<int> indiceDistances; //see below
+    std::vector<std::array<int, TAILLE_TABLEAU>> distances; //see below
+        //distance[x][y] is the distance between indiceDistances[x] and y.
+    for(int i(0); i < TAILLE_TABLEAU; ++i){
+        Vertice* vi;
+        try{
+            vi = getSommet(i);
+        } catch(NonExistentVerticeException &e) {
+            continue;
+        }
+        if(vi->getNbVoisins() == 6)
             continue;
         std::array<int, TAILLE_TABLEAU> distanceToVi;
         std::queue<int> oignon; //for stratum marked oignon algorithm (manifest)
@@ -280,7 +297,7 @@ void markArken(){
             } catch(NonExistentVerticeException &e) {
                 continue;
             }
-            vj->unmark(passed);
+            vj->unmark(isInQueue);
         }
         int actualDistance = 0;
         oignon.push(i);
@@ -296,13 +313,15 @@ void markArken(){
                 continue;
             }
             distanceToVi[oignon.front()] = actualDistance;
-            vFront = getSommet(oignon.front);
+            Vertice* vFront = getSommet(oignon.front());
             oignon.pop();
             for(int j(0); j < vFront->getNbVoisins(); ++j){
-                Vertice* vj = vFront->getVoisin(j);
+                if(vFront->getVoisin(j) == -1)
+                    continue;
+                Vertice* vj = getSommet(vFront->getVoisin(j));
                 if(! vj->isMarked(isInQueue)){
                     vj->mark(isInQueue);
-                    oignon.push(j);
+                    oignon.push(vFront->getVoisin(j));
                 }
             }
         }
@@ -310,16 +329,33 @@ void markArken(){
         indiceDistances.push_back(i);
         distances.push_back(distanceToVi);
     }
-    for(int i(0); i < distances.size(); ++i){
-        for(int j(i); j < distances.size(); ++j)
+    for(int i(0); i < TAILLE_TABLEAU; ++i){ //for in sommets
+        Vertice* vi;
+        try{
+            vi = getSommet(i);
+        } catch(NonExistentVerticeException &e) {
+            continue;
+        }
+        if(vi->getNbVoisins() == 5 || vi->getNbVoisins() == 4){
+            vi->markArken();
+            continue;
+        }
+        for(unsigned int j(1); j < distances.size(); ++j){ //for in special sommets
+            for(unsigned int k(0); k < j; ++k){ //for in special sommets ^2
+                int dist_ij = distances[j][i];
+                int dist_ik = distances[k][i];
+                int dist_jk = distances[k][indiceDistances[j]];
+                if(dist_ij + dist_ik == dist_jk){
+                    vi->markArken();
+                    goto LABEL_END_OF_FOR_J;
+                } 
+            }
+        } LABEL_END_OF_FOR_J:; //verifier qu'on fait bien comme ca
     }
-   /////////////////////////////////////////////////////////////////////////////
-  ///////////////////  TODO  ////////////////use distances to make/////////////
- /////////////////// END IT /////////////////a triangular inequality//////////
-/////////////////////////////////////////////////////////////////////////////
 }
 
-bool Graph_01::isomorphe(Graph* g) const {
+bool Graph_01::isomorphe(Graph* g) const 
+{
     if(getNbSommets() != g->getNbSommets())
         return false;
     if(getNbQuadra() != g->getNbQuadra())
@@ -435,7 +471,7 @@ void Graph_01::replier(int v, int d, int type){ //v: vertice, d: direction
         } catch(NonExistentVerticeException &e) {
             continue;
         }
-        vi->unmark(passed);
+        vi->unmark(isInQueue);
     }//this loop initialise the marking
     bool thereIsNoRight = false;
     try {
