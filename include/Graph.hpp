@@ -16,10 +16,6 @@
 #include <Vertice.hpp>
 #include <string>
 
-#include <Graph_01.hpp>
-
-class Graph_01;
-
 class Graph {
 
   public:

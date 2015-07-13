@@ -1,4 +1,3 @@
-suprimer les Graph_01 de Graph (encule)
 mettre un _ devant les methodes private
 Pas de bug en vue, mais un affichage parfois degueu
 
