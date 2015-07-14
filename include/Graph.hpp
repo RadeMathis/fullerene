@@ -18,7 +18,7 @@
 
 #include <Vertice.hpp>
 
-class iterator; //Definied lower // Defini plus bas.
+class Iterator; //Definied lower // Defini plus bas.
 
 class Graph {
     friend class Iterator;
@@ -30,7 +30,7 @@ class Graph {
      * Graph(string dataFile);
      * Graph(Graph const& g);
      */
-    virtual ~Graph(){}
+    virtual ~Graph();
 
     virtual Graph* clone() const = 0;
         /* Just return a pointer to a graph copy as in JAVA
@@ -86,10 +86,10 @@ class Graph {
          # Retourne la distance entre les sommets ranges en v1 et v2
          # Retourne 0 si v1 ==v2, retourn 1 s'ils sont voisins ... etc ... 
          # Retourne -1 s'il n'existe pas de chemin entre v1 et v2.*/
-    ///virtual std::iterator begin() const = 0;
+    virtual Iterator begin() const = 0;
         /* Return an iterator to "first" Vertice*.
          # retourne un iterateur sur le "premier" Vertice*. */
-    ///virtual std::iterator end() const = 0;
+    virtual Iterator end() const = 0;
         /* return an iterator to "last" Vertice*.
          # Retourne un iterateur sur le "dernier" Vertice*. */
     virtual void bienFormer() = 0;
@@ -139,12 +139,12 @@ class Graph {
 
   private:
 
-    int next_(int indice);
-    Vertice* element_ (int indice);
+    virtual int next_(int indice) const = 0;
+    virtual Vertice* element_ (int indice) const = 0;
 
 };
 
-class Iterator {
+class Iterator : std::iterator<std::random_access_iterator_tag, Vertice*> {
 
   public:
 
@@ -152,4 +152,10 @@ class Iterator {
     Iterator & operator++();
     bool operator!=(Iterator const&) const;
     Vertice* operator*() const;
+
+  private:
+
+    Graph* g_;
+    int indice_;
+
 };

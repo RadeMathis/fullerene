@@ -42,8 +42,8 @@ class Graph_01 : public Graph {
     Vertice* getSommet(int n) const;
     int reserverMarque();
     void libererMarque(int n);
-    ///std::iterator begin() const;
-    ///std::iterator end() const;
+    Iterator begin() const;
+    Iterator end() const;
 
     int distance(int v1, int v2) /*const*/; //totest
     void bienFormer(); //work in simple cases
@@ -67,6 +67,9 @@ class Graph_01 : public Graph {
     void relier(); //totest
     void completerADistance1(); //totest
     void completerADistance2(); //totest
+
+    int next_(int indice) const;
+    Vertice* element_ (int indice) const;
 
     int m_nbSommets;
     int m_nbPenta;

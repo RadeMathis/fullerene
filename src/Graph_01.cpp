@@ -160,12 +160,16 @@ void Graph_01::libererMarque(int n){
     m_marquesReserves[n] = false;
 }
 
-///std::iterator begin() const{
-///    return iterator();
-///}
-///std::iterator end() const{
-///    return iterator();
-///}
+Iterator Graph_01::begin() const{
+    int i(0);
+    while(m_sommets[i] == NULL)
+        ++i;
+    return Iterator((Graph*)this, i);
+}
+
+Iterator Graph_01::end() const{
+    return Iterator((Graph*)this, TAILLE_TABLEAU);
+}
 
 int Graph_01::distance(int v1, int v2)/*const*/ { //stratum marked oigon algorithm
     std::queue<int> enCour;
@@ -777,4 +781,19 @@ int Graph_01::getCeinture(int array[][2]) const {
         actual = va->getVoisin(leftNeigh);
     }while(actual != array[0][0]);
     return sizeBelt;
+}
+
+int Graph_01::next_(int indice) const {
+    do{
+        ++indice;
+        if(indice >= TAILLE_TABLEAU)
+            return TAILLE_TABLEAU;
+    } while(m_sommets[indice] == NULL);
+    return indice;
+}
+
+Vertice* Graph_01::element_ (int indice) const {
+    if (indice == 256)
+        return NULL;
+    return getSommet(indice);
 }

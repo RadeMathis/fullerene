@@ -14,3 +14,23 @@
  * * */
 
 #include <Graph.hpp>
+
+Graph::~Graph(){}
+
+Iterator::Iterator(Graph* g, int indice) 
+	: g_(g), indice_(indice)
+{}
+
+Iterator& Iterator::operator++(){
+	indice_ = g_->next_(indice_);
+	Iterator& out = *this;
+	return out;
+}
+
+bool Iterator::operator!=(Iterator const& iter) const {
+	return indice_ != iter.indice_;
+}
+
+Vertice* Iterator::operator*() const {
+	return g_->element_(indice_);
+}
