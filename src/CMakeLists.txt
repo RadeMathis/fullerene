@@ -10,10 +10,11 @@ add_executable(
 	Vertice_01.cpp
 	Vertice.cpp
 	Graph_01.cpp
+	Graph.cpp
 	functions.cpp
 	graphExceptions.cpp
 	graphPrinter.cpp
-	graphGenerator.cpp
+##	graphGenerator.cpp
 	)
 
 TARGET_LINK_LIBRARIES(tests m)
