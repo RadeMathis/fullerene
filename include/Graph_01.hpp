@@ -35,13 +35,15 @@ class Graph_01 : public Graph {
     Graph* clone() const;
 
     int getNbSommets() const;
-    int getNbPenta() const;
     int getNbQuadra() const;
+    int getNbPenta() const;
     int ajouterSommet();
     void supprimerSommet(int n);
     Vertice* getSommet(int n) const;
     int reserverMarque();
     void libererMarque(int n);
+    ///std::iterator begin() const;
+    ///std::iterator end() const;
 
     int distance(int v1, int v2) /*const*/; //totest
     void bienFormer(); //work in simple cases
@@ -55,9 +57,7 @@ class Graph_01 : public Graph {
 
     bool isomorphe(Graph* g) const; //totest, for real, realy
         //test it with serious... noob.
-    int _getCeinture(int array[][2]) const;//totest
-  
-  protected:
+    int getCeinture(int array[][2]) const;//totest
 
 
   private:

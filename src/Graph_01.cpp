@@ -104,12 +104,12 @@ int Graph_01::getNbSommets() const {
     return m_nbSommets;
 }
 
-int Graph_01::getNbPenta() const {
-    return m_nbPenta;
-}
-
 int Graph_01::getNbQuadra() const {
     return m_nbQuadra;
+}
+
+int Graph_01::getNbPenta() const {
+    return m_nbPenta;
 }
 
 int Graph_01::ajouterSommet(){
@@ -159,6 +159,13 @@ int Graph_01::reserverMarque(){
 void Graph_01::libererMarque(int n){
     m_marquesReserves[n] = false;
 }
+
+///std::iterator begin() const{
+///    return iterator();
+///}
+///std::iterator end() const{
+///    return iterator();
+///}
 
 int Graph_01::distance(int v1, int v2)/*const*/ { //stratum marked oigon algorithm
     std::queue<int> enCour;
@@ -365,8 +372,8 @@ bool Graph_01::isomorphe(Graph* g) const
     int ceintureThis[TAILLE_TABLEAU][2];
     int    ceintureG[TAILLE_TABLEAU][2];
     // each element get: [0]: place of a belt's Vertice, [1]: nb of -1 neigh.
-    int sizeBeltThis = _getCeinture(ceintureThis);
-    int    sizeBeltG = g->_getCeinture(ceintureG);
+    int sizeBeltThis = getCeinture(ceintureThis);
+    int    sizeBeltG = g->getCeinture(ceintureG);
     if(sizeBeltThis != sizeBeltG)
         return false;
     std::vector<int> gaps = arrayEgalsCycle(ceintureThis, ceintureG, sizeBeltG);
@@ -731,7 +738,7 @@ void Graph_01::completerADistance2(){
     }
 }
 
-int Graph_01::_getCeinture(int array[][2]) const {
+int Graph_01::getCeinture(int array[][2]) const {
     int sizeBelt = 0;
     int actual;
     for(int i(0); i < TAILLE_TABLEAU; ++i){

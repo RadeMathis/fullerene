@@ -5,7 +5,7 @@
  * v1.0.0 (13/05/2015)
  * * *
  * This is an interface
- * This class is 1:1 linked with class Graph, who've been to be consider as
+ * This class is 1:1 linked with class Vertice, who've been to be consider as
  * its inner class.
  * Considering here that a Vertice only make sens in a graph, vertices won't be
  * encapsulated in graphs.
@@ -13,10 +13,15 @@
 
 #pragma once 
 
-#include <Vertice.hpp>
 #include <string>
+#include <iterator>
+
+#include <Vertice.hpp>
+
+class iterator; //Definied lower // Defini plus bas.
 
 class Graph {
+    friend class Iterator;
 
   public:
     /*** This constructors should be present in all implementations ***
@@ -34,12 +39,12 @@ class Graph {
     virtual int getNbSommets() const = 0;
         /* Return how many vertice there are in the graph.
          # Retourne le nombre de sommet presents dans le grahe. */
-    virtual int getNbPenta() const = 0;
-        /* Return the number of pentagon in the graph.
-         # Retourne le nombre de pentagones presents dans le graphe. */
     virtual int getNbQuadra() const = 0;
         /* Return the number of square in the graph.
          # Retourne le nombre de quadrilaterres presents dans le graphe. */
+    virtual int getNbPenta() const = 0;
+        /* Return the number of pentagon in the graph.
+         # Retourne le nombre de pentagones presents dans le graphe. */
     virtual int ajouterSommet() = 0;
         /* Ad an empty vertice in the graph, return the place it has been put.
          * throw FullGraphException if th eimplementation isn't able to contain
@@ -81,6 +86,12 @@ class Graph {
          # Retourne la distance entre les sommets ranges en v1 et v2
          # Retourne 0 si v1 ==v2, retourn 1 s'ils sont voisins ... etc ... 
          # Retourne -1 s'il n'existe pas de chemin entre v1 et v2.*/
+    ///virtual std::iterator begin() const = 0;
+        /* Return an iterator to "first" Vertice*.
+         # retourne un iterateur sur le "premier" Vertice*. */
+    ///virtual std::iterator end() const = 0;
+        /* return an iterator to "last" Vertice*.
+         # Retourne un iterateur sur le "dernier" Vertice*. */
     virtual void bienFormer() = 0;
         /* Put the graph "as he has to be" (see the "forme d'un graphe")
          * part of the manifest.
@@ -122,18 +133,23 @@ class Graph {
          # Retourne true si this et g sont isomorphes. false sinon. */
 
 //should be protected: don't know why I cannot:
-    virtual int _getCeinture(int array[][2]) const = 0;
+    virtual int getCeinture(int array[][2]) const = 0;
         // Calculate the graph's belt, put it in array. Return belt's size.
         // Array should be int[TAILLE_TABLEAU][2] minimum.
 
-  protected:
+  private:
+
+    int next_(int indice);
+    Vertice* element_ (int indice);
 
 };
 
-// find a solution for this:
-//    virtual Graph* readFromFile(std::string dataFile) = 0;
-        /* Read a graph from a .graph.data file as described in the manifest.
-         * throw OpenFileFailureException if dataFile fail to open
-         # Lit un graphe depuis un fichier .graph.data encode comme decrit dans
-         # le manifest. 
-         # Lance une OpenFileFailureException si l'ouverture de dFile echoue.*/
+class Iterator {
+
+  public:
+
+    Iterator(Graph* g, int indice);
+    Iterator & operator++();
+    bool operator!=(Iterator const&) const;
+    Vertice* operator*() const;
+};
