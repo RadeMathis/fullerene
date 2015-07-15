@@ -87,13 +87,17 @@ extraireFront_(std::queue<std::string> graphFiles,
     for(Iterator it = g->begin(); it != g->end(); ++it){
         // Pour chaque sommet, on cherche une direction dans laquelle
         // on peut plier, si aucune ne va, on ne replie pas.
+        if((*it)->isArkenMarked())
+            continue; //Le sommet est dans l'arken, on plie pas
         bool dir_0 = false; // Direction 0.
         bool dir_g = false; // Direction gauche.
         bool dir_d = false; // Direction droite.
         for(int j(0); j < (*it)->getNbVoisins(); ++j){
             dir_d = dir_g;
+            dir_g = true;
             //On parcour la direction
             
         }
     }
-}
+} // TODO : se demander s'il ne vaut pas mieux de tester s'il est possible de
+  // replier directement dans replier() ==>> go le faire
