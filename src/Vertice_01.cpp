@@ -28,6 +28,14 @@ Vertice* Vertice_01::clone() const {
     return (Vertice*)out;
 }
 
+Graph* Vertice_01::getGraph() const {
+    return m_graphe;
+}
+
+int Vertice_01::getPlaceInGraph() const{
+    return m_placeDansGraphe;
+}
+
 int Vertice_01::getNbVoisins() const {
     return m_nbVoisins;
 }
