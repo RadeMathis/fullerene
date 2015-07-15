@@ -102,6 +102,14 @@ class Graph {
     virtual void initialiserQuadri() = 0; 
         /* Create the graph composed of one square.
          # Cree le graphe compose d'un quadrilaltere. */
+    virtual std::vector<int> peutReplierPenta(int v) const = 0;
+        /* Look if we can bend v-th vertice. Will put all the way we can bend it
+         * in the returned vector.
+         # Regarde si on peut replier le v-ieme sommet. Toutes les directions 
+         # dans lesquelles on peut replier seront mises dans le vector<int> . */
+    virtual std::vector<int> peutReplierQuadri(int v) const = 0;
+        /* Like upper function, but for quadrilaterales bending.
+         # Idem que la précédente, mais pour les quadrilateres. */
     virtual void replierPenta(int v, int d) = 0;
         /* Bend over "in stays" to form a pentagon as described in the manifest
          * v is the vertice to transform in pentagon

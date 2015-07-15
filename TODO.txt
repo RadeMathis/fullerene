@@ -1,3 +1,5 @@
+Implementer les methodes de Graph_01::peutReplier*(int)
+
 mettre un _ devant les methodes private
 Pas de bug en vue, mais un affichage parfois degueu
 
