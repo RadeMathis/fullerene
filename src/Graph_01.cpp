@@ -244,6 +244,13 @@ void Graph_01::initialiserQuadri(){
     bienFormer();
 }
 
+std::vector<int> peutReplierPenta(int v) const {
+    return peutReplier_(int v, int 5);
+}
+
+std::vector<int> peutReplierQuadri(int v) const {
+    return peutReplier_(int v, int 4);
+}
 
 void Graph_01::replierPenta(int v, int d){
     replier(v, d, 5);
@@ -460,6 +467,13 @@ bool Graph_01::isomorphe(Graph* g) const
             return true; 
     }
     return false;
+}
+
+std::vector<int> peutReplier_(int v, int type) const {
+    bool dir_0 = false;
+    bool dir_g = false;
+    bool dir_d = false;
+    
 }
 
 void Graph_01::replier(int v, int d, int type){ //v: vertice, d: direction

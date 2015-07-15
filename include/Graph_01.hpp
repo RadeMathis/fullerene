@@ -11,7 +11,7 @@
 
 #include <string>
 #include <vector>
- 
+
 #include <Graph.hpp>
 #include <Vertice_01.hpp>
 #include <graphExceptions.hpp>
@@ -49,6 +49,8 @@ class Graph_01 : public Graph {
     void bienFormer(); //work in simple cases
     void initialiserPenta();
     void initialiserQuadri();
+    std::vector<int> peutReplierPenta(int v) const = 0;
+    std::vector<int> peutReplierQuadri(int v) const = 0;
     void replierPenta(int v, int d); //work in simple cases
     void replierQuadri(int v, int d); //work in simple cases
     void writeInFile(std::string dataFile) const;
@@ -59,10 +61,10 @@ class Graph_01 : public Graph {
         //test it with serious... noob.
     int getCeinture(int array[][2]) const;//totest
 
-
   private:
 
     void relier(int v); //totest
+    std::vector<int> peutReplier_(int v, int type);
     void replier(int v, int d, int type); //totest
     void relier(); //totest
     void completerADistance1(); //totest
@@ -78,6 +80,5 @@ class Graph_01 : public Graph {
     Vertice* m_sommets[TAILLE_TABLEAU];
 
     bool m_marquesReserves[8];
-
 
 };
