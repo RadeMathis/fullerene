@@ -49,8 +49,10 @@ class Graph_01 : public Graph {
     void bienFormer(); //work in simple cases
     void initialiserPenta();
     void initialiserQuadri();
-    std::vector<int> peutReplierPenta(int v) const = 0;
-    std::vector<int> peutReplierQuadri(int v) const = 0;
+    int peutReplierPenta(int v) const;
+    int peutReplierQuadri(int v) const;
+    std::vector<int> peutReplierPentaAll(int v) const;
+    std::vector<int> peutReplierQuadriAll(int v) const;
     void replierPenta(int v, int d); //work in simple cases
     void replierQuadri(int v, int d); //work in simple cases
     void writeInFile(std::string dataFile) const;
@@ -64,7 +66,7 @@ class Graph_01 : public Graph {
   private:
 
     void relier(int v); //totest
-    std::vector<int> peutReplier_(int v, int type);
+    std::vector<int> peutReplier_(int v, int type, bool just_one) const;
     void replier(int v, int d, int type); //totest
     void relier(); //totest
     void completerADistance1(); //totest

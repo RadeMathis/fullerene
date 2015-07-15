@@ -15,9 +15,11 @@
 
 #include <string>
 #include <iterator>
+#include <vector>
 
 #include <Vertice.hpp>
 
+class Vertice;
 class Iterator; //Definied lower // Defini plus bas.
 
 class Graph {
@@ -102,12 +104,20 @@ class Graph {
     virtual void initialiserQuadri() = 0; 
         /* Create the graph composed of one square.
          # Cree le graphe compose d'un quadrilaltere. */
-    virtual std::vector<int> peutReplierPenta(int v) const = 0;
+    virtual int peutReplierPenta(int v) const = 0;
+        /* If we can bend v-th vertice in pentagon, will return a way we can
+         * bend it. Esle, will return -1.
+         # Si l'on peut peut replier le v-ieme voisin en pentagone, retourne
+         # une direction possible. Sinon, retourne -1. */
+    virtual int peutReplierQuadri(int v) const = 0;
+        /* Like upper functions, but wih quadrilateral bending.
+         # Comme la fonction ci-dessus mais avec le replie en quadrilatere. */
+    virtual std::vector<int> peutReplierPentaAll(int v) const = 0;
         /* Look if we can bend v-th vertice. Will put all the way we can bend it
          * in the returned vector.
          # Regarde si on peut replier le v-ieme sommet. Toutes les directions 
          # dans lesquelles on peut replier seront mises dans le vector<int> . */
-    virtual std::vector<int> peutReplierQuadri(int v) const = 0;
+    virtual std::vector<int> peutReplierQuadriAll(int v) const = 0;
         /* Like upper function, but for quadrilaterales bending.
          # Idem que la précédente, mais pour les quadrilateres. */
     virtual void replierPenta(int v, int d) = 0;

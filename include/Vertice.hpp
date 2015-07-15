@@ -17,7 +17,7 @@
 
 #include <Graph.hpp>
 
-class Graph*;
+class Graph;
 
 class Vertice{
 

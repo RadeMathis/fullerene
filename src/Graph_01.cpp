@@ -244,12 +244,20 @@ void Graph_01::initialiserQuadri(){
     bienFormer();
 }
 
-std::vector<int> peutReplierPenta(int v) const {
-    return peutReplier_(int v, int 5);
+int Graph_01::peutReplierPenta (int v) const {
+    return peutReplier_(v, 5, true)[0];
 }
 
-std::vector<int> peutReplierQuadri(int v) const {
-    return peutReplier_(int v, int 4);
+int Graph_01::peutReplierQuadri (int v) const {
+    return peutReplier_(v, 4, true)[0];
+}
+
+std::vector<int> Graph_01::peutReplierPentaAll(int v) const {
+    return peutReplier_(v, 5, false);
+}
+
+std::vector<int> Graph_01::peutReplierQuadriAll(int v) const {
+    return peutReplier_(v, 4, false);
 }
 
 void Graph_01::replierPenta(int v, int d){
@@ -469,25 +477,64 @@ bool Graph_01::isomorphe(Graph* g) const
     return false;
 }
 
-std::vector<int> peutReplier_(int v, int type) const {
+std::vector<int> Graph_01::peutReplier_(int v, int type, bool just_one) const {
     std::vector<int> out;
     Vertice* v_v = getSommet(v);
     if(v_v->isArkenMarked())
         return out; //On retourne un vector<int> vide.
     bool dir_0 = false;
+    bool dir_1 = false; // Only usefull for type == 4 , useless for type == 5 .
     bool dir_g = false;
+    bool dir_m = false; // Only usefull for type == 4 , useless for type == 5 .
     bool dir_d = false;
-    for(int i(0); i < getSommet(v)->getNbVoisins(); ++i){
+    for(int i(0); i < v_v->getNbVoisins(); ++i){
         int previous = v;
         int   actual = v_v->getVoisin(i);
-        dir_d = dir_g
-        while(true){
+        if(type == 5){
+            dir_d = dir_g;
+        } else {
+            dir_d = dir_m;
+            dir_m = dir_g;
+        }
+        dir_g = true; //(Presompions d'innocence)
+        while(true){ // see breaks
             Vertice* v_a;
             try{
-                v_a = //TODO :endit
+                v_a = getSommet(actual);
+            } catch(NonExistentVerticeException &e) {
+                break;
             }
+            if(v_a->isArkenMarked()){
+                dir_g = false;
+                break;
+            }
+            int in_a = v_a->isXthVoisin(previous); //The way we came in actual
+            previous = actual;
+            actual   = v_a->getVoisin((in_a + 3) % v_a->getNbVoisins());
         }
-    }    
+        if(!i) {
+            dir_0 = dir_g;
+        } else if (i == 1 && type == 4){
+            dir_1 = dir_g;
+        } else if(dir_g && dir_d) {
+            out.push_back(i - 1);
+            if(just_one)
+                return out;
+        }
+        if(type == 4 && i == v_v->getNbVoisins() - 2 && dir_0 && dir_g){
+            out.push_back(i);
+            if(just_one)
+                return out;
+        }
+        if(type == 5 && i == v_v->getNbVoisins() - 1 && dir_0 && dir_g){
+            out.push_back(i);
+            if(just_one)
+                return out;
+        }
+        if(i == v_v->getNbVoisins() - 1 && dir_1 && dir_g)
+            out.push_back(i);
+    }
+    return out;
 }
 
 void Graph_01::replier(int v, int d, int type){ //v: vertice, d: direction
