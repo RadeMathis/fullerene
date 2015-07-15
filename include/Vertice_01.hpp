@@ -9,8 +9,7 @@
  * I don't know if previous sentence make sens.
  * * */
 
-#ifndef DEFINED_VERTICE_01_HPP
-#define DEFINED_VERTICE_01_HPP
+#pragma once
 
 #include <iostream>
 #include <exception>
@@ -26,6 +25,8 @@ class Vertice_01 : public Vertice {
     Vertice_01(Vertice_01 const& s);
     Vertice_01(Vertice const* s);
     ~Vertice_01();
+    Graph* getGraph() const;
+    int getPlaceInGraph() const;
     Vertice* clone() const;
   	int getNbVoisins() const;
   	int getVoisin(int n) const; 
@@ -51,6 +52,8 @@ class Vertice_01 : public Vertice {
 
     void afficher(std::ostream &stream) const;
 
+    Graph* m_graphe;
+    int m_placeDansGraphe;
     int m_nbVoisins;
     int m_voisins[6]; //we'll never have to treat more than 6 neightborgs
     bool m_marques[8]; //used in algorithm to mark vertices
@@ -62,5 +65,3 @@ class BadNeighborhoodException_01 : public std::exception {
   public:
     virtual const char* what() const throw();
 };
-
-#endif /* DEFINED_VERTICE_01_HPP */

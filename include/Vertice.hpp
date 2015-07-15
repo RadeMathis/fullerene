@@ -11,10 +11,13 @@
  * So, neighbours will be represented by integers, their play in graph's array.
  * * */
 
-#ifndef DEFINED_VERTICE_HPP
-#define DEFINED_VERTICE_HPP
+#pragma once
 
 #include <iostream>
+
+#include <Graph.hpp>
+
+class Graph*;
 
 class Vertice{
 
@@ -22,6 +25,8 @@ class Vertice{
 
     virtual ~Vertice() = 0;
     virtual  Vertice* clone() const = 0;
+    virtual Graph* getGraph() const = 0;
+    virtual int getPlaceInGraph() const = 0;
     virtual int getNbVoisins() const = 0;
     virtual int getVoisin(int n) const = 0; 
       // n is the nuber of the neighborg (0 <= n <= 5)
@@ -51,5 +56,3 @@ class Vertice{
     virtual void afficher(std::ostream &stream) const = 0;
 
 };
-
-#endif /* DEFINED_VERTICE_HPP */
