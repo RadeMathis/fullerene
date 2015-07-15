@@ -470,10 +470,24 @@ bool Graph_01::isomorphe(Graph* g) const
 }
 
 std::vector<int> peutReplier_(int v, int type) const {
+    std::vector<int> out;
+    Vertice* v_v = getSommet(v);
+    if(v_v->isArkenMarked())
+        return out; //On retourne un vector<int> vide.
     bool dir_0 = false;
     bool dir_g = false;
     bool dir_d = false;
-    
+    for(int i(0); i < getSommet(v)->getNbVoisins(); ++i){
+        int previous = v;
+        int   actual = v_v->getVoisin(i);
+        dir_d = dir_g
+        while(true){
+            Vertice* v_a;
+            try{
+                v_a = //TODO :endit
+            }
+        }
+    }    
 }
 
 void Graph_01::replier(int v, int d, int type){ //v: vertice, d: direction
