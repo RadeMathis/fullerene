@@ -1,5 +1,3 @@
-Tester le nouveau replier*(...) 
-
 Surcharger toute les methodes de Graph pour qu'on puisse passer un Vertice
 	plutot qu'un int l'identifiant. la methode se contentera de traduire 
 	pour la methode qu'elle surchrge
