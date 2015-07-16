@@ -4,6 +4,7 @@
 #include <queue>
 
 #include <Graph.hpp>
+#include <functions.hpp>
 
 void
 fullGenerator(std::string path /* = '.' */)
@@ -18,8 +19,8 @@ fullGenerator(std::string path /* = '.' */)
     std::ofstream graphList((path + "graphList.data").c_str(), std::ios::out
                                                              | std::ios::trunc);
 
-    graphList << '   ' << std::endl; // On laisse une ligne pour y inscrire le 
-                                     // nombre de graphes formes.
+    graphList << '          ' << std::endl; 
+        // On laisse une ligne pour y inscrire le nombre de graphes formes.
 
     int nbGraphGenerated;
     std::queue<std::string> toTreatGraph;
@@ -83,12 +84,34 @@ extraireFront_(std::queue<std::string> graphFiles,
 {
     int nbGraphGenerated = 0;
     Graph*             g = new Graph_01(graphFiles.front());
+    graphFiles.pop();
     // Tout d'abord, on tente de generer un graphe par sommet
     for(Iterator it = g->begin(); it != g->end(); ++it){
+        Graph* newGraph;
         // Pour chaque sommet, on cherche une direction dans laquelle
         // on peut plier, si aucune ne va, on ne replie pas.
         for(int j(0); j < (*it)->getNbVoisins(); ++j){
-            
+            if(type == 5)
+                newGraph = g->replierPenta(*it, j);
+            if(type == 4)
+                newGraph = g->replierQuadri(*it, j);
+            if(newGraph)
+                break; //Si ona un graphe, c'est bon
+        }
+        if(!newGraph)
+            continue; //Si ce sommet n'a rien donne, on passe au suivant.
+        if(thereIsAnIsomorph_(newGraph, path)){
+            // TODO : coder la func si dessus
+            // TODO : ENDIT
         }
     }
+}
+
+bool
+thereIsAnIsomorph_(Graph* g, std::string path)
+{
+    std::string lineBuffer;
+    std::vector<std::string> sentenceBuffer;
+    std::ifstream graphList((path + "graphList.data").c_str());
+
 }
