@@ -40,6 +40,7 @@ class Graph_01 : public Graph {
     void setNbPenta_(int);
     int getNbPenta() const;
     int ajouterSommet();
+    void supprimerSommet(Vertice* n);
     void supprimerSommet(int n);
     Vertice* getSommet(int n) const;
     int reserverMarque();
@@ -47,13 +48,17 @@ class Graph_01 : public Graph {
     Iterator begin() const;
     Iterator end() const;
 
+    int distance(Vertice* v1, Vertice* v2) /*const*/; //totest
     int distance(int v1, int v2) /*const*/; //totest
     void bienFormer(); //work in simple cases
     void initialiserPenta();
     void initialiserQuadri();
+    Graph* replierPenta(Vertice* v, int d) const; //work in simple cases
     Graph* replierPenta(int v, int d) const; //work in simple cases
+    Graph* replierQuadri(Vertice* v, int d) const; //work in simple cases
     Graph* replierQuadri(int v, int d) const; //work in simple cases
     void writeInFile(std::string dataFile) const;
+    bool isArkenMarked(Vertice*) const;
     bool isArkenMarked(int) const;
     void markArken();
 

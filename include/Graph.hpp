@@ -57,6 +57,7 @@ class Graph {
          # quelle il a ete range. 
          # Lance une FullGraphException si l'implementation n'est pas capable
          # D'ajoutuer une nouveau sommmet. */
+    virtual void supprimerSommet(Vertice* n) = 0;
     virtual void supprimerSommet(int n) = 0;
         /* Delete the n-th vertice and free the n-th place. /!\ care about the
          * fact there isn't any vertice knowing n as neighbour!
@@ -83,6 +84,7 @@ class Graph {
     virtual void libererMarque(int n) = 0;
         /* Free a reserved marker by above function.
          # Libere un markeur reserve par le methode ci-dessus. */
+    virtual int distance(Vertice* v1, Vertice* v2) /*const*/ = 0;
     virtual int distance(int v1, int v2) /*const*/ = 0;
         /* Return distance between vertices in v1 and v2.
          * Return 0 if v1==v2, return 1 if they are neighbours ... etc ...
@@ -106,6 +108,7 @@ class Graph {
     virtual void initialiserQuadri() = 0; 
         /* Create the graph composed of one square.
          # Cree le graphe compose d'un quadrilaltere. */
+    virtual Graph* replierPenta(Vertice* v, int d) const = 0;
     virtual Graph* replierPenta(int v, int d) const = 0;
         /* Bend over "in stays" to form a pentagon as described in the manifest
          * v is the vertice to transform in pentagon
@@ -117,6 +120,7 @@ class Graph {
          # ses voisins fusionnes seront le d-ieme et le (d+1)mod(6)-ieme.
          # Si on peut replier ainsi sans toucher a l'Arken, alors retourne le
          # graphe genere. Sinon, retourne NULL.*/
+    virtual Graph* replierQuadri(Vertice* v, int d) const = 0;    
     virtual Graph* replierQuadri(int v, int d) const = 0;
         /* Bend over "in stays" to form a square as described in the manifest
          * v is the vertice to transform in quadrilateral
@@ -134,7 +138,8 @@ class Graph {
          # Ecrit le graphe dans un fichier .graph.data comme decrit dans le
          # manifest. 
          # peut lancer une OpenFileFailureException. */
-    virtual bool isArkenMarked(int) const = 0;
+    virtual bool isArkenMarked(Vertice* v) const = 0;
+    virtual bool isArkenMarked(int v) const = 0;
         /* Return true if the parameter's passed vertice is arkenMarked.
          # retourne vrai si the sommet passe en parametre est arkenMarque. */
     virtual void markArken() = 0;

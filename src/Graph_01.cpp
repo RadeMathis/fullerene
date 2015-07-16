@@ -133,6 +133,9 @@ int Graph_01::ajouterSommet(){
     throw FullGraphException(TAILLE_TABLEAU);
 }
 
+void Graph_01::supprimerSommet(Vertice* n){
+    supprimerSommet(n->getPlaceInGraph());
+}
 
 void Graph_01::supprimerSommet(int n){
     if(m_sommets[n] == NULL)
@@ -179,6 +182,9 @@ Iterator Graph_01::end() const{
     return Iterator((Graph*)this, TAILLE_TABLEAU);
 }
 
+int Graph_01::distance(Vertice* v1, Vertice* v2) {
+    return distance(v1->getPlaceInGraph(), v2->getPlaceInGraph());
+}
 int Graph_01::distance(int v1, int v2)/*const*/ { //stratum marked oigon algorithm
     std::queue<int> enCour;
     int distance = 0;
@@ -252,8 +258,16 @@ void Graph_01::initialiserQuadri(){
     bienFormer();
 }
 
+Graph* Graph_01::replierPenta(Vertice* v, int d) const {
+    return replierPenta(v->getPlaceInGraph(), d);
+}
+
 Graph* Graph_01::replierPenta(int v, int d) const {
     return replier(v, d, 5);
+}
+
+Graph* Graph_01::replierQuadri(Vertice* v, int d) const {
+    return replierQuadri(v->getPlaceInGraph(), d);
 }
 
 Graph* Graph_01::replierQuadri(int v, int d) const {
@@ -274,6 +288,10 @@ void Graph_01::writeInFile(std::string dataFile) const {
             dataStream << ' ' << m_sommets[i]->getVoisin(j);
         dataStream << ' ' << m_sommets[i]->isArkenMarked() << std::endl;
     }
+}
+
+bool Graph_01::isArkenMarked(Vertice* v) const {
+    return v->isArkenMarked();
 }
 
 bool Graph_01::isArkenMarked(int v) const {
