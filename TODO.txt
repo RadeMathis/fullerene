@@ -1,9 +1,4 @@
-mettre un _ deriere les methodes private
+Faire le graphGenerator
+	-tester/debbugger
 
-Pas de bug en vue, mais un affichage parfois degueu
-
-tester Graph_01
-
-L'isomorphisme... olala
-
-passer aux algo plus globaux
+Faire l'embalage (usage ...)

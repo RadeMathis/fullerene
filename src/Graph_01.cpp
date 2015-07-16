@@ -235,8 +235,8 @@ int Graph_01::distance(int v1, int v2)/*const*/ { //stratum marked oigon algorit
 }
 
 void Graph_01::bienFormer(){
-        relier();
-        completerADistance2();
+        relier_();
+        completerADistance2_();
         markArken();
 }
 
@@ -263,7 +263,7 @@ Graph* Graph_01::replierPenta(Vertice* v, int d) const {
 }
 
 Graph* Graph_01::replierPenta(int v, int d) const {
-    return replier(v, d, 5);
+    return replier_(v, d, 5);
 }
 
 Graph* Graph_01::replierQuadri(Vertice* v, int d) const {
@@ -271,7 +271,7 @@ Graph* Graph_01::replierQuadri(Vertice* v, int d) const {
 }
 
 Graph* Graph_01::replierQuadri(int v, int d) const {
-    return replier(v, d, 4);
+    return replier_(v, d, 4);
 }
 
 void Graph_01::writeInFile(std::string dataFile) const {
@@ -487,7 +487,7 @@ bool Graph_01::isomorphe(Graph* g) const
     return false;
 }
 
-Graph* Graph_01::replier(int v, int d, int type) const { //v: vertice, d: direc.
+Graph* Graph_01::replier_(int v, int d, int type) const { //v: vertice, d: direc.
     Graph* g = clone();
   //First : Bend over "in stays".
     bool existRight = true;
@@ -694,13 +694,13 @@ Graph* Graph_01::replier(int v, int d, int type) const { //v: vertice, d: direc.
     return g;
 }
 
-void Graph_01::relier(){
+void Graph_01::relier_(){
     for(int i(0); i < TAILLE_TABLEAU; ++i)
         if(m_sommets[i] != NULL)
-            relier(i);
+            relier_(i);
 }
 
-void Graph_01::relier(int i){
+void Graph_01::relier_(int i){
     Vertice* v = getSommet(i);
     int v_mod = v->getNbVoisins();
     for(int j(0); j < 36 ; ++j){//We look every vertices, several times.
@@ -733,7 +733,7 @@ void Graph_01::relier(int i){
     }
 }
 
-void Graph_01::completerADistance1(){
+void Graph_01::completerADistance1_(){
     for(int i(0); i < TAILLE_TABLEAU; ++i){
         Vertice* v;
         try {
@@ -752,13 +752,13 @@ void Graph_01::completerADistance1(){
             while(newbie->getNbVoisins() < 6)
                 newbie->addVoisin(newbie->getNbVoisins(), -1);
             v->setVoisin(j, nb);
-            relier(nb);
+            relier_(nb);
         }
     }
 }
 
-void Graph_01::completerADistance2(){
-    completerADistance1();
+void Graph_01::completerADistance2_(){
+    completerADistance1_();
     for(int i(0); i < TAILLE_TABLEAU; ++i){
         Vertice* v;
         try {
@@ -784,7 +784,7 @@ void Graph_01::completerADistance2(){
             while(newbie->getNbVoisins() < 6)
                 newbie->addVoisin(newbie->getNbVoisins(), -1);
             v->setVoisin(j, nb);
-            relier(nb);
+            relier_(nb);
         }
     }
 }

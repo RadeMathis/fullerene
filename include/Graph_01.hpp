@@ -71,11 +71,11 @@ class Graph_01 : public Graph {
 
   private:
 
-    void relier(); //totest
-    void relier(int v); //totest
-    Graph* replier(int v, int d, int type) const; //totest
-    void completerADistance1(); //totest
-    void completerADistance2(); //totest
+    void relier_(); //totest
+    void relier_(int v); //totest
+    Graph* replier_(int v, int d, int type) const; //totest
+    void completerADistance1_(); //totest
+    void completerADistance2_(); //totest
 
     int next_(int indice) const;
     Vertice* element_ (int indice) const;
