@@ -245,11 +245,17 @@ void Graph_01::initialiserQuadri(){
 }
 
 int Graph_01::peutReplierPenta (int v) const {
-    return peutReplier_(v, 5, true)[0];
+    std::vector<int> tmp = peutReplier_(v, 5, true);
+    if(tmp.empty())
+        return -1;
+    return tmp[0];
 }
 
 int Graph_01::peutReplierQuadri (int v) const {
-    return peutReplier_(v, 4, true)[0];
+    std::vector<int> tmp = peutReplier_(v, 4, true);
+    if(tmp.empty())
+        return -1;
+    return tmp[0];
 }
 
 std::vector<int> Graph_01::peutReplierPentaAll(int v) const {
