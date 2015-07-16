@@ -41,12 +41,14 @@ class Graph {
     virtual int getNbSommets() const = 0;
         /* Return how many vertice there are in the graph.
          # Retourne le nombre de sommet presents dans le grahe. */
+    virtual void setNbQuadri_(int) = 0; // You should not use them.
     virtual int getNbQuadra() const = 0;
-        /* Return the number of square in the graph.
-         # Retourne le nombre de quadrilaterres presents dans le graphe. */
+        /* Return/set the number of square in the graph.
+         # Retourne/definit le nombre de quadrilat. presents dans le graphe.*/
+    virtual void setNbPenta_(int) = 0; // You should not use them.
     virtual int getNbPenta() const = 0;
-        /* Return the number of pentagon in the graph.
-         # Retourne le nombre de pentagones presents dans le graphe. */
+        /* Return/set the number of pentagon in the graph.
+         # Retourne/definit le nombre de pentagones presents dans le graphe. */
     virtual int ajouterSommet() = 0;
         /* Ad an empty vertice in the graph, return the place it has been put.
          * throw FullGraphException if th eimplementation isn't able to contain
@@ -146,6 +148,8 @@ class Graph {
     virtual int getCeinture(int array[][2]) const = 0;
         // Calculate the graph's belt, put it in array. Return belt's size.
         // Array should be int[TAILLE_TABLEAU][2] minimum.
+
+  protected:
 
   private:
 

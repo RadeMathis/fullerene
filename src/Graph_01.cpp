@@ -104,8 +104,16 @@ int Graph_01::getNbSommets() const {
     return m_nbSommets;
 }
 
+void Graph_01::setNbQuadri_(int n) {
+    m_nbQuadra = n;
+}
+
 int Graph_01::getNbQuadra() const {
     return m_nbQuadra;
+}
+
+void Graph_01::setNbPenta_(int n) {
+    m_nbPenta = n;
 }
 
 int Graph_01::getNbPenta() const {
@@ -245,11 +253,11 @@ void Graph_01::initialiserQuadri(){
 }
 
 Graph* Graph_01::replierPenta(int v, int d) const {
-    replier(v, d, 5);
+    return replier(v, d, 5);
 }
 
 Graph* Graph_01::replierQuadri(int v, int d) const {
-    replier(v, d, 4);
+    return replier(v, d, 4);
 }
 
 void Graph_01::writeInFile(std::string dataFile) const {
@@ -642,8 +650,8 @@ Graph* Graph_01::replier(int v, int d, int type) const { //v: vertice, d: direc.
         }catch(...){}
         origin->delVoisin(delVois);
     }
-    m_nbPenta  += (type == 5);
-    m_nbQuadra += (type == 4);
+    g->setNbPenta_(g->getNbPenta() + (type == 5));
+    g->setNbQuadri_(g->getNbQuadra() + (type == 4));
     while(!toDel.empty()){
         for(int i(0); i < 6; ++i){
             int neigh_place = g->getSommet(toDel.front())->getVoisin(i);

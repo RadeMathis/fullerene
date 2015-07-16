@@ -35,7 +35,9 @@ class Graph_01 : public Graph {
     Graph* clone() const;
 
     int getNbSommets() const;
+    void setNbQuadri_(int);
     int getNbQuadra() const;
+    void setNbPenta_(int);
     int getNbPenta() const;
     int ajouterSommet();
     void supprimerSommet(int n);
@@ -59,11 +61,14 @@ class Graph_01 : public Graph {
         //test it with serious... noob.
     int getCeinture(int array[][2]) const;//totest
 
+  protected:
+    
+
   private:
 
-    void relier(int v); //totest
-    void replier(int v, int d, int type) const; //totest
     void relier(); //totest
+    void relier(int v); //totest
+    Graph* replier(int v, int d, int type) const; //totest
     void completerADistance1(); //totest
     void completerADistance2(); //totest
 
