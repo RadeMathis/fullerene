@@ -49,12 +49,8 @@ class Graph_01 : public Graph {
     void bienFormer(); //work in simple cases
     void initialiserPenta();
     void initialiserQuadri();
-    int peutReplierPenta(int v) const;
-    int peutReplierQuadri(int v) const;
-    std::vector<int> peutReplierPentaAll(int v) const;
-    std::vector<int> peutReplierQuadriAll(int v) const;
-    void replierPenta(int v, int d); //work in simple cases
-    void replierQuadri(int v, int d); //work in simple cases
+    Graph* replierPenta(int v, int d) const; //work in simple cases
+    Graph* replierQuadri(int v, int d) const; //work in simple cases
     void writeInFile(std::string dataFile) const;
     bool isArkenMarked(int) const;
     void markArken();
@@ -66,8 +62,7 @@ class Graph_01 : public Graph {
   private:
 
     void relier(int v); //totest
-    std::vector<int> peutReplier_(int v, int type, bool just_one) const;
-    void replier(int v, int d, int type); //totest
+    void replier(int v, int d, int type) const; //totest
     void relier(); //totest
     void completerADistance1(); //totest
     void completerADistance2(); //totest

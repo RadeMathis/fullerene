@@ -244,33 +244,11 @@ void Graph_01::initialiserQuadri(){
     bienFormer();
 }
 
-int Graph_01::peutReplierPenta (int v) const {
-    std::vector<int> tmp = peutReplier_(v, 5, true);
-    if(tmp.empty())
-        return -1;
-    return tmp[0];
-}
-
-int Graph_01::peutReplierQuadri (int v) const {
-    std::vector<int> tmp = peutReplier_(v, 4, true);
-    if(tmp.empty())
-        return -1;
-    return tmp[0];
-}
-
-std::vector<int> Graph_01::peutReplierPentaAll(int v) const {
-    return peutReplier_(v, 5, false);
-}
-
-std::vector<int> Graph_01::peutReplierQuadriAll(int v) const {
-    return peutReplier_(v, 4, false);
-}
-
-void Graph_01::replierPenta(int v, int d){
+Graph* Graph_01::replierPenta(int v, int d) const {
     replier(v, d, 5);
 }
 
-void Graph_01::replierQuadri(int v, int d){
+Graph* Graph_01::replierQuadri(int v, int d) const {
     replier(v, d, 4);
 }
 
@@ -483,71 +461,16 @@ bool Graph_01::isomorphe(Graph* g) const
     return false;
 }
 
-std::vector<int> Graph_01::peutReplier_(int v, int type, bool just_one) const {
-    std::vector<int> out;
-    Vertice* v_v = getSommet(v);
-    if(v_v->isArkenMarked())
-        return out; //On retourne un vector<int> vide.
-    bool dir_0 = false;
-    bool dir_1 = false; // Only usefull for type == 4 , useless for type == 5 .
-    bool dir_g = false;
-    bool dir_m = false; // Only usefull for type == 4 , useless for type == 5 .
-    bool dir_d = false;
-    for(int i(0); i < v_v->getNbVoisins(); ++i){
-        int previous = v;
-        int   actual = v_v->getVoisin(i);
-        if(type == 5){
-            dir_d = dir_g;
-        } else {
-            dir_d = dir_m;
-            dir_m = dir_g;
-        }
-        dir_g = true; //(Presompions d'innocence)
-        while(true){ // see breaks
-            Vertice* v_a;
-            try{
-                v_a = getSommet(actual);
-            } catch(NonExistentVerticeException &e) {
-                break;
-            }
-            if(v_a->isArkenMarked()){
-                dir_g = false;
-                break;
-            }
-            int in_a = v_a->isXthVoisin(previous); //The way we came in actual
-            previous = actual;
-            actual   = v_a->getVoisin((in_a + 3) % v_a->getNbVoisins());
-        }
-        if(!i) {
-            dir_0 = dir_g;
-        } else if (i == 1 && type == 4){
-            dir_1 = dir_g;
-        } else if(dir_g && dir_d) {
-            out.push_back(i - 1);
-            if(just_one)
-                return out;
-        }
-        if(type == 4 && i == v_v->getNbVoisins() - 2 && dir_0 && dir_g){
-            out.push_back(i);
-            if(just_one)
-                return out;
-        }
-        if(type == 5 && i == v_v->getNbVoisins() - 1 && dir_0 && dir_g){
-            out.push_back(i);
-            if(just_one)
-                return out;
-        }
-        if(i == v_v->getNbVoisins() - 1 && dir_1 && dir_g)
-            out.push_back(i);
-    }
-    return out;
-}
-
-void Graph_01::replier(int v, int d, int type){ //v: vertice, d: direction
+Graph* Graph_01::replier(int v, int d, int type) const { //v: vertice, d: direc.
+    Graph* g = clone();
   //First : Bend over "in stays".
     bool existRight = true;
     bool  existLeft = true;
-    Vertice* origin = getSommet(v);
+    Vertice* origin = g->getSommet(v);
+    if(origin->isArkenMarked()) {
+        delete g;
+        return NULL; 
+    }
     Vertice*  right = NULL;
     Vertice*   left = NULL;
     int           r = origin->getVoisin(d);                    //right place
@@ -555,11 +478,11 @@ void Graph_01::replier(int v, int d, int type){ //v: vertice, d: direction
     int  previous_r = v;
     int  previous_l = v;
     std::queue<int> toDel;
-    int   isInQueue = reserverMarque();
+    int   isInQueue = g->reserverMarque();
     for(int i(0); i < TAILLE_TABLEAU; ++i){
         Vertice* vi;
         try{
-            vi = getSommet(i);
+            vi = g->getSommet(i);
         } catch(NonExistentVerticeException &e) {
             continue;
         }
@@ -567,30 +490,34 @@ void Graph_01::replier(int v, int d, int type){ //v: vertice, d: direction
     }//this loop initialise the marking
     bool thereIsNoRight = false;
     try {
-        right = getSommet(r);
+        right = g->getSommet(r);
     } catch(NonExistentVerticeException &e) {
         existRight = false;
         thereIsNoRight = true;
     }
     try {
-        left = getSommet(l);
+        left = g->getSommet(l);
     } catch(NonExistentVerticeException &e) {
         existLeft = false;
     }
     if(existRight && existLeft){
         toDel.push(origin->getVoisin((d + 1) % 6));
-        getSommet(toDel.front())->mark(isInQueue);
+        g->getSommet(toDel.front())->mark(isInQueue);
     }
     while(existRight && existLeft){ //Bend over "in stays"
+        if(right->isArkenMarked() || left->isArkenMarked()){
+            delete g;
+            return NULL;
+        }
         int in_r = right->isXthVoisin(previous_r);//The way we came in r
         int in_l =  left->isXthVoisin(previous_l);//The way we came in l
       //(1) Break links from inside to right.
         try{
-            Vertice* interne_1 = getSommet(right->getVoisin((in_r + 5) % 6));
+            Vertice* interne_1 = g->getSommet(right->getVoisin((in_r + 5) % 6));
             interne_1->setVoisin(interne_1->isXthVoisin(r), -1);
         }catch(...){}
         try{
-            Vertice* interne_2 = getSommet(right->getVoisin((in_r + 4) % 6));
+            Vertice* interne_2 = g->getSommet(right->getVoisin((in_r + 4) % 6));
             interne_2->setVoisin(interne_2->isXthVoisin(r), -1);
         }catch(...){}        
       //(2) Link right to left-outside.
@@ -598,11 +525,11 @@ void Graph_01::replier(int v, int d, int type){ //v: vertice, d: direction
         right->setVoisin((in_r +4) % 6, left->getVoisin((in_l + 4) % 6));
       //(3) Link left-outside to right.
         try{
-            Vertice* externe_1 = getSommet(left->getVoisin((in_l + 5) % 6));
+            Vertice* externe_1 = g->getSommet(left->getVoisin((in_l + 5) % 6));
             externe_1->setVoisin(externe_1->isXthVoisin(l), r);
         }catch(...){}
         try{
-            Vertice* externe_2 = getSommet(left->getVoisin((in_l + 4) % 6));
+            Vertice* externe_2 = g->getSommet(left->getVoisin((in_l + 4) % 6));
             externe_2->setVoisin(externe_2->isXthVoisin(l), r);
         }catch(...){}
       //(4) Break links from left to left-outside.
@@ -614,41 +541,45 @@ void Graph_01::replier(int v, int d, int type){ //v: vertice, d: direction
         r = right->getVoisin((in_r + 3) % 6);
         l =  left->getVoisin((in_l + 3) % 6);
         try {
-            right = getSommet(r);
+            right = g->getSommet(r);
         } catch(NonExistentVerticeException &e) {
             existRight = false;
         }
         try {
-            left  = getSommet(l);
+            left  = g->getSommet(l);
         } catch(NonExistentVerticeException &e) {
             existLeft = false;
         }
         if(existLeft && !existRight){
-            Vertice* oldLeft = getSommet(previous_l);
+            Vertice* oldLeft = g->getSommet(previous_l);
             oldLeft->setVoisin(oldLeft->isXthVoisin(l), -1);
-            getSommet(previous_r)->setVoisin((in_r + 3) % 6, l);
+            g->getSommet(previous_r)->setVoisin((in_r + 3) % 6, l);
             in_l = left->isXthVoisin(previous_l);
             left->setVoisin(in_l, previous_r);
             previous_l = previous_r; //need it for first while(existLeft) itter
         }
     }
     while(existRight){
+        if(right->isArkenMarked()){
+            delete g;
+            return NULL;
+        }
         int in_r = right->isXthVoisin(previous_r);
       //(1) Break links from inside to right.
         try{
-            Vertice* interne_1 = getSommet(right->getVoisin((in_r + 5) % 6));
+            Vertice* interne_1 = g->getSommet(right->getVoisin((in_r + 5) % 6));
             interne_1->setVoisin(interne_1->isXthVoisin(r), -1);
             if(toDel.empty()){
                 toDel.push(right->getVoisin((in_r + 5) % 6));
-                getSommet(toDel.front())->mark(isInQueue);
+                g->getSommet(toDel.front())->mark(isInQueue);
             }
         }catch(...){}
         try{
-            Vertice* interne_2 = getSommet(right->getVoisin((in_r + 4) % 6));
+            Vertice* interne_2 = g->getSommet(right->getVoisin((in_r + 4) % 6));
             interne_2->setVoisin(interne_2->isXthVoisin(r), -1);
             if(toDel.empty()){
                 toDel.push(right->getVoisin((in_r + 4) % 6));
-                getSommet(toDel.front())->mark(isInQueue);
+                g->getSommet(toDel.front())->mark(isInQueue);
             }
         }catch(...){}
       //(2) Break links from right to inside.
@@ -658,28 +589,32 @@ void Graph_01::replier(int v, int d, int type){ //v: vertice, d: direction
         previous_r = r;
         r = right->getVoisin((in_r + 3) % 6);
         try{
-            right = getSommet(r);
+            right = g->getSommet(r);
         } catch(NonExistentVerticeException &e) {
             existRight = false;
         }
     }
     while(existLeft){
+        if(left->isArkenMarked()){
+            delete g;
+            return NULL;
+        }
         int in_l = left->isXthVoisin(previous_l);
       //(1) Break links from inside to left.
         try{
-            Vertice* interne_1 = getSommet(left->getVoisin((in_l + 1) % 6));
+            Vertice* interne_1 = g->getSommet(left->getVoisin((in_l + 1) % 6));
             interne_1->setVoisin(interne_1->isXthVoisin(l), -1);
             if(toDel.empty()){
                 toDel.push(left->getVoisin((in_l + 1) % 6));
-                getSommet(toDel.front())->mark(isInQueue);
+                g->getSommet(toDel.front())->mark(isInQueue);
             }
         }catch(...){}
         try{
-            Vertice* interne_2 = getSommet(left->getVoisin((in_l + 2) % 6));
+            Vertice* interne_2 = g->getSommet(left->getVoisin((in_l + 2) % 6));
             interne_2->setVoisin(interne_2->isXthVoisin(l), -1);
             if(toDel.empty()){
                 toDel.push(left->getVoisin((in_l + 2) % 6));
-                getSommet(toDel.front())->mark(isInQueue);
+                g->getSommet(toDel.front())->mark(isInQueue);
             }
         }catch(...){}
       //(2) Break links from left to inside.
@@ -689,7 +624,7 @@ void Graph_01::replier(int v, int d, int type){ //v: vertice, d: direction
         previous_l = l;
         l = left->getVoisin((in_l + 3) % 6);
         try{
-            left = getSommet(l);
+            left = g->getSommet(l);
         } catch(NonExistentVerticeException &e) {
             existLeft = false;
         }
@@ -702,7 +637,7 @@ void Graph_01::replier(int v, int d, int type){ //v: vertice, d: direction
                 delVois = d;
             else
                 delVois = (d + 1) % 6;
-            Vertice* xi = getSommet(origin->getVoisin(delVois));
+            Vertice* xi = g->getSommet(origin->getVoisin(delVois));
             xi->setVoisin(xi->isXthVoisin(v), -1);
         }catch(...){}
         origin->delVoisin(delVois);
@@ -711,21 +646,26 @@ void Graph_01::replier(int v, int d, int type){ //v: vertice, d: direction
     m_nbQuadra += (type == 4);
     while(!toDel.empty()){
         for(int i(0); i < 6; ++i){
-            int neigh_place = getSommet(toDel.front())->getVoisin(i);
+            int neigh_place = g->getSommet(toDel.front())->getVoisin(i);
             if(neigh_place == -1)
                 continue;
-            Vertice* neigh = getSommet(neigh_place);
+            Vertice* neigh = g->getSommet(neigh_place);
             neigh->setVoisin(neigh->isXthVoisin(toDel.front()), -1);
             if(neigh->isMarked(isInQueue))
                 continue;
+            if(neigh->isArkenMarked()){
+                delete g;
+                return NULL;
+            }
             toDel.push(neigh_place);
             neigh->mark(isInQueue);
         }
-        supprimerSommet(toDel.front());
+        g->supprimerSommet(toDel.front());
         toDel.pop();
     }
-    libererMarque(isInQueue);
-    bienFormer();
+    g->libererMarque(isInQueue);
+    g->bienFormer();
+    return g;
 }
 
 void Graph_01::relier(){

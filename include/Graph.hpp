@@ -104,36 +104,28 @@ class Graph {
     virtual void initialiserQuadri() = 0; 
         /* Create the graph composed of one square.
          # Cree le graphe compose d'un quadrilaltere. */
-    virtual int peutReplierPenta(int v) const = 0;
-        /* If we can bend v-th vertice in pentagon, will return a way we can
-         * bend it. Esle, will return -1.
-         # Si l'on peut peut replier le v-ieme voisin en pentagone, retourne
-         # une direction possible. Sinon, retourne -1. */
-    virtual int peutReplierQuadri(int v) const = 0;
-        /* Like upper functions, but wih quadrilateral bending.
-         # Comme la fonction ci-dessus mais avec le replie en quadrilatere. */
-    virtual std::vector<int> peutReplierPentaAll(int v) const = 0;
-        /* Look if we can bend v-th vertice. Will put all the way we can bend it
-         * in the returned vector.
-         # Regarde si on peut replier le v-ieme sommet. Toutes les directions 
-         # dans lesquelles on peut replier seront mises dans le vector<int> . */
-    virtual std::vector<int> peutReplierQuadriAll(int v) const = 0;
-        /* Like upper function, but for quadrilaterales bending.
-         # Idem que la précédente, mais pour les quadrilateres. */
-    virtual void replierPenta(int v, int d) = 0;
+    virtual Graph* replierPenta(int v, int d) const = 0;
         /* Bend over "in stays" to form a pentagon as described in the manifest
          * v is the vertice to transform in pentagon
          * its merged neighbours will be the d-th abd the (d+1)mod(6)-th
+         * If we can do that without toutching Arken, will return the formed
+         * graph. Else, will return NULL.
          # Replie en corset pour former un pentagone comme ecrit dans les notes
          # v est le sommet a transformer en pentagone
-         # ses voisins fusionnes seront le d-ieme et le (d+1)mod(6)-ieme */
-    virtual void replierQuadri(int v, int d) = 0;
+         # ses voisins fusionnes seront le d-ieme et le (d+1)mod(6)-ieme.
+         # Si on peut replier ainsi sans toucher a l'Arken, alors retourne le
+         # graphe genere. Sinon, retourne NULL.*/
+    virtual Graph* replierQuadri(int v, int d) const = 0;
         /* Bend over "in stays" to form a square as described in the manifest
          * v is the vertice to transform in quadrilateral
          * its merged neighbours will be the d-th abd the (d+2)mod(6)-th
+         * If we can do that without toutching Arken, will return the formed
+         * graph. Else, will return NULL.
          # Replie en corset pour former un carre comme ecrit dans le manifest
          # v est le sommet a transformer en quadrilaterre
-         # ses voisins fusionnes seront le d-ieme et le (d+2)mod(6)-ieme */
+         # ses voisins fusionnes seront le d-ieme et le (d+2)mod(6)-ieme.
+         # Si on peut replier ainsi sans toucher a l'Arken, alors retourne le
+         # graphe genere. Sinon, retourne NULL.*/
     virtual void writeInFile(std::string dataFile) const = 0;
         /* Write the graph in a .graph.data file as described in the manifest.
          * Can throw an OpenFaileFailurException.
