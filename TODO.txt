@@ -3,9 +3,9 @@ Tester tout les "peutReplier*(*)"
 Surcharger toute les methodes de Graph pour qu'on puisse passer un Vertice
 	plutot qu'un int l'identifiant. la methode se contentera de traduire 
 	pour la methode qu'elle surchrge
-Implementer les methodes de Graph_01::peutReplier*(int)
 
-mettre un _ devant les methodes private
+mettre un _ deriere les methodes private
+
 Pas de bug en vue, mais un affichage parfois degueu
 
 tester Graph_01
