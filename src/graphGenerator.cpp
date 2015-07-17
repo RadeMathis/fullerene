@@ -4,6 +4,7 @@
 #include <queue>
 
 #include <Graph.hpp>
+#include <Graph_01.hpp>
 #include <functions.hpp>
 
 void
@@ -84,7 +85,6 @@ extraireFront_(std::queue<std::string> graphFiles,
 {
     int nbGraphGenerated = 0;
     Graph*             g = new Graph_01(graphFiles.front());
-    graphFiles.pop();
     // Tout d'abord, on tente de generer un graphe par sommet
     for(Iterator it = g->begin(); it != g->end(); ++it){
         Graph* newGraph;
@@ -100,18 +100,56 @@ extraireFront_(std::queue<std::string> graphFiles,
         }
         if(!newGraph)
             continue; //Si ce sommet n'a rien donne, on passe au suivant.
-        if(thereIsAnIsomorph_(newGraph, path)){
+        if(compareToOthers_(newGraph, path) != -1){
             // TODO : coder la func si dessus
             // TODO : ENDIT
         }
     }
 }
 
-bool
-thereIsAnIsomorph_(Graph* g, std::string path)
+int
+compareToOthers_(Graph* g, std::string path)
 {
+    int matricule = 0;
     std::string lineBuffer;
     std::vector<std::string> sentenceBuffer;
-    std::ifstream graphList((path + "graphList.data").c_str());
-
+    std::ifstream graphList((path + "graphList.data").c_str(), std::ios::in);
+    std::getline(graphList, lineBuffer);
+    sentenceBuffer = decouperString(lineBuffer);
+    int nbGraph atoi(sentenceBuffer[0].c_str());
+    bool out = false; //Presomption d'innocence
+    for(int i(0); i < nbGraph; ++i){ //For in file's lines.
+        std::getline(graphList, lineBuffer);
+        sentenceBuffer = decouperString(lineBuffer);
+        if(lineBuffer[0] != g->getNbquadri())
+            continue;
+        if(lineBuffer[2] != g->getNbPenta())
+            continue;
+        int gfNbSommet = 0;
+        int curseur = 4;
+        while(lineBuffer[curseur] != '_'){
+            gfNbSommet *= 10;
+            gfNbSommet += (lineBuffer[curseur] - 48); // Using ASCII value.
+            ++curseur;
+        }
+        if(gfNbSommet != g->getNbSommets())
+            continue;
+        curseur += 2;
+        int gfMatricule = 0;
+        while(curseur < sentenceBuffer[0].size()){
+            gfMatricule *= 10;
+            gfMatricule += (lineBuffer[curseur] - 48); //ASCII trick, again.
+            ++curseur;
+        }
+        if(matricule <= gfMatricule)
+            matricule = gfMatricule + 1;
+        Graph* g2 = new Graph_01(sentenceBuffer[0]);
+        if(g->isomorphe(g2))
+            return -1;
+    }
+    ////////////////////////////////////////////////////////////////////////////
+   ////////////////////////////////////////////////////////////////////////////
+  //// TODO : ENDIT //////////////////////////////////////////////////////////
+ ////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////
 }

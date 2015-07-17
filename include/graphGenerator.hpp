@@ -36,3 +36,10 @@ extraireQuadriFront(std::queue<std::string> graphFiles,
 int
 extraireFront_(std::queue<std::string> graphFiles, 
                     std::string path, int type);
+
+int
+compareToOthers_(Graph* g, std::string path);
+    /* If g get an isomorphe graph in path, will return -1.
+     * Else, will return the matricule (Q_P_S__matricule)
+     # Si g possede un isomorphisme, retourne -1.
+     # Sinon, retourne le matricule (Q_P_S__matricule).
