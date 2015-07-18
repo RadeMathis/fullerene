@@ -14,7 +14,7 @@ add_executable(
 	functions.cpp
 	graphExceptions.cpp
 	graphPrinter.cpp
-##	graphGenerator.cpp
+	graphGenerator.cpp
 	)
 
 TARGET_LINK_LIBRARIES(tests m)

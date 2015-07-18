@@ -8,7 +8,7 @@
 #include <functions.hpp>
 
 void
-fullGenerator(std::string path /* = '.' */)
+fullGenerator(std::string path /* = "." */)
 {
     try{
         mkdir(path.c_str(), S_IRWXU );
@@ -20,7 +20,7 @@ fullGenerator(std::string path /* = '.' */)
     std::ofstream graphList((path + "graphList.data").c_str(), std::ios::out
                                                              | std::ios::trunc);
 
-    graphList << '          ' << std::endl; 
+    graphList << "          " << std::endl; 
         // On laisse une ligne pour y inscrire le nombre de graphes formes.
 
     int nbGraphGenerated;
@@ -66,21 +66,21 @@ fullGenerator(std::string path /* = '.' */)
 }
 
 int
-extrairePentaFront(std::queue<std::string> graphFiles, 
+extrairePentaFront(std::queue<std::string>& graphFiles, 
                    std::string path)
 {
     return extraireFront_(graphFiles ,path, 5);
 }
 
 int
-extraireQuadriFront(std::queue<std::string> graphFiles, 
+extraireQuadriFront(std::queue<std::string>& graphFiles, 
                     std::string path)
 {
     return extraireFront_(graphFiles, path, 4);
 }
 
 int
-extraireFront_(std::queue<std::string> graphFiles,
+extraireFront_(std::queue<std::string> & graphFiles,
                std::string path, int type)
 {
     int nbGraphGenerated = 0;
@@ -96,15 +96,32 @@ extraireFront_(std::queue<std::string> graphFiles,
             if(type == 4)
                 newGraph = g->replierQuadri(*it, j);
             if(newGraph)
-                break; //Si ona un graphe, c'est bon
+                break; //Si on un graphe, c'est bon
         }
         if(!newGraph)
             continue; //Si ce sommet n'a rien donne, on passe au suivant.
-        if(compareToOthers_(newGraph, path) != -1){
-            // TODO : coder la func si dessus
-            // TODO : ENDIT
+        int matricule compareToOthers_(newGraph, path) != -1):
+        if(matricule != -1){
+            // Le graphe est nouveau, il faut l'ajouter.
+            std::string newGraphName;
+            newGraphName += itoa(newGraph->getNbQuadri());
+            newGraphName += '_';
+            newGraphName += itoa(newGraph->getNbPenta());
+            newGraphName += '_';
+            newGraphName += itoa(newGraph->getNbSommets());
+            newGraphName += "__";
+            newGraphName += itoa(matricule);
+            graphFiles.append(newGraphName);
+            ofstream graphList((path + graphList).c_str(), std::ios::out 
+                                                         | std::ios::app);
+            graphList << newGraphName << std::endl;
+            newGraph->writeInFile(newGraphName);
+            ++nbGraphGenerated;
         }
+        delete newGraph;
     }
+    delete g;
+    return nbGraphGenerated;
 }
 
 int
@@ -134,8 +151,14 @@ compareToOthers_(Graph* g, std::string path)
         }
         if(gfNbSommet != g->getNbSommets())
             continue;
-        curseur += 2;
         int gfMatricule = 0;
+        Graph* g2 = new Graph_01(sentenceBuffer[0]);
+        if(g->isomorphe(g2)){
+            delete g2;
+            return -1;
+        }
+        delete g2;
+        curseur += 2; //"__"
         while(curseur < sentenceBuffer[0].size()){
             gfMatricule *= 10;
             gfMatricule += (lineBuffer[curseur] - 48); //ASCII trick, again.
@@ -143,13 +166,6 @@ compareToOthers_(Graph* g, std::string path)
         }
         if(matricule <= gfMatricule)
             matricule = gfMatricule + 1;
-        Graph* g2 = new Graph_01(sentenceBuffer[0]);
-        if(g->isomorphe(g2))
-            return -1;
     }
-    ////////////////////////////////////////////////////////////////////////////
-   ////////////////////////////////////////////////////////////////////////////
-  //// TODO : ENDIT //////////////////////////////////////////////////////////
- ////////////////////////////////////////////////////////////////////////////
-////////////////////////////////////////////////////////////////////////////
+    return matricule;
 }

@@ -1,4 +1,3 @@
-Faire le graphGenerator
-	-tester/debbugger
+debboguer/tester graphGenerator
 
 Faire l'embalage (usage ...)
