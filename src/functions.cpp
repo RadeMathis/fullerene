@@ -1,5 +1,11 @@
 #include <functions.hpp>
 
+#ifdef __unix__
+    #include <unistd.h>
+#elif _WIN32
+    #include <windows.h>
+#endif
+
 std::vector<std::string> 
 decouperString(std::string const& str)
 {
@@ -94,4 +100,14 @@ sameTreatedVoisins(std::vector<int> a, std::vector<int> b)
             return true;
     }
     return false;
+}
+
+void 
+mySleep(unsigned long long timeToWait)
+{
+    #ifdef __unix__
+        usleep(1000000 * timeToWait);
+    #elif _WIN32
+        Sleep(1000 * timeToWait);
+    #endif
 }

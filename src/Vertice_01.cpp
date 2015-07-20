@@ -1,8 +1,18 @@
 #include <Vertice_01.hpp>
 
-Vertice_01::Vertice_01() : m_nbVoisins(0) , m_arkenMarque(0) {
+Vertice_01::Vertice_01(Graph const* g, int place) 
+        : m_graphe(g) , m_placeDansGraphe(place) , m_nbVoisins(0) , m_arkenMarque(0) {
     for(int i(0); i < 8; ++i)
         m_marques[i] = false;
+}
+
+Vertice_01::Vertice_01(Graph const* g, int place, Vertice const* s)
+        :m_graphe(g), m_placeDansGraphe(place) , m_nbVoisins(s->getNbVoisins()){
+    m_arkenMarque = s->isArkenMarked();
+    for(int i(0); i < 8; ++i)
+        m_marques[i] = false;
+    for(int i(0); i < s->getNbVoisins(); ++i)
+        m_voisins[i] = s->getVoisin(i);
 }
 
 Vertice_01::Vertice_01(Vertice_01 const& s) : m_nbVoisins(s.getNbVoisins()) {
@@ -13,22 +23,14 @@ Vertice_01::Vertice_01(Vertice_01 const& s) : m_nbVoisins(s.getNbVoisins()) {
         m_voisins[i] = s.getVoisin(i);
 }
 
-Vertice_01::Vertice_01(Vertice const* s) : m_nbVoisins(s->getNbVoisins()) {
-    m_arkenMarque = s->isArkenMarked();
-    for(int i(0); i < 8; ++i)
-        m_marques[i] = false;
-    for(int i(0); i < s->getNbVoisins(); ++i)
-        m_voisins[i] = s->getVoisin(i);
-}
-
 Vertice_01::~Vertice_01(){} //only statics variable, who cares?
 
-Vertice* Vertice_01::clone() const {
-    Vertice_01* out = new Vertice_01(this);
+Vertice* Vertice_01::clone(Graph const* g, int place) const {
+    Vertice_01* out = new Vertice_01(g, place, this);
     return (Vertice*)out;
 }
 
-Graph* Vertice_01::getGraph() const {
+Graph const* Vertice_01::getGraph() const {
     return m_graphe;
 }
 

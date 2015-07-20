@@ -1,9 +1,11 @@
 #include <graphGenerator.hpp>
 
+#include <stdio.h> //desole
+#include <iostream>
 #include <fstream>
 #include <queue>
+#include <sys/stat.h>
 
-#include <Graph.hpp>
 #include <Graph_01.hpp>
 #include <functions.hpp>
 
@@ -27,6 +29,7 @@ fullGenerator(std::string path /* = "." */)
     std::queue<std::string> toTreatGraph;
     Graph* actualGraph;
     
+    // On cree le premier graphe (un pentagone)
     actualGraph = new Graph_01();
     actualGraph->initialiserPenta();
     actualGraph->writeInFile("0_1_16__0");
@@ -34,6 +37,7 @@ fullGenerator(std::string path /* = "." */)
     graphList << "0_1_16__0" << std::endl;
     delete actualGraph;
 
+    // On creer un autre graphe de base (un quadrilatere)
     actualGraph = new Graph_01();
     actualGraph->initialiserQuadri();
     actualGraph->writeInFile("1_0_13__0");
@@ -43,19 +47,24 @@ fullGenerator(std::string path /* = "." */)
 
     nbGraphGenerated = 2;
 
+    // On genere tout le reste a parti de ces deux la.
+    std::cout << std::endl;
     while(! toTreatGraph.empty()){
+        fprintf(stdout, "\rGraph generated : %d.", nbGraphGenerated);
+        fflush(stdout);
         actualGraph = new Graph_01(toTreatGraph.front());
-        int courbure = 2 * actualGraph->getNbquadri() 
+        int courbure = 2 * actualGraph->getNbQuadri() 
                          + actualGraph->getNbPenta();
         if(courbure > 7)
-        	continue;
+            continue;
         nbGraphGenerated += extrairePentaFront(toTreatGraph, path);
         if(courbure > 6)
-        	continue;
+            continue;
         nbGraphGenerated += extraireQuadriFront(toTreatGraph, path);
         //TODO : creer les deux fonctions ci-dessus
         delete actualGraph;
         toTreatGraph.pop();
+            //usefull? Retour chariot
     }
     graphList.seekp(0, std::ios::beg); //retour au debut
     graphList << nbGraphGenerated; //inscription du nombre de graphes
@@ -100,20 +109,20 @@ extraireFront_(std::queue<std::string> & graphFiles,
         }
         if(!newGraph)
             continue; //Si ce sommet n'a rien donne, on passe au suivant.
-        int matricule compareToOthers_(newGraph, path) != -1):
+        int matricule = compareToOthers_(newGraph, path);
         if(matricule != -1){
             // Le graphe est nouveau, il faut l'ajouter.
             std::string newGraphName;
-            newGraphName += itoa(newGraph->getNbQuadri());
+            newGraphName += std::to_string(newGraph->getNbQuadri());
             newGraphName += '_';
-            newGraphName += itoa(newGraph->getNbPenta());
+            newGraphName += std::to_string(newGraph->getNbPenta());
             newGraphName += '_';
-            newGraphName += itoa(newGraph->getNbSommets());
+            newGraphName += std::to_string(newGraph->getNbSommets());
             newGraphName += "__";
-            newGraphName += itoa(matricule);
-            graphFiles.append(newGraphName);
-            ofstream graphList((path + graphList).c_str(), std::ios::out 
-                                                         | std::ios::app);
+            newGraphName += std::to_string(matricule);
+            graphFiles.push(newGraphName);
+            std::ofstream graphList((path +"graphList.data").c_str()
+                                               , std::ios::out | std::ios::app);
             graphList << newGraphName << std::endl;
             newGraph->writeInFile(newGraphName);
             ++nbGraphGenerated;
@@ -132,18 +141,18 @@ compareToOthers_(Graph* g, std::string path)
     std::vector<std::string> sentenceBuffer;
     std::ifstream graphList((path + "graphList.data").c_str(), std::ios::in);
     std::getline(graphList, lineBuffer);
-    sentenceBuffer = decouperString(lineBuffer);
-    int nbGraph atoi(sentenceBuffer[0].c_str());
-    bool out = false; //Presomption d'innocence
-    for(int i(0); i < nbGraph; ++i){ //For in file's lines.
+        // On passe la premiere ligne, car elle est vide.
+    while(true){ //For in file's lines. (break two lines behind)
         std::getline(graphList, lineBuffer);
+        if(graphList.eof())
+            return matricule;
         sentenceBuffer = decouperString(lineBuffer);
-        if(lineBuffer[0] != g->getNbquadri())
+        if(lineBuffer[0] != g->getNbQuadri())
             continue;
         if(lineBuffer[2] != g->getNbPenta())
             continue;
         int gfNbSommet = 0;
-        int curseur = 4;
+        unsigned int curseur = 4;
         while(lineBuffer[curseur] != '_'){
             gfNbSommet *= 10;
             gfNbSommet += (lineBuffer[curseur] - 48); // Using ASCII value.
@@ -151,7 +160,6 @@ compareToOthers_(Graph* g, std::string path)
         }
         if(gfNbSommet != g->getNbSommets())
             continue;
-        int gfMatricule = 0;
         Graph* g2 = new Graph_01(sentenceBuffer[0]);
         if(g->isomorphe(g2)){
             delete g2;
@@ -159,6 +167,7 @@ compareToOthers_(Graph* g, std::string path)
         }
         delete g2;
         curseur += 2; //"__"
+        int gfMatricule = 0;
         while(curseur < sentenceBuffer[0].size()){
             gfMatricule *= 10;
             gfMatricule += (lineBuffer[curseur] - 48); //ASCII trick, again.
@@ -167,5 +176,4 @@ compareToOthers_(Graph* g, std::string path)
         if(matricule <= gfMatricule)
             matricule = gfMatricule + 1;
     }
-    return matricule;
 }

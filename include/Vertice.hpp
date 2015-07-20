@@ -24,8 +24,8 @@ class Vertice{
   public:
 
     virtual ~Vertice() = 0;
-    virtual  Vertice* clone() const = 0;
-    virtual Graph* getGraph() const = 0;
+    virtual  Vertice* clone(Graph const* g, int place) const = 0;
+    virtual Graph const* getGraph() const = 0;
     virtual int getPlaceInGraph() const = 0;
     virtual int getNbVoisins() const = 0;
     virtual int getVoisin(int n) const = 0; 

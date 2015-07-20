@@ -21,14 +21,14 @@ class Vertice_01 : public Vertice {
 
   public:
 
-    Vertice_01();
+    Vertice_01(Graph const* g, int place);
+    Vertice_01(Graph const* g, int place, Vertice const* s);
     Vertice_01(Vertice_01 const& s);
-    Vertice_01(Vertice const* s);
     ~Vertice_01();
-    Graph* getGraph() const;
+    Vertice* clone(Graph const* g, int place) const;
+    Graph const* getGraph() const;
     int getPlaceInGraph() const;
-    Vertice* clone() const;
-  	int getNbVoisins() const;
+    int getNbVoisins() const;
   	int getVoisin(int n) const; 
   		/* n is the nuber of the neighborg (0 <= n <= 5)
        * it return the position in the Graph's array of the wanted neighbour
@@ -52,7 +52,7 @@ class Vertice_01 : public Vertice {
 
     void afficher(std::ostream &stream) const;
 
-    Graph* m_graphe;
+    Graph const* m_graphe;
     int m_placeDansGraphe;
     int m_nbVoisins;
     int m_voisins[6]; //we'll never have to treat more than 6 neightborgs

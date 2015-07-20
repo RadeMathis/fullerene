@@ -3,6 +3,8 @@
 #include <string>
 #include <queue>
 
+#include <Graph.hpp>
+
 void
 fullGenerator(std::string path = ".");
     /* Will generate all the graphs blablabla.... as in manifest blablabla....
@@ -15,7 +17,7 @@ fullGenerator(std::string path = ".");
      # Genere aussi un graphList.data contenant la liste de tout les fichiers.*/
 
 int
-extrairePentaFront(std::queue<std::string> graphFiles, 
+extrairePentaFront(std::queue<std::string> & graphFiles, 
                    std::string path);
     /* Take graphFiles.front() and build all the graphs it can by bending in 
      * pentagon. It won't build the once who are isomorph to one graph in 
@@ -28,14 +30,14 @@ extrairePentaFront(std::queue<std::string> graphFiles,
      # le manifest. */
 
 int
-extraireQuadriFront(std::queue<std::string> graphFiles, 
+extraireQuadriFront(std::queue<std::string> & graphFiles, 
                     std::string path);
 	/* Same as upper function but gerate new graphs by bending in quadrilaterals
 	 # Semblable a la fonction ci-dessus, mais genere les graphes en repliant 
 	 # par quadrilateres et non par pentagones. */
 
 int
-extraireFront_(std::queue<std::string> graphFiles, 
+extraireFront_(std::queue<std::string> & graphFiles, 
                     std::string path, int type);
     /* Abstract to previous codes.
      # Factorise les codes precedents. */

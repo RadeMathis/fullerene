@@ -49,3 +49,4 @@ bool sameTreatedVoisins(std::vector<int> a, std::vector<int> b);
 	 # Pareil que la fonction d'au desus, mais se contente de retourner
 	 # true s'il existe une agalite.
 	 # Considere que -1 est == à tout. */
+void mySleep(unsigned long long time);

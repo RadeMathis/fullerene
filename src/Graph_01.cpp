@@ -46,7 +46,7 @@ Graph_01::Graph_01(std::string dataFile){
         std::getline(dataStream, lineBuffer);
         sentenceBuffer = decouperString(lineBuffer);
         int thisVertice = atoi(sentenceBuffer[0].c_str());
-        m_sommets[thisVertice] = new Vertice_01();
+        m_sommets[thisVertice] = new Vertice_01(this, thisVertice);
         for(int j(2); j < (2 + atoi(sentenceBuffer[1].c_str())); ++j){
             if(sentenceBuffer[j] == "none")
                 m_sommets[thisVertice]->addVoisin(j -2, -1);
@@ -59,13 +59,14 @@ Graph_01::Graph_01(std::string dataFile){
 }
 
 Graph_01::Graph_01(Graph_01 const& g) : m_nbSommets(g.getNbSommets()), 
-        m_nbPenta(g.getNbPenta()), m_nbQuadra(g.getNbQuadra())
+        m_nbPenta(g.getNbPenta()), m_nbQuadra(g.getNbQuadri())
 {
     for(int i(0); i < 8; ++i)
         m_marquesReserves[i] = 0;
     for(int i(0); i < TAILLE_TABLEAU; ++i){
         try{
-            m_sommets[i] = g.getSommet(i)->clone();
+            Graph const* g_ptr = &g;
+            m_sommets[i] = g.getSommet(i)->clone(g_ptr, i);
         } catch(NonExistentVerticeException &e) {
             m_sommets[i] = NULL;
         }
@@ -73,13 +74,13 @@ Graph_01::Graph_01(Graph_01 const& g) : m_nbSommets(g.getNbSommets()),
 }
 
 Graph_01::Graph_01(Graph const* g) : m_nbSommets(g->getNbSommets()), 
-        m_nbPenta(g->getNbPenta()), m_nbQuadra(g->getNbQuadra()) 
+        m_nbPenta(g->getNbPenta()), m_nbQuadra(g->getNbQuadri()) 
 {
     for(int i(0); i < 8; ++i)
         m_marquesReserves[i] = 0;
     for(int i(0); i < TAILLE_TABLEAU; ++i){
         try{
-            m_sommets[i] = g->getSommet(i)->clone();
+            m_sommets[i] = g->getSommet(i)->clone(g, i);
         } catch(NonExistentVerticeException &e) {
             m_sommets[i] = NULL;
         }
@@ -108,7 +109,7 @@ void Graph_01::setNbQuadri_(int n) {
     m_nbQuadra = n;
 }
 
-int Graph_01::getNbQuadra() const {
+int Graph_01::getNbQuadri() const {
     return m_nbQuadra;
 }
 
@@ -124,7 +125,7 @@ int Graph_01::ajouterSommet(){
     int isFree(0);
     while(isFree < TAILLE_TABLEAU){
         if(m_sommets[isFree] == NULL){
-            m_sommets[isFree] = new Vertice_01();
+            m_sommets[isFree] = new Vertice_01(this, isFree);
             ++m_nbSommets;
             return isFree;
         }
@@ -138,7 +139,7 @@ void Graph_01::supprimerSommet(Vertice* n){
 }
 
 void Graph_01::supprimerSommet(int n){
-    if(m_sommets[n] == NULL)
+    if(n < 0 || n > TAILLE_TABLEAU || m_sommets[n] == NULL)
         throw NonExistentVerticeException(n);
     --m_nbSommets;
     if(m_sommets[n]->getNbVoisins() == 5)
@@ -150,7 +151,7 @@ void Graph_01::supprimerSommet(int n){
 }
 
 Vertice* Graph_01::getSommet(int n) const {
-    if(m_sommets[n] == NULL || n < 0 || n >= TAILLE_TABLEAU)
+    if(n < 0 || n >= TAILLE_TABLEAU || m_sommets[n] == NULL)
         throw NonExistentVerticeException(n);
     return m_sommets[n];
 }
@@ -241,20 +242,32 @@ void Graph_01::bienFormer(){
 }
 
 void Graph_01::initialiserPenta(){
-    m_nbSommets = 1;
-    m_nbPenta = 1;
-    m_sommets[0] = new Vertice_01();
+    if(getNbSommets())
+        for(int i(0); i < TAILLE_TABLEAU; ++i){
+            try{
+                supprimerSommet(i);
+            } catch(...) {}
+        }
+    int place = ajouterSommet();
+    Vertice* sommet = getSommet(place);
     for(int i(0); i < 5; ++i)
-        m_sommets[0]->addVoisin(i, -1);
+        sommet->addVoisin(i, -1);
+    setNbPenta_(1);
     bienFormer();
 }
 
 void Graph_01::initialiserQuadri(){
-    m_nbSommets = 1;
-    m_nbQuadra = 1;
-    m_sommets[0] = new Vertice_01();
+    if(getNbSommets())
+        for(int i(0); i < TAILLE_TABLEAU; ++i){
+            try{
+                supprimerSommet(i);
+            } catch(...) {}
+        }
+    int place = ajouterSommet();
+    Vertice* sommet = getSommet(place);
     for(int i(0); i < 4; ++i)
-        m_sommets[0]->addVoisin(i, -1);
+        sommet->addVoisin(i, -1);
+    setNbQuadri_(1);
     bienFormer();
 }
 
@@ -383,18 +396,22 @@ void Graph_01::markArken()
                 int dist_jk = distances[k][indiceDistances[j]];
                 if(dist_ij + dist_ik == dist_jk){
                     vi->markArken();
-                    goto LABEL_END_OF_FOR_J;
+                    goto LABEL_GRAPH_01_MARK_ARKEN_END_OF_FOR_J;
                 } 
             }
-        } LABEL_END_OF_FOR_J:; //verifier qu'on fait bien comme ca
+        } LABEL_GRAPH_01_MARK_ARKEN_END_OF_FOR_J:;
     }
 }
 
-bool Graph_01::isomorphe(Graph* g) const 
-{
+bool Graph_01::isomorphe(Graph* g) const{
+    Graph* gSym = mirrorGraph_();
+    return(isomorpheSimple_(g) || isomorpheSimple_(gSym));
+}
+
+bool Graph_01::isomorpheSimple_(Graph* g) const {
     if(getNbSommets() != g->getNbSommets())
         return false;
-    if(getNbQuadra() != g->getNbQuadra())
+    if(getNbQuadri() != g->getNbQuadri())
         return false;
     if(getNbPenta() != g->getNbPenta())
         return false;
@@ -669,7 +686,7 @@ Graph* Graph_01::replier_(int v, int d, int type) const { //v: vertice, d: direc
         origin->delVoisin(delVois);
     }
     g->setNbPenta_(g->getNbPenta() + (type == 5));
-    g->setNbQuadri_(g->getNbQuadra() + (type == 4));
+    g->setNbQuadri_(g->getNbQuadri() + (type == 4));
     while(!toDel.empty()){
         for(int i(0); i < 6; ++i){
             int neigh_place = g->getSommet(toDel.front())->getVoisin(i);
@@ -830,6 +847,31 @@ int Graph_01::getCeinture(int array[][2]) const {
     return sizeBelt;
 }
 
+Graph* Graph_01::mirrorGraph_() const {
+    Graph_01* out = new Graph_01();
+    for(int i(0); i < TAILLE_TABLEAU; ++i){
+        Vertice* vi = m_sommets[i];
+        if(!vi){
+            out->m_sommets[i] = NULL;
+            continue;
+        }
+        out->m_sommets[i] = new Vertice_01(this, i);
+        Vertice* outVi = out->m_sommets[i];
+        for(int j(0); j < vi->getNbVoisins(); ++j){
+            outVi->addVoisin(j, 
+                  vi->getVoisin((vi->getNbVoisins() - j) % vi->getNbVoisins()));
+        }
+        if(isArkenMarked(i))
+            outVi->markArken();
+        else
+            outVi->unmarkArken();
+    }
+    out->m_nbPenta = m_nbPenta;
+    out->m_nbQuadra = m_nbQuadra;
+    return (Graph*)out;
+}
+
+
 int Graph_01::next_(int indice) const {
     do{
         ++indice;
@@ -840,7 +882,7 @@ int Graph_01::next_(int indice) const {
 }
 
 Vertice* Graph_01::element_ (int indice) const {
-    if (indice == 256)
+    if (indice == TAILLE_TABLEAU)
         return NULL;
     return getSommet(indice);
 }

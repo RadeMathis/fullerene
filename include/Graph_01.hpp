@@ -36,7 +36,7 @@ class Graph_01 : public Graph {
 
     int getNbSommets() const;
     void setNbQuadri_(int);
-    int getNbQuadra() const;
+    int getNbQuadri() const;
     void setNbPenta_(int);
     int getNbPenta() const;
     int ajouterSommet();
@@ -76,6 +76,8 @@ class Graph_01 : public Graph {
     Graph* replier_(int v, int d, int type) const; //totest
     void completerADistance1_(); //totest
     void completerADistance2_(); //totest
+    bool isomorpheSimple_(Graph* g) const;
+    Graph* mirrorGraph_() const;
 
     int next_(int indice) const;
     Vertice* element_ (int indice) const;

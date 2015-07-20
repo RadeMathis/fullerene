@@ -42,7 +42,7 @@ class Graph {
         /* Return how many vertice there are in the graph.
          # Retourne le nombre de sommet presents dans le grahe. */
     virtual void setNbQuadri_(int) = 0; // You should not use them.
-    virtual int getNbQuadra() const = 0;
+    virtual int getNbQuadri() const = 0;
         /* Return/set the number of square in the graph.
          # Retourne/definit le nombre de quadrilat. presents dans le graphe.*/
     virtual void setNbPenta_(int) = 0; // You should not use them.
