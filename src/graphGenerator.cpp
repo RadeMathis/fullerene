@@ -48,24 +48,27 @@ fullGenerator(std::string path /* = "." */)
     nbGraphGenerated = 2;
 
     // On genere tout le reste a parti de ces deux la.
-    std::cout << std::endl;
     while(! toTreatGraph.empty()){
         fprintf(stdout, "\rGraph generated : %d.", nbGraphGenerated);
-        fflush(stdout);
+        fflush(stdout); //Afficher le buffer.
         actualGraph = new Graph_01(toTreatGraph.front());
         int courbure = 2 * actualGraph->getNbQuadri() 
                          + actualGraph->getNbPenta();
-        if(courbure > 7)
+        if(courbure >= 7){
+            toTreatGraph.pop();
             continue;
+        }
         nbGraphGenerated += extrairePentaFront(toTreatGraph, path);
-        if(courbure > 6)
+        if(courbure >= 6){
+            toTreatGraph.pop();
             continue;
+        }
         nbGraphGenerated += extraireQuadriFront(toTreatGraph, path);
         //TODO : creer les deux fonctions ci-dessus
         delete actualGraph;
         toTreatGraph.pop();
-            //usefull? Retour chariot
     }
+    std::cout << std::endl;
     graphList.seekp(0, std::ios::beg); //retour au debut
     graphList << nbGraphGenerated; //inscription du nombre de graphes
 
@@ -140,6 +143,8 @@ compareToOthers_(Graph* g, std::string path)
     std::string lineBuffer;
     std::vector<std::string> sentenceBuffer;
     std::ifstream graphList((path + "graphList.data").c_str(), std::ios::in);
+    if(!graphList)
+        std::cerr << "graphList s'ouvre pas\n" ;
     std::getline(graphList, lineBuffer);
         // On passe la premiere ligne, car elle est vide.
     while(true){ //For in file's lines. (break two lines behind)
@@ -147,9 +152,9 @@ compareToOthers_(Graph* g, std::string path)
         if(graphList.eof())
             return matricule;
         sentenceBuffer = decouperString(lineBuffer);
-        if(lineBuffer[0] != g->getNbQuadri())
+        if((lineBuffer[0] - 48) != g->getNbQuadri())
             continue;
-        if(lineBuffer[2] != g->getNbPenta())
+        if((lineBuffer[2] - 48) != g->getNbPenta())
             continue;
         int gfNbSommet = 0;
         unsigned int curseur = 4;
