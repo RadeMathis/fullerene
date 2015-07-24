@@ -544,7 +544,7 @@ Graph* Graph_01::replier_(int v, int d, int type) const { //v: vertice, d: direc
         existLeft = false;
     }
     if(existRight && existLeft){
-        toDel.push(origin->getVoisin((d + 1) % 6));
+        toDel.push(origin->getVoisin((d + (6 - type)) % 6));
         g->getSommet(toDel.front())->mark(isInQueue);
     }
     while(existRight && existLeft){ //Bend over "in stays"

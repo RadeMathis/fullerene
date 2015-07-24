@@ -11,7 +11,7 @@ using namespace std;
 int
 main(void)
 {
-    fullGenerator();
+   	fullGenerator();
 
     return 0;
 }
