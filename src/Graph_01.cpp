@@ -522,6 +522,8 @@ Graph* Graph_01::replier_(int v, int d, int type) const { //v: vertice, d: direc
     int  previous_l = v;
     std::queue<int> toDel;
     int   isInQueue = g->reserverMarque();
+    int inCicatrice = g->reserverMarque();
+    origin->mark(inCicatrice);
     for(int i(0); i < TAILLE_TABLEAU; ++i){
         Vertice* vi;
         try{
@@ -530,6 +532,7 @@ Graph* Graph_01::replier_(int v, int d, int type) const { //v: vertice, d: direc
             continue;
         }
         vi->unmark(isInQueue);
+        vi->unmark(inCicatrice);
     }//this loop initialise the marking
     bool thereIsNoRight = false;
     try {
@@ -548,6 +551,7 @@ Graph* Graph_01::replier_(int v, int d, int type) const { //v: vertice, d: direc
         g->getSommet(toDel.front())->mark(isInQueue);
     }
     while(existRight && existLeft){ //Bend over "in stays"
+        right->mark(inCicatrice);
         if(right->isArkenMarked() || left->isArkenMarked()){
             delete g;
             return NULL;
@@ -570,10 +574,12 @@ Graph* Graph_01::replier_(int v, int d, int type) const { //v: vertice, d: direc
         try{
             Vertice* externe_1 = g->getSommet(left->getVoisin((in_l + 5) % 6));
             externe_1->setVoisin(externe_1->isXthVoisin(l), r);
+            externe_1->mark(inCicatrice);
         }catch(...){}
         try{
             Vertice* externe_2 = g->getSommet(left->getVoisin((in_l + 4) % 6));
             externe_2->setVoisin(externe_2->isXthVoisin(l), r);
+            externe_2->mark(inCicatrice);
         }catch(...){}
       //(4) Break links from left to left-outside.
         left->setVoisin((in_l + 5) % 6, -1);
@@ -585,11 +591,19 @@ Graph* Graph_01::replier_(int v, int d, int type) const { //v: vertice, d: direc
         l =  left->getVoisin((in_l + 3) % 6);
         try {
             right = g->getSommet(r);
+            if(right->isMarked(inCicatrice)){
+                delete g;
+                return NULL;
+            }
         } catch(NonExistentVerticeException &e) {
             existRight = false;
         }
         try {
             left  = g->getSommet(l);
+            if(left->isMarked(inCicatrice)){
+                delete g;
+                return NULL;
+            }
         } catch(NonExistentVerticeException &e) {
             existLeft = false;
         }
@@ -603,6 +617,7 @@ Graph* Graph_01::replier_(int v, int d, int type) const { //v: vertice, d: direc
         }
     }
     while(existRight){
+        right->mark(inCicatrice);
         if(right->isArkenMarked()){
             delete g;
             return NULL;
@@ -633,11 +648,16 @@ Graph* Graph_01::replier_(int v, int d, int type) const { //v: vertice, d: direc
         r = right->getVoisin((in_r + 3) % 6);
         try{
             right = g->getSommet(r);
+            if(right->isMarked(inCicatrice)){
+                delete g;
+                return NULL;
+            }
         } catch(NonExistentVerticeException &e) {
             existRight = false;
         }
     }
     while(existLeft){
+        left->mark(inCicatrice);
         if(left->isArkenMarked()){
             delete g;
             return NULL;
@@ -668,6 +688,10 @@ Graph* Graph_01::replier_(int v, int d, int type) const { //v: vertice, d: direc
         l = left->getVoisin((in_l + 3) % 6);
         try{
             left = g->getSommet(l);
+            if(left->isMarked(inCicatrice)){
+                delete g;
+                return NULL;
+            }
         } catch(NonExistentVerticeException &e) {
             existLeft = false;
         }
