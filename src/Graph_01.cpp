@@ -505,7 +505,8 @@ bool Graph_01::isomorpheSimple_(Graph* g) const {
 }
 
 Graph* Graph_01::replier_(int v, int d, int type) const { //v: vertice, d: direc.
-    Graph* g = clone();
+  Graph* g = clone();
+  try{
   //First : Bend over "in stays".
     bool existRight = true;
     bool  existLeft = true;
@@ -551,6 +552,11 @@ Graph* Graph_01::replier_(int v, int d, int type) const { //v: vertice, d: direc
         g->getSommet(toDel.front())->mark(isInQueue);
     }
     while(existRight && existLeft){ //Bend over "in stays"
+        if(right->isMarked(inCicatrice) || left->isMarked(inCicatrice)){
+            //On tourne en rond.
+            delete g;
+            return NULL;
+        }
         right->mark(inCicatrice);
         if(right->isArkenMarked() || left->isArkenMarked()){
             delete g;
@@ -565,6 +571,10 @@ Graph* Graph_01::replier_(int v, int d, int type) const { //v: vertice, d: direc
         }catch(...){}
         try{
             Vertice* interne_2 = g->getSommet(right->getVoisin((in_r + 4) % 6));
+            if(interne_2->isMarked(inCicatrice)){ //On tourne en rond.
+                delete g;
+                return NULL;
+            }
             interne_2->setVoisin(interne_2->isXthVoisin(r), -1);
         }catch(...){}        
       //(2) Link right to left-outside.
@@ -617,6 +627,10 @@ Graph* Graph_01::replier_(int v, int d, int type) const { //v: vertice, d: direc
         }
     }
     while(existRight){
+        if(right->isMarked(inCicatrice)){ //On tourne en rond
+            delete g;
+            return NULL;
+        }
         right->mark(inCicatrice);
         if(right->isArkenMarked()){
             delete g;
@@ -634,6 +648,10 @@ Graph* Graph_01::replier_(int v, int d, int type) const { //v: vertice, d: direc
         }catch(...){}
         try{
             Vertice* interne_2 = g->getSommet(right->getVoisin((in_r + 4) % 6));
+            if(interne_2->isMarked(inCicatrice)){ //On tourne en rond.
+                delete g;
+                return NULL;
+            }
             interne_2->setVoisin(interne_2->isXthVoisin(r), -1);
             if(toDel.empty()){
                 toDel.push(right->getVoisin((in_r + 4) % 6));
@@ -657,6 +675,10 @@ Graph* Graph_01::replier_(int v, int d, int type) const { //v: vertice, d: direc
         }
     }
     while(existLeft){
+        if(left->isMarked(inCicatrice)){ //On tour en rond.
+            delete g;
+            return NULL;
+        }
         left->mark(inCicatrice);
         if(left->isArkenMarked()){
             delete g;
@@ -674,6 +696,10 @@ Graph* Graph_01::replier_(int v, int d, int type) const { //v: vertice, d: direc
         }catch(...){}
         try{
             Vertice* interne_2 = g->getSommet(left->getVoisin((in_l + 2) % 6));
+            if(interne_2->isMarked(inCicatrice)) {//On tourne en rond.
+                delete g;
+                return NULL;
+            }
             interne_2->setVoisin(interne_2->isXthVoisin(l), -1);
             if(toDel.empty()){
                 toDel.push(left->getVoisin((in_l + 2) % 6));
@@ -733,6 +759,10 @@ Graph* Graph_01::replier_(int v, int d, int type) const { //v: vertice, d: direc
     g->libererMarque(isInQueue);
     g->bienFormer();
     return g;
+  }catch(BadNeighborhoodException_01 &e){
+      delete g;
+      return NULL;
+  }
 }
 
 void Graph_01::relier_(){
