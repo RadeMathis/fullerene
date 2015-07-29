@@ -64,7 +64,6 @@ fullGenerator(std::string path /* = "." */)
             continue;
         }
         nbGraphGenerated += extraireQuadriFront(toTreatGraph, path);
-        //TODO : creer les deux fonctions ci-dessus
         delete actualGraph;
         toTreatGraph.pop();
     }
@@ -107,8 +106,9 @@ extraireFront_(std::queue<std::string> & graphFiles,
                 newGraph = g->replierPenta(*it, j);
             if(type == 4)
                 newGraph = g->replierQuadri(*it, j);
-            if(newGraph)
+            if(newGraph){//todel (et ce que ca ccontient)
                 break; //Si on un graphe, c'est bon
+            }
         }
         if(!newGraph)
             continue; //Si ce sommet n'a rien donne, on passe au suivant.
@@ -124,6 +124,10 @@ extraireFront_(std::queue<std::string> & graphFiles,
             newGraphName += "__";
             newGraphName += std::to_string(matricule);
             graphFiles.push(newGraphName);
+            if(newGraphName == "3_1_9__0"){
+                std::cerr <<"\n"<<std::boolalpha<<newGraph->bienFormer()<<std::endl;
+                exit(0);
+            }
             std::ofstream graphList((path +"graphList.data").c_str()
                                                , std::ios::out | std::ios::app);
             graphList << newGraphName << std::endl;
@@ -144,7 +148,6 @@ compareToOthers_(Graph* g, std::string path)
     std::vector<std::string> sentenceBuffer;
     std::ifstream graphList((path + "graphList.data").c_str(), std::ios::in);
     if(!graphList)
-        std::cerr << "graphList s'ouvre pas\n" ;
     std::getline(graphList, lineBuffer);
         // On passe la premiere ligne, car elle est vide.
     while(true){ //For in file's lines. (break two lines behind)

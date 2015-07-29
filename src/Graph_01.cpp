@@ -235,10 +235,13 @@ int Graph_01::distance(int v1, int v2)/*const*/ { //stratum marked oigon algorit
     return -1; //There is no path between v1 and v2
 }
 
-void Graph_01::bienFormer(){
-        relier_();
-        completerADistance2_();
-        markArken();
+bool Graph_01::bienFormer(){
+    if(deuxQuadriColles_())
+        return false;
+    relier_();
+    completerADistance2_();
+    markArken();
+    return true;
 }
 
 void Graph_01::initialiserPenta(){
@@ -405,7 +408,9 @@ void Graph_01::markArken()
 
 bool Graph_01::isomorphe(Graph* g) const{
     Graph* gSym = mirrorGraph_();
-    return(isomorpheSimple_(g) || isomorpheSimple_(gSym));
+    bool mirroirIso = isomorpheSimple_(gSym);
+    delete gSym;
+    return(isomorpheSimple_(g) || mirroirIso);
 }
 
 bool Graph_01::isomorpheSimple_(Graph* g) const {
@@ -757,7 +762,10 @@ Graph* Graph_01::replier_(int v, int d, int type) const { //v: vertice, d: direc
         toDel.pop();
     }
     g->libererMarque(isInQueue);
-    g->bienFormer();
+    if(! g->bienFormer()){
+        delete g;
+        return NULL;
+    }
     return g;
   }catch(BadNeighborhoodException_01 &e){
       delete g;
@@ -922,9 +930,35 @@ Graph* Graph_01::mirrorGraph_() const {
     }
     out->m_nbPenta = m_nbPenta;
     out->m_nbQuadra = m_nbQuadra;
+    out->m_nbSommets = m_nbSommets;
     return (Graph*)out;
 }
 
+bool Graph_01::deuxQuadriColles_() const {
+    if(! getNbQuadri())
+        return false;
+    for(int i(0); i < TAILLE_TABLEAU; ++i){
+        Vertice* vi;
+        try{
+            vi = getSommet(i);
+        } catch(NonExistentVerticeException &e) {
+            continue;
+        }
+        if(vi->getNbVoisins() != 4)
+            continue;
+        for(int j(0); j < vi->getNbVoisins(); ++j){
+            Vertice* vj;
+            try{
+                vj = getSommet(vi->getVoisin(j));
+            } catch(NonExistentVerticeException &e) {
+                continue;
+            }
+            if(vj->getNbVoisins() == 4)
+                return true;
+        }
+    }
+    return false;
+}
 
 int Graph_01::next_(int indice) const {
     do{

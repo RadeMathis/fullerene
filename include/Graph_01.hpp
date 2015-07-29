@@ -50,7 +50,7 @@ class Graph_01 : public Graph {
 
     int distance(Vertice* v1, Vertice* v2) /*const*/; //totest
     int distance(int v1, int v2) /*const*/; //totest
-    void bienFormer(); //work in simple cases
+    bool bienFormer(); //work in simple cases
     void initialiserPenta();
     void initialiserQuadri();
     Graph* replierPenta(Vertice* v, int d) const; //work in simple cases
@@ -78,6 +78,7 @@ class Graph_01 : public Graph {
     void completerADistance2_(); //totest
     bool isomorpheSimple_(Graph* g) const;
     Graph* mirrorGraph_() const;
+    bool deuxQuadriColles_() const;
 
     int next_(int indice) const;
     Vertice* element_ (int indice) const;
