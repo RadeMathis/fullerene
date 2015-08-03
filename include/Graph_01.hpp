@@ -39,6 +39,7 @@ class Graph_01 : public Graph {
     int getNbQuadri() const;
     void setNbPenta_(int);
     int getNbPenta() const;
+    int getCourbure() const;
     int ajouterSommet();
     void supprimerSommet(Vertice* n);
     void supprimerSommet(int n);
@@ -79,6 +80,7 @@ class Graph_01 : public Graph {
     bool isomorpheSimple_(Graph* g) const;
     Graph* mirrorGraph_() const;
     bool deuxQuadriColles_() const;
+    int getNbSommetsLibres_() const;
 
     int next_(int indice) const;
     Vertice* element_ (int indice) const;

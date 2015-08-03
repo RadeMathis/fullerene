@@ -12,6 +12,7 @@ int
 main(void)
 {
 	fullGenerator();
-
+	///graphPrinter("1_3_18__1");
+	
     return 0;
 }

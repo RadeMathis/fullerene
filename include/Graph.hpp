@@ -41,14 +41,17 @@ class Graph {
     virtual int getNbSommets() const = 0;
         /* Return how many vertice there are in the graph.
          # Retourne le nombre de sommet presents dans le grahe. */
-    virtual void setNbQuadri_(int) = 0; // You should not use them.
+    virtual void setNbQuadri_(int) = 0; // You should not use this, never.
     virtual int getNbQuadri() const = 0;
         /* Return/set the number of square in the graph.
          # Retourne/definit le nombre de quadrilat. presents dans le graphe.*/
-    virtual void setNbPenta_(int) = 0; // You should not use them.
+    virtual void setNbPenta_(int) = 0; // You should not use this, never.
     virtual int getNbPenta() const = 0;
         /* Return/set the number of pentagon in the graph.
          # Retourne/definit le nombre de pentagones presents dans le graphe. */
+    virtual int getCourbure() const = 0;
+        /* Return the "curvature" degree (nbPenta + 2nbQuadri).
+         # Retourne le degre de courbure (nbPenta + 2nbQUadri). */
     virtual int ajouterSommet() = 0;
         /* Ad an empty vertice in the graph, return the place it has been put.
          * throw FullGraphException if th eimplementation isn't able to contain

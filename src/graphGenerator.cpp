@@ -112,7 +112,8 @@ extraireFront_(std::queue<std::string> & graphFiles,
         }
         if(!newGraph)
             continue; //Si ce sommet n'a rien donne, on passe au suivant.
-        int matricule = compareToOthers_(newGraph, path);
+        int matricule;
+        matricule = compareToOthers_(newGraph, path);
         if(matricule != -1){
             // Le graphe est nouveau, il faut l'ajouter.
             std::string newGraphName;
@@ -124,10 +125,6 @@ extraireFront_(std::queue<std::string> & graphFiles,
             newGraphName += "__";
             newGraphName += std::to_string(matricule);
             graphFiles.push(newGraphName);
-            if(newGraphName == "3_1_9__0"){
-                std::cerr <<"\n"<<std::boolalpha<<newGraph->bienFormer()<<std::endl;
-                exit(0);
-            }
             std::ofstream graphList((path +"graphList.data").c_str()
                                                , std::ios::out | std::ios::app);
             graphList << newGraphName << std::endl;

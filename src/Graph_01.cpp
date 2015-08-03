@@ -121,6 +121,10 @@ int Graph_01::getNbPenta() const {
     return m_nbPenta;
 }
 
+int Graph_01::getCourbure() const {
+    return m_nbPenta + 2*m_nbQuadra;
+}
+
 int Graph_01::ajouterSommet(){
     int isFree(0);
     while(isFree < TAILLE_TABLEAU){
@@ -511,7 +515,7 @@ bool Graph_01::isomorpheSimple_(Graph* g) const {
 
 Graph* Graph_01::replier_(int v, int d, int type) const { //v: vertice, d: direc.
   Graph* g = clone();
-  try{
+  try{ //Voir si on peut pas virer cette merde
   //First : Bend over "in stays".
     bool existRight = true;
     bool  existLeft = true;
@@ -823,6 +827,8 @@ void Graph_01::completerADistance1_(){
         if(v->getNbVoisins() == 6)
             continue;
         for(int j(0); j < v->getNbVoisins(); ++j){
+            if(getCourbure() >= 7 && getNbSommetsLibres_() <= 3)
+                return; //La fameuse condition des familles.
             if(v->getVoisin(j) != -1)
                 continue;
             int nb = ajouterSommet();
@@ -855,6 +861,8 @@ void Graph_01::completerADistance2_(){
         if(needToComplete == false)
             continue;
         for(int j(0); j < v->getNbVoisins(); ++j){
+            if(getCourbure() >= 7 && getNbSommetsLibres_() <= 3)
+                return; //La fameuse condition des familles.
             if(v->getVoisin(j) != -1)
                 continue;
             int nb = ajouterSommet();
@@ -899,11 +907,15 @@ int Graph_01::getCeinture(int array[][2]) const {
         ++sizeBelt;
         int leftNeigh = 0;
         //first: go in none
-        while(va->getVoisin(leftNeigh) != -1)
-            ++leftNeigh;
+        while(va->getVoisin(leftNeigh) != -1){
+            leftNeigh += 1;
+            leftNeigh %= va->getNbVoisins();
+        }
         //then: go out of none
-        while(va->getVoisin(leftNeigh) == -1)
-            ++leftNeigh;
+        while(va->getVoisin(leftNeigh) == -1){
+            leftNeigh += 1;
+            leftNeigh %= va->getNbVoisins();
+        }
         actual = va->getVoisin(leftNeigh);
     }while(actual != array[0][0]);
     return sizeBelt;
@@ -959,6 +971,26 @@ bool Graph_01::deuxQuadriColles_() const {
     }
     return false;
 }
+
+int Graph_01::getNbSommetsLibres_() const {
+    int out = 0;
+    for(int i(0); i < TAILLE_TABLEAU; ++i) {
+        Vertice* vi;
+        try {
+            vi = getSommet(i);
+        } catch(NonExistentVerticeException &e) {
+            continue;
+        }
+        int nbNoneVertice = 0;
+        for(int j(0); j < vi->getNbVoisins(); ++j) {
+            if(vi->getVoisin(j) == -1)
+                ++nbNoneVertice;
+        }
+        out += ((nbNoneVertice > 1) ? (nbNoneVertice - 1) : 0);
+    }
+    return out;
+}
+
 
 int Graph_01::next_(int indice) const {
     do{
