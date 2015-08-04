@@ -113,7 +113,17 @@ extraireFront_(std::queue<std::string> & graphFiles,
         if(!newGraph)
             continue; //Si ce sommet n'a rien donne, on passe au suivant.
         int matricule;
+      try{ //Debug
         matricule = compareToOthers_(newGraph, path);
+      }catch(int &e){
+          if(e != 42)
+            std::cerr << "\nwhatthefuck!!!\n";
+          else{
+            std::cerr << "\nGraphe de base : " << graphFiles.front() << "\n";
+            std::cerr << "\tSommet : " << (*it)->getPlaceInGraph() << "\n";
+          }
+          exit(0);
+      }
         if(matricule != -1){
             // Le graphe est nouveau, il faut l'ajouter.
             std::string newGraphName;

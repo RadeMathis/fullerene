@@ -1,3 +1,7 @@
-debboguer/tester graphGenerator (seg fault apres 57xx graphes generes)
+debboguer/tester graphGenerator
+	Ca bug lors du relpie de :
+		Graphe de base : 1_3_25__12
+		Sommet : 13
+
 
 Faire l'embalage (usage ...)

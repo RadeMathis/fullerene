@@ -899,6 +899,10 @@ int Graph_01::getCeinture(int array[][2]) const {
     }
     do{
         Vertice* va = getSommet(actual);
+        if(sizeBelt > 256) {
+            int debbug = 42;
+            throw debbug;
+        }
         array[sizeBelt][1] = 0;
         for(int i(0); i < va->getNbVoisins(); ++i)
             if(va->getVoisin(i) == -1)

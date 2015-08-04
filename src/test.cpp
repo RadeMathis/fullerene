@@ -11,8 +11,8 @@ using namespace std;
 int
 main(void)
 {
-	fullGenerator();
-	///graphPrinter("1_3_18__1");
+	///fullGenerator();
+	graphPrinter("grapheChelou");
 	
     return 0;
 }
