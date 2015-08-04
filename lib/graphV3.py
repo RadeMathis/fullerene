@@ -1,6 +1,9 @@
 import os, platform, subprocess, random, glob, sys
 #from random import randrange
 
+# Ceci est une version modifiee du code.
+# Modifiee par Rade Mathis, pour le LaBRI.
+
 # Attention, eviter que les deux noms globaux qui suivent
 # aient meme prefixe que les noms "publics"
 # proposes par Idle (completion de nom);
