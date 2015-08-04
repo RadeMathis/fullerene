@@ -29,7 +29,7 @@ graphPrinter(std::string dataFile, std::string dir)
     oStream << "sys.path.append('lib')" << std::endl;
     oStream << "from graphV3 import *" << std::endl;
     oStream << std::endl;
-    oStream << "outFig = construireGraphe([";
+    oStream << dataFile << " = construireGraphe([";
 
     std::string buff;
     std::vector<std::string> vectBuff;
@@ -57,25 +57,25 @@ graphPrinter(std::string dataFile, std::string dir)
             areInArken.push_back(atoi(vectBuff[0].c_str()));
     }
     oStream.seekp(-1, std::ios::cur); //Back one char to del last ','
-    oStream << "], \"outFig\")" << std::endl;
+    oStream << "], \"" << dataFile << "\")" << std::endl;
     while(!arePentagon.empty()){
-        oStream << "s = sommetNom(outFig, '" << arePentagon.back() << "')";
-        oStream << std::endl;
+        oStream << "s = sommetNom(" << dataFile << ", '";
+        oStream << arePentagon.back() << "')" << std::endl;
         arePentagon.pop_back();
         oStream << "colorierSommet(s, 'black')" << std::endl;
     }
     while(!areQuadrilateral.empty()){
-        oStream << "s = sommetNom(outFig, '" << areQuadrilateral.back() << "')";
-        oStream << std::endl;
+        oStream << "s = sommetNom(" << dataFile << ", '";
+        oStream << areQuadrilateral.back() << "')" << std::endl;
         areQuadrilateral.pop_back();
         oStream << "colorierSommet(s, 'blue')" << std::endl;
     }
     while(!areInArken.empty()){
-        oStream << "s = sommetNom(outFig, '" << areInArken.back() << "')";
-        oStream << std::endl;
+        oStream << "s = sommetNom(" << dataFile << ", '";
+        oStream << areInArken.back() << "')" << std::endl;
         areInArken.pop_back();
         oStream << "marquerSommet(s)" << std::endl;
     }
-    oStream << "outFig.drawopts = 'rankdir=LR ratio=0.866 edge [len = 2]'" << std::endl;
-    oStream << "dessiner(outFig, algo='twopi')" << std::endl;
+    oStream << dataFile << ".drawopts = 'rankdir=LR ratio=0.866 edge [len = 2]'" << std::endl;
+    oStream << "dessiner(" << dataFile << ", algo='twopi')" << std::endl;
 }
