@@ -1,6 +1,5 @@
 debboguer/tester graphGenerator
-	voir les commentaires sur la boucle infinie
-	lignes 178-179-180
+	c'est sur ma feuille de papier desole
 
 
 Faire l'embalage (usage ...)

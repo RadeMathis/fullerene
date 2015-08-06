@@ -5,14 +5,16 @@
  * v1.1.0 (13/05/2015)
  * * */
 
-#include <fstream>
-
 #include <Graph_01.hpp>
-#include <functions.hpp>
+
+#include <fstream>
+#include <ctime>
 #include <queue>
 #include <array>
 #include <string>
 #include <exception>
+
+#include <functions.hpp>
 
 #define TAILLE_LIGNE_MAX 51 //assez arbitraire
 
@@ -887,11 +889,12 @@ int Graph_01::getCeinture(int array[][2]) const {
             continue;
         }
         bool isOnBelt = false;
-        for(int j(0); j < vi->getNbVoisins(); ++j)
+        for(int j(0); j < vi->getNbVoisins(); ++j){
             if(vi->getVoisin(j) == -1){
                 isOnBelt = true;
                 break;
             }
+        }
         if(isOnBelt){
             actual = i;
             break;
@@ -899,14 +902,11 @@ int Graph_01::getCeinture(int array[][2]) const {
     }
     do{
         Vertice* va = getSommet(actual);
-        if(sizeBelt > 256) {
-            int debbug = 42;
-            throw debbug;
-        }
         array[sizeBelt][1] = 0;
-        for(int i(0); i < va->getNbVoisins(); ++i)
+        for(int i(0); i < va->getNbVoisins(); ++i){
             if(va->getVoisin(i) == -1)
                 ++array[sizeBelt][1];
+        }
         array[sizeBelt][0] = actual;
         ++sizeBelt;
         int leftNeigh = 0;
