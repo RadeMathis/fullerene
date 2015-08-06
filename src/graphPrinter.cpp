@@ -25,11 +25,13 @@ graphPrinter(std::string dataFile, std::string dir)
         throw OpenFileFailureException(dir + fileName + ".py");
     //todo: close both streams
 
+    std::string name = "graph_" + dataFile;
+
     oStream << "import sys" << std::endl; 
     oStream << "sys.path.append('lib')" << std::endl;
     oStream << "from graphV3 import *" << std::endl;
     oStream << std::endl;
-    oStream << dataFile << " = construireGraphe([";
+    oStream << name << " = construireGraphe([";
 
     std::string buff;
     std::vector<std::string> vectBuff;
@@ -57,25 +59,25 @@ graphPrinter(std::string dataFile, std::string dir)
             areInArken.push_back(atoi(vectBuff[0].c_str()));
     }
     oStream.seekp(-1, std::ios::cur); //Back one char to del last ','
-    oStream << "], \"" << dataFile << "\")" << std::endl;
+    oStream << "], \"" << name << "\")" << std::endl;
     while(!arePentagon.empty()){
-        oStream << "s = sommetNom(" << dataFile << ", '";
+        oStream << "s = sommetNom(" << name << ", '";
         oStream << arePentagon.back() << "')" << std::endl;
         arePentagon.pop_back();
         oStream << "colorierSommet(s, 'black')" << std::endl;
     }
     while(!areQuadrilateral.empty()){
-        oStream << "s = sommetNom(" << dataFile << ", '";
+        oStream << "s = sommetNom(" << name << ", '";
         oStream << areQuadrilateral.back() << "')" << std::endl;
         areQuadrilateral.pop_back();
         oStream << "colorierSommet(s, 'blue')" << std::endl;
     }
     while(!areInArken.empty()){
-        oStream << "s = sommetNom(" << dataFile << ", '";
+        oStream << "s = sommetNom(" << name << ", '";
         oStream << areInArken.back() << "')" << std::endl;
         areInArken.pop_back();
         oStream << "marquerSommet(s)" << std::endl;
     }
-    oStream << dataFile << ".drawopts = 'rankdir=LR ratio=0.866 edge [len = 2]'" << std::endl;
-    oStream << "dessiner(" << dataFile << ", algo='twopi')" << std::endl;
+    oStream << name << ".drawopts = 'rankdir=LR ratio=0.866 edge [len = 2]'" << std::endl;
+    oStream << "dessiner(" << name << ", algo='twopi')" << std::endl;
 }

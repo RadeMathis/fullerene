@@ -1,7 +1,6 @@
 debboguer/tester graphGenerator
-	Ca bug lors du relpie de :
-		Graphe de base : 1_3_25__12
-		Sommet : 13
+	voir les commentaires sur la boucle infinie
+	lignes 178-179-180
 
 
 Faire l'embalage (usage ...)

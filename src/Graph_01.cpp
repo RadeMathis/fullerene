@@ -599,7 +599,7 @@ Graph* Graph_01::replier_(int v, int d, int type) const { //v: vertice, d: direc
             Vertice* externe_2 = g->getSommet(left->getVoisin((in_l + 4) % 6));
             externe_2->setVoisin(externe_2->isXthVoisin(l), r);
             externe_2->mark(inCicatrice);
-        }catch(...){}
+        } catch(...){}
       //(4) Break links from left to left-outside.
         left->setVoisin((in_l + 5) % 6, -1);
         left->setVoisin((in_l + 4) % 6, -1);
@@ -650,9 +650,9 @@ Graph* Graph_01::replier_(int v, int d, int type) const { //v: vertice, d: direc
         try{
             Vertice* interne_1 = g->getSommet(right->getVoisin((in_r + 5) % 6));
             interne_1->setVoisin(interne_1->isXthVoisin(r), -1);
-            if(toDel.empty()){
+            if(! interne_1->isMarked(isInQueue)) {
                 toDel.push(right->getVoisin((in_r + 5) % 6));
-                g->getSommet(toDel.front())->mark(isInQueue);
+                interne_1->mark(isInQueue);
             }
         }catch(...){}
         try{
@@ -662,9 +662,9 @@ Graph* Graph_01::replier_(int v, int d, int type) const { //v: vertice, d: direc
                 return NULL;
             }
             interne_2->setVoisin(interne_2->isXthVoisin(r), -1);
-            if(toDel.empty()){
+            if(! interne_2->isMarked(isInQueue)){
                 toDel.push(right->getVoisin((in_r + 4) % 6));
-                g->getSommet(toDel.front())->mark(isInQueue);
+                interne_2->mark(isInQueue);
             }
         }catch(...){}
       //(2) Break links from right to inside.
@@ -698,9 +698,9 @@ Graph* Graph_01::replier_(int v, int d, int type) const { //v: vertice, d: direc
         try{
             Vertice* interne_1 = g->getSommet(left->getVoisin((in_l + 1) % 6));
             interne_1->setVoisin(interne_1->isXthVoisin(l), -1);
-            if(toDel.empty()){
+            if(! interne_1->isMarked(isInQueue)){
                 toDel.push(left->getVoisin((in_l + 1) % 6));
-                g->getSommet(toDel.front())->mark(isInQueue);
+                interne_1->mark(isInQueue);
             }
         }catch(...){}
         try{
@@ -710,9 +710,9 @@ Graph* Graph_01::replier_(int v, int d, int type) const { //v: vertice, d: direc
                 return NULL;
             }
             interne_2->setVoisin(interne_2->isXthVoisin(l), -1);
-            if(toDel.empty()){
+            if(! interne_2->isMarked(isInQueue)){
                 toDel.push(left->getVoisin((in_l + 2) % 6));
-                g->getSommet(toDel.front())->mark(isInQueue);
+                interne_2->mark(isInQueue);
             }
         }catch(...){}
       //(2) Break links from left to inside.

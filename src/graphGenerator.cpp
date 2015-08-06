@@ -49,7 +49,9 @@ fullGenerator(std::string path /* = "." */)
 
     // On genere tout le reste a parti de ces deux la.
     while(! toTreatGraph.empty()){
-        fprintf(stdout, "\rGraph generated : %d.", nbGraphGenerated);
+        printf("\r                                        "
+                 "                                        ");
+        printf("\rGraph generated : %d", nbGraphGenerated);
         fflush(stdout); //Afficher le buffer.
         actualGraph = new Graph_01(toTreatGraph.front());
         int courbure = 2 * actualGraph->getNbQuadri() 
@@ -97,7 +99,13 @@ extraireFront_(std::queue<std::string> & graphFiles,
     int nbGraphGenerated = 0;
     Graph*             g = new Graph_01(graphFiles.front());
     // Tout d'abord, on tente de generer un graphe par sommet
+    int fioritureDaffichage = 0;
     for(Iterator it = g->begin(); it != g->end(); ++it){
+        ++fioritureDaffichage;
+        if(! (fioritureDaffichage % 10)){
+            std::cout << ".";
+            fflush(stdout);
+        }
         Graph* newGraph;
         // Pour chaque sommet, on cherche une direction dans laquelle
         // on peut plier, si aucune ne va, on ne replie pas.
@@ -106,24 +114,14 @@ extraireFront_(std::queue<std::string> & graphFiles,
                 newGraph = g->replierPenta(*it, j);
             if(type == 4)
                 newGraph = g->replierQuadri(*it, j);
-            if(newGraph){//todel (et ce que ca ccontient)
+            if(newGraph){
                 break; //Si on un graphe, c'est bon
             }
         }
         if(!newGraph)
             continue; //Si ce sommet n'a rien donne, on passe au suivant.
         int matricule;
-      try{ //Debug
         matricule = compareToOthers_(newGraph, path);
-      }catch(int &e){
-          if(e != 42)
-            std::cerr << "\nwhatthefuck!!!\n";
-          else{
-            std::cerr << "\nGraphe de base : " << graphFiles.front() << "\n";
-            std::cerr << "\tSommet : " << (*it)->getPlaceInGraph() << "\n";
-          }
-          exit(0);
-      }
         if(matricule != -1){
             // Le graphe est nouveau, il faut l'ajouter.
             std::string newGraphName;
@@ -155,17 +153,17 @@ compareToOthers_(Graph* g, std::string path)
     std::vector<std::string> sentenceBuffer;
     std::ifstream graphList((path + "graphList.data").c_str(), std::ios::in);
     if(!graphList)
+        throw OpenFileFailureException("graphList.data");
     std::getline(graphList, lineBuffer);
         // On passe la premiere ligne, car elle est vide.
-    while(true){ //For in file's lines. (break two lines behind)
-        std::getline(graphList, lineBuffer);
-        if(graphList.eof())
-            return matricule;
+    while(std::getline(graphList, lineBuffer)){ //For in file's lines.
         sentenceBuffer = decouperString(lineBuffer);
-        if((lineBuffer[0] - 48) != g->getNbQuadri())
+        if((lineBuffer[0] - 48) != g->getNbQuadri()){
             continue;
-        if((lineBuffer[2] - 48) != g->getNbPenta())
+        }
+        if((lineBuffer[2] - 48) != g->getNbPenta()){
             continue;
+        }
         int gfNbSommet = 0;
         unsigned int curseur = 4;
         while(lineBuffer[curseur] != '_'){
@@ -173,12 +171,13 @@ compareToOthers_(Graph* g, std::string path)
             gfNbSommet += (lineBuffer[curseur] - 48); // Using ASCII value.
             ++curseur;
         }
-        if(gfNbSommet != g->getNbSommets())
+        if(gfNbSommet != g->getNbSommets()){
             continue;
+        }
         Graph* g2 = new Graph_01(sentenceBuffer[0]);
-        if(g->isomorphe(g2)){
-            delete g2;
-            return -1;
+        if(g->isomorphe(g2)){ // Bug sur une  // todo //
+            delete g2;        // de ses trois // todo //
+            return -1;        // lignes la.   // todo //
         }
         delete g2;
         curseur += 2; //"__"
@@ -191,4 +190,5 @@ compareToOthers_(Graph* g, std::string path)
         if(matricule <= gfMatricule)
             matricule = gfMatricule + 1;
     }
+    return matricule;
 }
