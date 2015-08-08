@@ -9,6 +9,9 @@
 #include <Graph_01.hpp>
 #include <functions.hpp>
 
+///int debug_nb_1_4_40_generated = 0;
+///int debug_nbPseudo_1_4_40_generatedAfter8 = 0;
+
 void
 fullGenerator(std::string path /* = "." */)
 {
@@ -120,8 +123,15 @@ extraireFront_(std::queue<std::string> & graphFiles,
         }
         if(!newGraph)
             continue; //Si ce sommet n'a rien donne, on passe au suivant.
-        int matricule;
-        matricule = compareToOthers_(newGraph, path);
+        ///if((newGraph->getNbSommets() == 40) && (newGraph->getNbPenta() == 4) 
+                ///&& (newGraph->getNbQuadri() == 1) && (debug_nb_1_4_40_generated == 9)){
+            ///++debug_nbPseudo_1_4_40_generatedAfter8;
+            ///if(debug_nbPseudo_1_4_40_generatedAfter8 == 2){
+                ///std::cerr << "\nFabrique a base du graphe " << graphFiles.front();
+                ///std::cerr << "\nBy bending vertice " << (*it)->getPlaceInGraph();
+            ///}
+        ///}
+        int matricule = compareToOthers_(newGraph, path);
         if(matricule != -1){
             // Le graphe est nouveau, il faut l'ajouter.
             std::string newGraphName;
@@ -130,6 +140,9 @@ extraireFront_(std::queue<std::string> & graphFiles,
             newGraphName += std::to_string(newGraph->getNbPenta());
             newGraphName += '_';
             newGraphName += std::to_string(newGraph->getNbSommets());
+            ///if (newGraphName == "1_4_40"){
+                ///++debug_nb_1_4_40_generated;
+            ///}
             newGraphName += "__";
             newGraphName += std::to_string(matricule);
             graphFiles.push(newGraphName);

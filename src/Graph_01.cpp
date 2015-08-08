@@ -18,6 +18,9 @@
 
 #define TAILLE_LIGNE_MAX 51 //assez arbitraire
 
+///extern int debug_nb_1_4_40_generated;
+///extern int debug_nbPseudo_1_4_40_generatedAfter8;
+
 Graph_01::Graph_01() : m_nbSommets(0), m_nbPenta(0), m_nbQuadra(0) {
     for(int i(0); i < 8; ++i)
         m_marquesReserves[i] = false;
@@ -247,6 +250,7 @@ bool Graph_01::bienFormer(){
     relier_();
     completerADistance2_();
     markArken();
+    relier_();
     return true;
 }
 
@@ -901,6 +905,8 @@ int Graph_01::getCeinture(int array[][2]) const {
         }
     }
     do{
+        ///if(debug_nbPseudo_1_4_40_generatedAfter8 == 2)
+            ///std::cerr << "\nActual : " << actual;
         Vertice* va = getSommet(actual);
         array[sizeBelt][1] = 0;
         for(int i(0); i < va->getNbVoisins(); ++i){
@@ -933,7 +939,7 @@ Graph* Graph_01::mirrorGraph_() const {
             out->m_sommets[i] = NULL;
             continue;
         }
-        out->m_sommets[i] = new Vertice_01(this, i);
+        out->m_sommets[i] = new Vertice_01(out, i);
         Vertice* outVi = out->m_sommets[i];
         for(int j(0); j < vi->getNbVoisins(); ++j){
             outVi->addVoisin(j, 

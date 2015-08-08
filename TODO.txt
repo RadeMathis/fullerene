@@ -1,5 +1,5 @@
-debboguer/tester graphGenerator
-	c'est sur ma feuille de papier desole
+Regle pas mal de bug, mais je pense que la fonction d'isomorphisme n'est pas
+	au point (1800+ grapahes en 1_5_35), voir pour regler ca.
 
 
 Faire l'embalage (usage ...)
