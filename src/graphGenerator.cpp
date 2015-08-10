@@ -9,12 +9,16 @@
 #include <Graph_01.hpp>
 #include <functions.hpp>
 
-///int debug_nb_1_4_40_generated = 0;
-///int debug_nbPseudo_1_4_40_generatedAfter8 = 0;
 
 void
-fullGenerator(std::string path /* = "." */)
+fullGenerator(std::string path /* = "." */, int degreMax /* = 7 */)
 {
+    if(degreMax > 7){
+        std::string probleme = "Ce programme n'est pas capable de generer des ";
+        probleme += "graphes de degre supperieur a 7.";
+        std::cerr << probleme << std::endl;
+        throw probleme;
+    }
     try{
         mkdir(path.c_str(), S_IRWXU );
     } catch(...) {}
@@ -59,13 +63,15 @@ fullGenerator(std::string path /* = "." */)
         actualGraph = new Graph_01(toTreatGraph.front());
         int courbure = 2 * actualGraph->getNbQuadri() 
                          + actualGraph->getNbPenta();
-        if(courbure >= 7){
+        if(courbure >= degreMax){
             toTreatGraph.pop();
+            delete actualGraph;
             continue;
         }
         nbGraphGenerated += extrairePentaFront(toTreatGraph, path);
-        if(courbure >= 6){
+        if(courbure >= degreMax - 1){
             toTreatGraph.pop();
+            delete actualGraph;
             continue;
         }
         nbGraphGenerated += extraireQuadriFront(toTreatGraph, path);
@@ -123,14 +129,6 @@ extraireFront_(std::queue<std::string> & graphFiles,
         }
         if(!newGraph)
             continue; //Si ce sommet n'a rien donne, on passe au suivant.
-        ///if((newGraph->getNbSommets() == 40) && (newGraph->getNbPenta() == 4) 
-                ///&& (newGraph->getNbQuadri() == 1) && (debug_nb_1_4_40_generated == 9)){
-            ///++debug_nbPseudo_1_4_40_generatedAfter8;
-            ///if(debug_nbPseudo_1_4_40_generatedAfter8 == 2){
-                ///std::cerr << "\nFabrique a base du graphe " << graphFiles.front();
-                ///std::cerr << "\nBy bending vertice " << (*it)->getPlaceInGraph();
-            ///}
-        ///}
         int matricule = compareToOthers_(newGraph, path);
         if(matricule != -1){
             // Le graphe est nouveau, il faut l'ajouter.
@@ -140,9 +138,6 @@ extraireFront_(std::queue<std::string> & graphFiles,
             newGraphName += std::to_string(newGraph->getNbPenta());
             newGraphName += '_';
             newGraphName += std::to_string(newGraph->getNbSommets());
-            ///if (newGraphName == "1_4_40"){
-                ///++debug_nb_1_4_40_generated;
-            ///}
             newGraphName += "__";
             newGraphName += std::to_string(matricule);
             graphFiles.push(newGraphName);

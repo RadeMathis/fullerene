@@ -6,7 +6,7 @@
 #include <Graph.hpp>
 
 void
-fullGenerator(std::string path = ".");
+fullGenerator(std::string path = ".", int degreMax = 7);
     /* Will generate all the graphs blablabla.... as in manifest blablabla....
      * All the .graph.data will put in path/ (relative or absolute).
      * Empty path is like if path == "."

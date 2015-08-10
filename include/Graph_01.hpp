@@ -67,6 +67,8 @@ class Graph_01 : public Graph {
         //test it with serious... noob.
     int getCeinture(int array[][2]) const;//totest
 
+    Graph_01* mirrorGraph_() const;
+    bool isomorpheSimple_(Graph* g) const;
   protected:
     
 
@@ -77,8 +79,6 @@ class Graph_01 : public Graph {
     Graph* replier_(int v, int d, int type) const; //totest
     void completerADistance1_(); //totest
     void completerADistance2_(); //totest
-    bool isomorpheSimple_(Graph* g) const;
-    Graph* mirrorGraph_() const;
     bool deuxQuadriColles_() const;
     int getNbSommetsLibres_() const;
 

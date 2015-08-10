@@ -18,8 +18,6 @@
 
 #define TAILLE_LIGNE_MAX 51 //assez arbitraire
 
-///extern int debug_nb_1_4_40_generated;
-///extern int debug_nbPseudo_1_4_40_generatedAfter8;
 
 Graph_01::Graph_01() : m_nbSommets(0), m_nbPenta(0), m_nbQuadra(0) {
     for(int i(0); i < 8; ++i)
@@ -417,9 +415,9 @@ void Graph_01::markArken()
 }
 
 bool Graph_01::isomorphe(Graph* g) const{
-    Graph* gSym = mirrorGraph_();
-    bool mirroirIso = isomorpheSimple_(gSym);
-    delete gSym;
+    Graph_01* thisSym = mirrorGraph_();
+    bool mirroirIso = thisSym->isomorpheSimple_(g);
+    delete thisSym;
     return(isomorpheSimple_(g) || mirroirIso);
 }
 
@@ -905,8 +903,6 @@ int Graph_01::getCeinture(int array[][2]) const {
         }
     }
     do{
-        ///if(debug_nbPseudo_1_4_40_generatedAfter8 == 2)
-            ///std::cerr << "\nActual : " << actual;
         Vertice* va = getSommet(actual);
         array[sizeBelt][1] = 0;
         for(int i(0); i < va->getNbVoisins(); ++i){
@@ -931,7 +927,7 @@ int Graph_01::getCeinture(int array[][2]) const {
     return sizeBelt;
 }
 
-Graph* Graph_01::mirrorGraph_() const {
+Graph_01* Graph_01::mirrorGraph_() const {
     Graph_01* out = new Graph_01();
     for(int i(0); i < TAILLE_TABLEAU; ++i){
         Vertice* vi = m_sommets[i];
@@ -953,7 +949,7 @@ Graph* Graph_01::mirrorGraph_() const {
     out->m_nbPenta = m_nbPenta;
     out->m_nbQuadra = m_nbQuadra;
     out->m_nbSommets = m_nbSommets;
-    return (Graph*)out;
+    return out;
 }
 
 bool Graph_01::deuxQuadriColles_() const {
