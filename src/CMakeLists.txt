@@ -6,7 +6,7 @@ include_directories(
 
 add_executable(
 	tests
-	test.cpp
+	main.cpp
 	Vertice_01.cpp
 	Vertice.cpp
 	Graph_01.cpp
