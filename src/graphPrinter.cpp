@@ -81,3 +81,35 @@ graphPrinter(std::string dataFile, std::string dir)
     oStream << name << ".drawopts = 'rankdir=LR ratio=0.866 edge [len = 2]'" << std::endl;
     oStream << "dessiner(" << name << ", algo='twopi')" << std::endl;
 }
+
+void
+graphPrinter_all()
+{
+    graphPrinter_all(".");
+}
+
+void
+graphPrinter_all(std::string outPath)
+{
+    graphPrinter_all(outPath, ".");
+}
+
+void
+graphPrinter_all(std::string outPath, std::string inPath)
+{
+    if(outPath.back() != '/')
+        outPath.push_back('/');
+    if(inPath.back() != '/')
+        inPath.push_back('/');
+
+    std::ifstream graphList(inPath + "graphList.data");
+    std::string lineBuffer;
+    getline(graphList, lineBuffer);
+    int numberOfGraphs = atoi(lineBuffer.c_str());
+
+    for(int i(0); i < numberOfGraphs; ++i){
+        std::cout << "\rTreated graphs : " << i << '/' << numberOfGraphs;
+        getline(graphList, lineBuffer);
+        graphPrinter(inPath + lineBuffer, outPath);
+    }
+}
