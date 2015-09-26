@@ -1,0 +1,21 @@
+Ce projet a ete developpe par Rade Mathis pour le LaBRI.
+Tout droits reserves par le LaBRI
+
+English translation : README.txt
+
+###################################
+########## Installation ###########
+# 1 - Creez un repertoire de construction (necessaire au rangement de fichiers temporaires)
+# 2 - Aller dans le repertoire de construction.
+# 3 - Faire: cmake -DCMAKE_INSTALL_PREFIX=<repertoire d'installation> <repertoire du projet>
+# 4 - Faire un make install
+### METHODE CLASSIQUE SOUS UNIX ###
+# 0 - Ouvrir un invite de commande
+# 1 - $ mkdir build
+# 2 - $ cd build
+# 3 - $ cmake -DCMAKE_INSTALL_PREFIX=.. ..
+# 4 - $ make install
+# 5 - $ cd ../bin
+# 6 - $ ./fullerene_generation --help
+########### Installation ##########
+###################################
